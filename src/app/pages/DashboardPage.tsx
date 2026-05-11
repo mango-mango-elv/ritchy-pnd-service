@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router";
-import { Plus, Clock3, ArrowRight, Layers3 } from "lucide-react";
-import { listDrafts } from "../lib/drafts";
+import { Plus, Clock3, ArrowRight, Layers3, Sparkles } from "lucide-react";
+import { DEMO_DRAFT_ID, demoDraft, listDrafts } from "../lib/drafts";
 
 export function DashboardPage() {
   const navigate = useNavigate();
@@ -82,6 +82,95 @@ export function DashboardPage() {
               </div>
             </div>
           </button>
+
+          <div
+            style={{
+              minHeight: "220px",
+              border: "1px solid rgba(201,75,42,0.35)",
+              borderRadius: "var(--radius-lg)",
+              background: "linear-gradient(135deg, var(--color-surface) 0%, #fff7ed 100%)",
+              padding: "var(--space-6)",
+              display: "flex",
+              flexDirection: "column",
+              boxShadow: "0 10px 28px rgba(201,75,42,0.08)",
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "var(--space-5)" }}>
+              <div
+                style={{
+                  width: "38px",
+                  height: "38px",
+                  borderRadius: "var(--radius-sm)",
+                  border: "1px solid rgba(201,75,42,0.25)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  background: "rgba(201,75,42,0.10)",
+                  color: "var(--color-accent)",
+                }}
+              >
+                <Sparkles size={16} />
+              </div>
+              <div
+                style={{
+                  fontSize: "10px",
+                  fontWeight: 700,
+                  letterSpacing: "0.07em",
+                  textTransform: "uppercase",
+                  color: "var(--color-accent)",
+                  background: "rgba(201,75,42,0.10)",
+                  borderRadius: "var(--radius-sm)",
+                  padding: "4px 8px",
+                }}
+              >
+                Demo ready
+              </div>
+            </div>
+
+            <div style={{ fontSize: "17px", fontWeight: 700, color: "var(--color-text-primary)" }}>{demoDraft.name}</div>
+            <div style={{ marginTop: "8px", color: "var(--color-text-secondary)", fontSize: "13px", lineHeight: 1.5 }}>
+              Four SKUs prepared for tomorrow's private label walkthrough.
+            </div>
+
+            <div style={{ display: "flex", gap: "6px", marginTop: "var(--space-5)" }}>
+              {demoDraft.flavors.map((flavor) => (
+                <div
+                  key={flavor.id}
+                  title={flavor.name}
+                  style={{
+                    width: "28px",
+                    height: "36px",
+                    borderRadius: "var(--radius-sm)",
+                    border: "1px solid rgba(0,0,0,0.14)",
+                    background:
+                      flavor.packageColor === "red" ? "#C94B2A" :
+                      flavor.packageColor === "teal" ? "#1A7A5E" :
+                      flavor.packageColor === "blue" ? "#1A4D8F" :
+                      "#D4A01A",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#fff",
+                    fontSize: "10px",
+                    fontWeight: 800,
+                  }}
+                >
+                  {flavor.letter}
+                </div>
+              ))}
+            </div>
+
+            <div style={{ flex: 1 }} />
+
+            <button
+              type="button"
+              onClick={() => navigate("/design", { state: { draftId: DEMO_DRAFT_ID } })}
+              className="ds-btn ds-btn-primary"
+              style={{ width: "100%", justifyContent: "center", marginTop: "var(--space-5)" }}
+            >
+              Open demo line <ArrowRight size={12} />
+            </button>
+          </div>
 
           {drafts.map((draft) => (
             <div

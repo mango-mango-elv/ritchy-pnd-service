@@ -348,21 +348,21 @@ export function PackagingEditor({ onRegisterCallbacks, onGoToNextStage, initialD
 
           {/* ── Next stage CTA ── */}
           {onGoToNextStage && (
-            <button
-              type="button"
-              onClick={onGoToNextStage}
+            <a
+              href="/legal"
               style={{
                 display: "flex", alignItems: "center", gap: "6px",
                 padding: "8px 18px", marginLeft: "var(--space-2)",
                 fontSize: "13px", fontFamily: "var(--font-sans)", fontWeight: 600,
                 background: "var(--color-text-primary)", color: "#fff",
                 border: "none", borderRadius: "var(--radius-sm)", cursor: "pointer",
+                textDecoration: "none",
                 flexShrink: 0,
                 transition: "opacity .15s",
               }}
             >
               Continue to Legal <ArrowRight size={13} />
-            </button>
+            </a>
           )}
         </div>
       </div>
