@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useRef } from "react";
 import { RotateCcw, Save, Check, PanelRightClose, PanelRightOpen } from "lucide-react";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { PackagingEditor } from "../components/PackagingEditor";
-import { useHeaderActions, useStageNav } from "../components/AppShell";
+import { useHeaderActions } from "../components/AppShell";
 
 /* ─────────────────────────────────────────────────────────────
    DesignPage — mounts PackagingEditor and wires its action
@@ -11,8 +11,8 @@ import { useHeaderActions, useStageNav } from "../components/AppShell";
 ─────────────────────────────────────────────────────────────*/
 
 export function DesignPage() {
-  const { goNext } = useStageNav();
   const location = useLocation();
+  const navigate = useNavigate();
   const initialDraftId =
     typeof location.state === "object" &&
     location.state !== null &&
@@ -48,10 +48,15 @@ export function DesignPage() {
     setTimeout(() => setSavedAt(null), 2000);
   }, []);
 
+  const handleContinue = useCallback(() => {
+    navigate("/legal");
+  }, [navigate]);
+
   /* Inject right-side header buttons into AppShell */
   useHeaderActions(
     <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
       <button
+        type="button"
         onClick={() => resetFnRef.current()}
         className="ds-btn ds-btn-ghost"
         style={{ fontSize: "12px" }}
@@ -61,6 +66,7 @@ export function DesignPage() {
       </button>
 
       <button
+        type="button"
         onClick={handleSave}
         className="ds-btn ds-btn-secondary"
         style={{ fontSize: "12px", minWidth: 90, transition: "all .15s" }}
@@ -69,6 +75,7 @@ export function DesignPage() {
       </button>
 
       <button
+        type="button"
         onClick={() => togglePanelRef.current()}
         className="ds-btn ds-btn-ghost"
         style={{ fontSize: "12px" }}
@@ -82,7 +89,7 @@ export function DesignPage() {
   return (
     <PackagingEditor
       onRegisterCallbacks={handleRegister}
-      onGoToNextStage={goNext}
+      onGoToNextStage={handleContinue}
       initialDraftId={initialDraftId}
     />
   );

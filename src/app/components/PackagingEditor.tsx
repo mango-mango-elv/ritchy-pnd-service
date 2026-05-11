@@ -349,6 +349,7 @@ export function PackagingEditor({ onRegisterCallbacks, onGoToNextStage, initialD
           {/* ── Next stage CTA ── */}
           {onGoToNextStage && (
             <button
+              type="button"
               onClick={onGoToNextStage}
               style={{
                 display: "flex", alignItems: "center", gap: "6px",
