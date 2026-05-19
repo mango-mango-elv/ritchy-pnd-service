@@ -1,8 +1,8 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback, useRef, useMemo } from "react";
 import { RotateCcw, Save, Check, PanelRightClose, PanelRightOpen, ArrowRight } from "lucide-react";
-import { useLocation, useNavigate } from "react-router";
+import { useLocation, Link } from "react-router";
 import { PackagingEditor } from "../components/PackagingEditor";
-import { useHeaderActions } from "../components/AppShell";
+import { useHeaderActions, useStageNav } from "../components/AppShell";
 
 /* ─────────────────────────────────────────────────────────────
    DesignPage — mounts PackagingEditor and wires its action
@@ -12,7 +12,7 @@ import { useHeaderActions } from "../components/AppShell";
 
 export function DesignPage() {
   const location = useLocation();
-  const navigate = useNavigate();
+  const { goNext } = useStageNav();
   const initialDraftId =
     typeof location.state === "object" &&
     location.state !== null &&
@@ -49,11 +49,14 @@ export function DesignPage() {
   }, []);
 
   const handleContinue = useCallback(() => {
-    navigate("/legal");
-  }, [navigate]);
+    goNext();
+  }, [goNext]);
 
-  /* Inject right-side header buttons into AppShell */
-  useHeaderActions(
+  /* Inject right-side header buttons into AppShell.
+     useMemo stabilises the node reference — only recreated when
+     savedAt / isPanelOpen actually change, preventing an infinite
+     AppShell → Outlet → DesignPage re-render loop. */
+  const headerNode = useMemo(() => (
     <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
       <button
         type="button"
@@ -86,16 +89,18 @@ export function DesignPage() {
 
       <div style={{ width: "1px", height: "20px", background: "var(--color-border)", margin: "0 var(--space-1)" }} />
 
-      <button
-        type="button"
-        onClick={handleContinue}
+      <Link
+        to="/legal"
         className="ds-btn ds-btn-primary"
-        style={{ fontSize: "12px", gap: "var(--space-1)" }}
+        style={{ fontSize: "12px", gap: "var(--space-1)", textDecoration: "none" }}
       >
         Continue to Legal <ArrowRight size={12} />
-      </button>
+      </Link>
     </div>
-  );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  ), [savedAt, isPanelOpen, handleSave]);
+
+  useHeaderActions(headerNode);
 
   return (
     <PackagingEditor

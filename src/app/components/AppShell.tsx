@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, createContext } from "react";
-import { Outlet, useNavigate, useLocation } from "react-router";
+import { Outlet, Link, useNavigate, useLocation } from "react-router";
 import { LayoutDashboard } from "lucide-react";
 import { STAGES } from "../routes";
 import type { StagePath } from "../routes";
@@ -54,17 +54,6 @@ export function AppShell() {
   const isWorkflow  = WORKFLOW_PATHS.has(currentPath);
   const currentIdx  = Math.max(0, STAGES.findIndex(s => s.path === currentPath));
 
-  /* For non-workflow pages (Login, Dashboard) render as transparent passthrough */
-  if (!isWorkflow) {
-    return (
-      <StageNavContext.Provider value={{ currentIdx: 0, goTo: () => {}, goNext: () => {}, goBack: () => {} }}>
-        <HeaderActionsCtx.Provider value={{ setActions: () => {} }}>
-          <Outlet />
-        </HeaderActionsCtx.Provider>
-      </StageNavContext.Provider>
-    );
-  }
-
   const navCtx: StageNavCtx = {
     currentIdx,
     goTo:   (path) => navigate(`/${path}`),
@@ -82,8 +71,8 @@ export function AppShell() {
           background: "var(--color-bg)",
         }}>
 
-          {/* ══ Shared header ══ */}
-          <header style={{
+          {/* ══ Shared header — only visible for workflow stages ══ */}
+          {isWorkflow && <header style={{
             display: "flex", alignItems: "center",
             padding: "0 var(--space-5)", height: "50px",
             borderBottom: "1px solid var(--color-border)",
@@ -92,10 +81,7 @@ export function AppShell() {
           }}>
 
             {/* Logo */}
-            <div
-              onClick={() => navigate("/")}
-              style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", flexShrink: 0, cursor: "pointer" }}
-            >
+            <Link to="/" style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", flexShrink: 0, cursor: "pointer", textDecoration: "none" }}>
               <div style={{
                 width: "26px", height: "26px", borderRadius: "var(--radius-full)",
                 background: "var(--color-accent)",
@@ -106,26 +92,26 @@ export function AppShell() {
               <span style={{ fontFamily: "var(--font-sans)", fontWeight: 700, fontSize: "14px", color: "var(--color-text-primary)" }}>
                 Ritchy <span style={{ color: "var(--color-accent)", fontWeight: 400 }}>P&amp;D</span>
               </span>
-            </div>
+            </Link>
 
             {/* ── Step progress bar ── */}
-            <StepBar currentIdx={currentIdx} onGoTo={navCtx.goTo} />
+            <StepBar currentIdx={currentIdx} />
 
             <div style={{ flex: 1 }} />
 
             {/* Per-page action buttons (injected via useHeaderActions) */}
-            <button
-              onClick={() => navigate("/dashboard")}
+            <Link
+              to="/dashboard"
               className="ds-btn ds-btn-secondary"
-              style={{ fontSize: "12px", padding: "7px 10px" }}
+              style={{ fontSize: "12px", padding: "7px 10px", textDecoration: "none" }}
               title="Go to dashboard"
             >
               <LayoutDashboard size={13} />
               Dashboard
-            </button>
+            </Link>
 
             {headerActions}
-          </header>
+          </header>}
 
           {/* ── Page body ── */}
           <div style={{ flex: 1, overflow: "hidden", display: "flex", flexDirection: "column" }}>
@@ -141,13 +127,7 @@ export function AppShell() {
 /* ─────────────────────────────────────────────────────────────
    StepBar
 ─────────────────────────────────────────────────────────────*/
-function StepBar({
-  currentIdx,
-  onGoTo,
-}: {
-  currentIdx: number;
-  onGoTo: (path: StagePath) => void;
-}) {
+function StepBar({ currentIdx }: { currentIdx: number }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 0 }}>
       {STAGES.map((stage, idx) => {
@@ -157,9 +137,9 @@ function StepBar({
 
         return (
           <React.Fragment key={stage.path}>
-            <button
-              onClick={() => !isFuture && onGoTo(stage.path)}
-              disabled={isFuture}
+            <Link
+              to={`/${stage.path}`}
+              onClick={(e) => { if (isFuture) e.preventDefault(); }}
               style={{
                 position: "relative",
                 background: "none", border: "none",
@@ -168,6 +148,7 @@ function StepBar({
                 fontFamily: "var(--font-sans)",
                 fontWeight: isActive ? 600 : 400,
                 fontSize: "13px",
+                textDecoration: "none",
                 color: isActive
                   ? "var(--color-text-primary)"
                   : isCompleted
@@ -187,7 +168,7 @@ function StepBar({
                   borderRadius: "1px", display: "block",
                 }} />
               )}
-            </button>
+            </Link>
 
             {idx < STAGES.length - 1 && (
               <span style={{
