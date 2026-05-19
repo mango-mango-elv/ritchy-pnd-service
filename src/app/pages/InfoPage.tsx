@@ -24,7 +24,7 @@ export function InfoPage() {
   };
 
   return (
-    <div style={{ flex: 1, overflowY: "auto", padding: "var(--space-8)", background: "var(--color-bg)" }}>
+    <div style={{ flex: 1, overflowY: "auto", padding: "var(--space-8)" }}>
       <div style={{ maxWidth: "860px", margin: "0 auto", display: "grid", gap: "var(--space-5)" }}>
 
         <div>
@@ -37,7 +37,15 @@ export function InfoPage() {
           </p>
         </div>
 
-        <section style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-lg)", padding: "var(--space-6)" }}>
+        <section style={{
+          background: "rgba(255,255,255,0.82)",
+          backdropFilter: "blur(20px) saturate(180%)",
+          WebkitBackdropFilter: "blur(20px) saturate(180%)",
+          border: "1px solid rgba(0,0,0,0.07)",
+          borderRadius: "var(--radius-lg)",
+          padding: "var(--space-6)",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.90)",
+        }}>
           <h2 style={{ margin: "0 0 var(--space-5)", fontSize: "16px", color: "var(--color-text-primary)" }}>About your brand</h2>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-4)" }}>
@@ -120,8 +128,8 @@ export function InfoPage() {
               display: "flex", alignItems: "center", gap: "var(--space-2)",
               fontSize: "13px", fontFamily: "var(--font-sans)", fontWeight: 600,
               padding: "10px 24px",
-              background: "var(--color-text-primary)", color: "#fff",
-              border: "none", borderRadius: "var(--radius-sm)", cursor: "pointer",
+              background: "#111111", color: "#fff",
+              border: "none", borderRadius: "var(--radius-md)", cursor: "pointer",
             }}
           >
             Start designing <ArrowRight size={14} />
@@ -192,8 +200,8 @@ export function StagePlaceholder({
               display: "flex", alignItems: "center", gap: "var(--space-2)",
               fontSize: "13px", fontFamily: "var(--font-sans)", fontWeight: 600,
               padding: "10px 24px",
-              background: "var(--color-text-primary)", color: "#fff",
-              border: "none", borderRadius: "var(--radius-sm)", cursor: "pointer",
+              background: "#111111", color: "#fff",
+              border: "none", borderRadius: "var(--radius-md)", cursor: "pointer",
             }}
           >
             {nextLabel ?? "Continue"}

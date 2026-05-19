@@ -5,7 +5,7 @@ export function OrderPage() {
   const { goNext, goBack } = useStageNav();
 
   return (
-    <div style={{ flex: 1, overflowY: "auto", padding: "var(--space-8)", background: "var(--color-bg)" }}>
+    <div style={{ flex: 1, overflowY: "auto", padding: "var(--space-8)" }}>
       <div style={{ maxWidth: "860px", margin: "0 auto", display: "grid", gap: "var(--space-5)" }}>
         <div>
           <div style={{ fontSize: "11px", letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--color-text-muted)" }}>
@@ -17,7 +17,15 @@ export function OrderPage() {
           </p>
         </div>
 
-        <section style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-lg)", padding: "var(--space-6)" }}>
+        <section style={{
+          background: "rgba(255,255,255,0.82)",
+          backdropFilter: "blur(20px) saturate(180%)",
+          WebkitBackdropFilter: "blur(20px) saturate(180%)",
+          border: "1px solid rgba(0,0,0,0.07)",
+          borderRadius: "var(--radius-lg)",
+          padding: "var(--space-6)",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.90)",
+        }}>
           <h2 style={{ margin: 0, fontSize: "16px", color: "var(--color-text-primary)" }}>Line item</h2>
           <div style={{ marginTop: "var(--space-4)", display: "grid", gap: "var(--space-4)", gridTemplateColumns: "1fr 1fr" }}>
             <div>

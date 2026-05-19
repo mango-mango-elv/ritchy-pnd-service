@@ -6,28 +6,28 @@
 /* ── Design System Tokens ────────────────────────────────────── */
 :root {
   /* Colors */
-  --color-bg:             #EDE9DF;
-  --color-surface:        #F5F2EB;
-  --color-surface-raised: #FDFCF9;
-  --color-border:         #C9C3B3;
-  --color-border-light:   #DED9CE;
+  --color-bg:             #F5F5F7;
+  --color-surface:        rgba(255,255,255,0.82);
+  --color-surface-raised: rgba(255,255,255,0.95);
+  --color-border:         rgba(0,0,0,0.08);
+  --color-border-light:   rgba(0,0,0,0.05);
 
-  --color-text-primary:   #1C1917;
-  --color-text-secondary: #78716C;
-  --color-text-muted:     #A8A29E;
+  --color-text-primary:   #111111;
+  --color-text-secondary: #666666;
+  --color-text-muted:     #999999;
 
-  --color-accent:         #C94B2A;
-  --color-accent-hover:   #B03D20;
+  --color-accent:         #111111;
+  --color-accent-hover:   #333333;
   --color-accent-text:    #FFFFFF;
 
   --color-accent-gold:    #D4A01A;
   --color-accent-teal:    #1A7A5E;
   --color-accent-blue:    #1A4D8F;
-  --color-accent-black:   #1C1917;
+  --color-accent-black:   #111111;
 
-  --color-selected-ring:  #C94B2A;
-  --color-tag-bg:         #F5E9C4;
-  --color-tag-border:     #C9A84C;
+  --color-selected-ring:  #111111;
+  --color-tag-bg:         rgba(212,160,26,0.10);
+  --color-tag-border:     rgba(212,160,26,0.25);
   --color-tag-text:       #7A5C00;
 
   /* Spacing */
@@ -42,10 +42,10 @@
   --space-12: 48px;
 
   /* Border radius */
-  --radius-sm:  4px;
-  --radius-md:  8px;
-  --radius-lg:  12px;
-  --radius-xl:  16px;
+  --radius-sm:  6px;
+  --radius-md:  10px;
+  --radius-lg:  16px;
+  --radius-xl:  20px;
   --radius-full: 9999px;
 
   /* Border width */
@@ -58,10 +58,10 @@
   --font-mono:   'JetBrains Mono', 'Courier New', monospace;
   --font-display: 'Caveat', cursive;
 
-  /* Shadows */
-  --shadow-sm:  0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
-  --shadow-md:  0 4px 12px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.04);
-  --shadow-box: 2px 4px 16px rgba(0,0,0,.14);
+  /* Shadows — двуслойные, мягкие */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
+  --shadow-md:  0 2px 8px rgba(0,0,0,0.06), 0 6px 24px rgba(0,0,0,0.04);
+  --shadow-box: 0 4px 12px rgba(0,0,0,0.06), 0 16px 48px rgba(0,0,0,0.05);
 }
 
 /* ── Base resets ─────────────────────────────────────────────── */
@@ -75,38 +75,47 @@ body {
 }
 
 /* ── Utility classes ─────────────────────────────────────────── */
-.ds-surface        { background-color: var(--color-surface); }
-.ds-surface-raised { background-color: var(--color-surface-raised); }
-.ds-border         { border: var(--border-width) solid var(--color-border); }
-.ds-border-light   { border: var(--border-width) solid var(--color-border-light); }
+.ds-surface {
+  background: rgba(255,255,255,0.82);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+.ds-surface-raised {
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+}
+.ds-border       { border: 1px solid rgba(0,0,0,0.08); }
+.ds-border-light { border: 1px solid rgba(0,0,0,0.05); }
 .ds-text           { color: var(--color-text-primary); }
 .ds-text-secondary { color: var(--color-text-secondary); }
 .ds-text-muted     { color: var(--color-text-muted); }
 .ds-accent         { color: var(--color-accent); }
 
-/* Canvas surface */
+/* Canvas — НЕ получает glass */
 .ds-canvas {
-  background-color: var(--color-bg);
+  background: #EBEBED;
 }
 
-/* Input base */
+/* Input — solid white, не стекло поверх стекла */
 .ds-input {
   width: 100%;
   padding: var(--space-2) var(--space-3);
-  border: var(--border-width) solid var(--color-border);
+  border: 1px solid rgba(0,0,0,0.10);
   border-radius: var(--radius-sm);
-  background-color: var(--color-surface-raised);
-  color: var(--color-text-primary);
+  background: rgba(255,255,255,0.95);
+  color: #111111;
   font-family: var(--font-sans);
   font-size: 13px;
   outline: none;
-  transition: border-color .15s;
+  transition: border-color .15s, box-shadow .15s;
 }
 .ds-input:focus {
-  border-color: var(--color-text-primary);
+  border-color: #111111;
+  box-shadow: 0 0 0 3px rgba(17,17,17,0.06);
 }
 .ds-input::placeholder {
-  color: var(--color-text-muted);
+  color: #999999;
 }
 
 /* Button base */
@@ -121,31 +130,35 @@ body {
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color .15s, border-color .15s;
+  transition: background-color .15s, border-color .15s, box-shadow .15s, transform .15s;
   border: var(--border-width) solid transparent;
 }
 .ds-btn-primary {
-  background-color: var(--color-accent);
-  color: var(--color-accent-text);
-  border-color: var(--color-accent);
+  background: #111111;
+  color: #ffffff;
+  border-color: #111111;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
 }
 .ds-btn-primary:hover {
-  background-color: var(--color-accent-hover);
-  border-color: var(--color-accent-hover);
+  background: #333333;
+  border-color: #333333;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.20);
 }
 .ds-btn-secondary {
-  background-color: var(--color-surface-raised);
-  color: var(--color-text-primary);
-  border-color: var(--color-border);
+  background: rgba(255,255,255,0.85);
+  color: #111111;
+  border: 1px solid rgba(0,0,0,0.10);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.90);
 }
 .ds-btn-secondary:hover {
-  background-color: var(--color-surface);
+  background: rgba(255,255,255,0.98);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.90);
 }
 .ds-btn-ghost {
-  background-color: transparent;
-  color: var(--color-text-primary);
-  border-color: var(--color-border);
+  background: transparent;
+  color: #111111;
+  border: 1px solid rgba(0,0,0,0.10);
 }
 .ds-btn-ghost:hover {
-  background-color: var(--color-surface);
+  background: rgba(0,0,0,0.04);
 }

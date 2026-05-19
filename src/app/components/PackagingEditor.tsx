@@ -404,8 +404,11 @@ export function PackagingEditor({ onRegisterCallbacks, onGoToNextStage, initialD
       {(wizardStep === 1 || wizardStep === 2 || wizardStep === 3) && (
         <div style={{
           width: "288px", flexShrink: 0,
-          borderLeft: "1px solid var(--color-border)",
-          background: "var(--color-surface)",
+          borderLeft: "1px solid rgba(0,0,0,0.07)",
+          background: "rgba(255,255,255,0.82)",
+          backdropFilter: "blur(20px) saturate(180%)",
+          WebkitBackdropFilter: "blur(20px) saturate(180%)",
+          boxShadow: "-2px 0 16px rgba(0,0,0,0.04)",
           display: "flex", flexDirection: "column", overflow: "hidden",
         }}>
           <div style={{ flex: 1, overflowY: "auto", padding: "var(--space-6)", display: "flex", flexDirection: "column", gap: "var(--space-5)" }}>
@@ -551,8 +554,11 @@ export function PackagingEditor({ onRegisterCallbacks, onGoToNextStage, initialD
       {wizardStep === null && isPanelOpen && (
         <div style={{
           width: "288px", flexShrink: 0,
-          borderLeft: "1px solid var(--color-border)",
-          background: "var(--color-surface)",
+          borderLeft: "1px solid rgba(0,0,0,0.07)",
+          background: "rgba(255,255,255,0.82)",
+          backdropFilter: "blur(20px) saturate(180%)",
+          WebkitBackdropFilter: "blur(20px) saturate(180%)",
+          boxShadow: "-2px 0 16px rgba(0,0,0,0.04)",
           display: "flex", flexDirection: "column", overflow: "hidden",
         }}>
 

@@ -15,7 +15,7 @@ export function CheckoutPage() {
     return (
       <div style={{
         flex: 1, display: "flex", alignItems: "center", justifyContent: "center",
-        background: "var(--color-bg)", padding: "var(--space-8)",
+        padding: "var(--space-8)",
       }}>
         <div style={{ maxWidth: "480px", width: "100%", textAlign: "center", display: "grid", gap: "var(--space-5)" }}>
           <div style={{ display: "flex", justifyContent: "center" }}>
@@ -36,8 +36,14 @@ export function CheckoutPage() {
           </div>
 
           <div style={{
-            background: "var(--color-surface)", border: "1px solid var(--color-border)",
-            borderRadius: "var(--radius-lg)", padding: "var(--space-5)", textAlign: "left",
+            background: "rgba(255,255,255,0.82)",
+            backdropFilter: "blur(20px) saturate(180%)",
+            WebkitBackdropFilter: "blur(20px) saturate(180%)",
+            border: "1px solid rgba(0,0,0,0.07)",
+            borderRadius: "var(--radius-lg)",
+            padding: "var(--space-5)",
+            textAlign: "left",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.90)",
           }}>
             <div style={{
               fontSize: "11px", fontWeight: 600, letterSpacing: "0.07em", textTransform: "uppercase",
@@ -54,7 +60,7 @@ export function CheckoutPage() {
                 <div key={i} style={{ display: "flex", gap: "var(--space-3)", alignItems: "flex-start" }}>
                   <div style={{
                     width: "24px", height: "24px", borderRadius: "50%",
-                    background: "var(--color-accent)", color: "#fff",
+                    background: "#111111", color: "#fff",
                     fontSize: "11px", fontWeight: 700,
                     display: "flex", alignItems: "center", justifyContent: "center",
                     flexShrink: 0, marginTop: "1px",
@@ -83,7 +89,7 @@ export function CheckoutPage() {
   }
 
   return (
-    <div style={{ flex: 1, overflowY: "auto", padding: "var(--space-8)", background: "var(--color-bg)" }}>
+    <div style={{ flex: 1, overflowY: "auto", padding: "var(--space-8)" }}>
       <div style={{ maxWidth: "860px", margin: "0 auto", display: "grid", gap: "var(--space-5)" }}>
         <div>
           <div style={{ fontSize: "11px", letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--color-text-muted)" }}>
@@ -95,7 +101,15 @@ export function CheckoutPage() {
           </p>
         </div>
 
-        <section style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-lg)", padding: "var(--space-6)" }}>
+        <section style={{
+          background: "rgba(255,255,255,0.82)",
+          backdropFilter: "blur(20px) saturate(180%)",
+          WebkitBackdropFilter: "blur(20px) saturate(180%)",
+          border: "1px solid rgba(0,0,0,0.07)",
+          borderRadius: "var(--radius-lg)",
+          padding: "var(--space-6)",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.90)",
+        }}>
           <h2 style={{ margin: 0, fontSize: "16px", color: "var(--color-text-primary)" }}>Order summary</h2>
           <div style={{ marginTop: "var(--space-4)", display: "grid", gap: "10px", color: "var(--color-text-secondary)", fontSize: "14px" }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>

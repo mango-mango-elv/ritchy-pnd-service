@@ -11,18 +11,22 @@ export function LoginPage() {
   return (
     <div style={{
       display: "flex", alignItems: "center", justifyContent: "center",
-      height: "100vh", width: "100vw", background: "var(--color-bg)",
+      height: "100vh", width: "100vw",
       fontFamily: "var(--font-sans)"
     }}>
       <div style={{
         width: "100%", maxWidth: "400px", padding: "var(--space-8)",
-        background: "var(--color-surface)", borderRadius: "var(--radius-lg)",
-        boxShadow: "0 20px 50px rgba(0,0,0,0.05)", border: "1px solid var(--color-border-light)"
+        background: "rgba(255,255,255,0.82)",
+        backdropFilter: "blur(24px) saturate(180%)",
+        WebkitBackdropFilter: "blur(24px) saturate(180%)",
+        borderRadius: "var(--radius-xl)",
+        border: "1px solid rgba(0,0,0,0.07)",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.06), 0 24px 64px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.90)",
       }}>
         <div style={{ textAlign: "center", marginBottom: "var(--space-8)" }}>
           <div style={{
             width: "48px", height: "48px", borderRadius: "50%",
-            background: "var(--color-accent)", margin: "0 auto var(--space-4)",
+            background: "#111111", margin: "0 auto var(--space-4)",
             display: "flex", alignItems: "center", justifyContent: "center"
           }}>
             <span style={{ color: "#fff", fontSize: "20px", fontWeight: 700 }}>R</span>

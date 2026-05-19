@@ -75,8 +75,12 @@ export function AppShell() {
           {isWorkflow && <header style={{
             display: "flex", alignItems: "center",
             padding: "0 var(--space-5)", height: "50px",
-            borderBottom: "1px solid var(--color-border)",
-            background: "var(--color-surface)", flexShrink: 0,
+            borderBottom: "1px solid rgba(0,0,0,0.07)",
+            background: "rgba(245,245,247,0.80)",
+            backdropFilter: "blur(20px) saturate(180%)",
+            WebkitBackdropFilter: "blur(20px) saturate(180%)",
+            boxShadow: "0 1px 0 rgba(255,255,255,0.6), 0 2px 8px rgba(0,0,0,0.04)",
+            flexShrink: 0,
             gap: "var(--space-4)",
           }}>
 
@@ -84,13 +88,13 @@ export function AppShell() {
             <Link to="/" style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", flexShrink: 0, cursor: "pointer", textDecoration: "none" }}>
               <div style={{
                 width: "26px", height: "26px", borderRadius: "var(--radius-full)",
-                background: "var(--color-accent)",
+                background: "#111111",
                 display: "flex", alignItems: "center", justifyContent: "center",
               }}>
                 <span style={{ color: "#fff", fontSize: "12px", fontWeight: 700, fontFamily: "var(--font-sans)" }}>R</span>
               </div>
-              <span style={{ fontFamily: "var(--font-sans)", fontWeight: 700, fontSize: "14px", color: "var(--color-text-primary)" }}>
-                Ritchy <span style={{ color: "var(--color-accent)", fontWeight: 400 }}>P&amp;D</span>
+              <span style={{ fontFamily: "var(--font-sans)", fontWeight: 700, fontSize: "14px", color: "#111111" }}>
+                Ritchy <span style={{ color: "#999999", fontWeight: 400 }}>P&amp;D</span>
               </span>
             </Link>
 
@@ -150,11 +154,11 @@ function StepBar({ currentIdx }: { currentIdx: number }) {
                 fontSize: "13px",
                 textDecoration: "none",
                 color: isActive
-                  ? "var(--color-text-primary)"
+                  ? "#111111"
                   : isCompleted
-                    ? "var(--color-accent)"
-                    : "var(--color-text-muted)",
-                opacity: isFuture ? 0.55 : 1,
+                    ? "#666666"
+                    : "#999999",
+                opacity: isFuture ? 0.5 : 1,
                 transition: "color .15s, opacity .15s",
               }}
             >
@@ -164,7 +168,7 @@ function StepBar({ currentIdx }: { currentIdx: number }) {
                   position: "absolute", bottom: -1, left: "50%",
                   transform: "translateX(-50%)",
                   width: "65%", height: "2px",
-                  background: "var(--color-accent)",
+                  background: "#111111",
                   borderRadius: "1px", display: "block",
                 }} />
               )}
@@ -173,9 +177,8 @@ function StepBar({ currentIdx }: { currentIdx: number }) {
             {idx < STAGES.length - 1 && (
               <span style={{
                 fontSize: "11px",
-                color: isCompleted ? "var(--color-accent)" : "var(--color-border)",
+                color: "rgba(0,0,0,0.20)",
                 userSelect: "none",
-                transition: "color .3s",
                 lineHeight: 1,
               }}>
                 →
