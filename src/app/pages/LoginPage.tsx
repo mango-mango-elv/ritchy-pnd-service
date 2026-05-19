@@ -40,13 +40,16 @@ export function LoginPage() {
         >
           <div>
             <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "var(--color-text-secondary)", marginBottom: "var(--space-1)" }}>EMAIL ADDRESS</label>
-            <input type="email" className="ds-input" style={{ width: "100%" }} placeholder="name@company.com (optional)" />
+            <input type="email" className="ds-input" style={{ width: "100%" }} placeholder="name@company.com" />
           </div>
           <div>
             <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "var(--color-text-secondary)", marginBottom: "var(--space-1)" }}>PASSWORD</label>
-            <input type="password" className="ds-input" style={{ width: "100%" }} placeholder="optional" />
+            <input type="password" className="ds-input" style={{ width: "100%" }} />
           </div>
           <button type="submit" className="ds-btn ds-btn-primary" style={{ width: "100%", marginTop: "var(--space-2)" }}>Sign In</button>
+          <div style={{ textAlign: "center", fontSize: "12px", color: "var(--color-text-muted)" }}>
+            Demo: sign in with any credentials
+          </div>
         </form>
 
         <div style={{ marginTop: "var(--space-6)", textAlign: "center", fontSize: "13px", color: "var(--color-text-muted)" }}>

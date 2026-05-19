@@ -43,13 +43,27 @@ export function useHeaderActions(node: React.ReactNode) {
 /* ─────────────────────────────────────────────────────────────
    AppShell component
 ─────────────────────────────────────────────────────────────*/
+const WORKFLOW_PATHS = new Set(["info", "design", "legal", "order", "checkout"]);
+
 export function AppShell() {
   const location = useLocation();
   const navigate = useNavigate();
   const [headerActions, setHeaderActions] = useState<React.ReactNode>(null);
 
   const currentPath = location.pathname.replace(/^\//, "") as StagePath;
+  const isWorkflow  = WORKFLOW_PATHS.has(currentPath);
   const currentIdx  = Math.max(0, STAGES.findIndex(s => s.path === currentPath));
+
+  /* For non-workflow pages (Login, Dashboard) render as transparent passthrough */
+  if (!isWorkflow) {
+    return (
+      <StageNavContext.Provider value={{ currentIdx: 0, goTo: () => {}, goNext: () => {}, goBack: () => {} }}>
+        <HeaderActionsCtx.Provider value={{ setActions: () => {} }}>
+          <Outlet />
+        </HeaderActionsCtx.Provider>
+      </StageNavContext.Provider>
+    );
+  }
 
   const navCtx: StageNavCtx = {
     currentIdx,
@@ -78,7 +92,10 @@ export function AppShell() {
           }}>
 
             {/* Logo */}
-            <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", flexShrink: 0 }}>
+            <div
+              onClick={() => navigate("/")}
+              style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", flexShrink: 0, cursor: "pointer" }}
+            >
               <div style={{
                 width: "26px", height: "26px", borderRadius: "var(--radius-full)",
                 background: "var(--color-accent)",

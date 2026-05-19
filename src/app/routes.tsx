@@ -20,23 +20,17 @@ export type StagePath = typeof STAGES[number]["path"];
 
 export const router = createBrowserRouter([
   {
-    path: "/",
+    Component: AppShell,
     children: [
-      { index: true, Component: LoginPage },
-      { path: "login", Component: LoginPage },
-      { path: "dashboard", Component: DashboardPage },
-      {
-        path: "/",
-        Component: AppShell,
-        children: [
-          { path: "info",     Component: InfoPage    },
-          { path: "design",   Component: DesignPage  },
-          { path: "legal",    Component: LegalPage   },
-          { path: "order",    Component: OrderPage   },
-          { path: "checkout", Component: CheckoutPage },
-        ],
-      },
-      { path: "*", loader: () => redirect("/") },
+      { path: "/",          Component: LoginPage    },
+      { path: "/login",     Component: LoginPage    },
+      { path: "/dashboard", Component: DashboardPage },
+      { path: "/info",      Component: InfoPage     },
+      { path: "/design",    Component: DesignPage   },
+      { path: "/legal",     Component: LegalPage    },
+      { path: "/order",     Component: OrderPage    },
+      { path: "/checkout",  Component: CheckoutPage },
+      { path: "*",          loader: () => redirect("/") },
     ],
   },
 ]);

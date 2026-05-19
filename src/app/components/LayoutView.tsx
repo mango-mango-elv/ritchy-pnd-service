@@ -12,7 +12,7 @@ const imgBarcode =
   );
 
 /* ─────────────────────────────────────────────────────────────
-   LayoutView — packaging dieline (развертка)
+   LayoutView — packaging dieline (unfolded layout)
 
    Native space: 663 × 708 px
    Die bounds: x=7..596, y=41..661

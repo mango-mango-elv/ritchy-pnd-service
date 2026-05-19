@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import {
   ChevronLeft, ChevronRight, X, Plus, Check,
-  Upload, Trash2, Copy, ArrowRight,
+  Upload, Trash2, Copy, AlertTriangle, ArrowRight,
 } from "lucide-react";
 import { FrontView }    from "./FrontView";
 import { View3D }       from "./View3D";
@@ -33,7 +33,8 @@ export interface PackagingEditorProps {
   initialDraftId?: string;
 }
 
-type PanelTab = "design" | "content" | "layout" | "text";
+type PanelTab   = "design" | "content" | "layout" | "text";
+type WizardStep = "choice" | 1 | 2 | 3 | null;
 
 /* ════════════════════════════════════════════════════════════
    Tiny shared UI helpers
@@ -131,6 +132,7 @@ export function PackagingEditor({ onRegisterCallbacks, onGoToNextStage, initialD
   const [panelTab,      setPanelTab]      = useState<PanelTab>("content");
   const [isPanelOpen,   setIsPanelOpen]   = useState(true);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
+  const [wizardStep,    setWizardStep]    = useState<WizardStep>("choice");
 
   const totalSlots = 10;
 
@@ -242,6 +244,55 @@ export function PackagingEditor({ onRegisterCallbacks, onGoToNextStage, initialD
           {viewMode === "range"  && <ZoomableView minZoom={0.5} maxZoom={2.5}><RangeView flavors={flavors} activeFlavor={activeFlavor} onSelect={setActiveFlavor} /></ZoomableView>}
         </div>
 
+        {/* ── Onboarding choice overlay ── */}
+        {wizardStep === "choice" && (
+          <div style={{
+            position: "absolute", inset: 0, zIndex: 10,
+            background: "rgba(237,233,223,0.90)",
+            backdropFilter: "blur(3px)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            padding: "var(--space-8)",
+          }}>
+            <div style={{
+              background: "var(--color-surface)", borderRadius: "var(--radius-xl)",
+              border: "1px solid var(--color-border)",
+              padding: "var(--space-8)", maxWidth: 400, width: "100%",
+              boxShadow: "var(--shadow-md)", textAlign: "center",
+            }}>
+              <div style={{ fontSize: "22px", fontWeight: 700, color: "var(--color-text-primary)", marginBottom: "var(--space-2)", fontFamily: "var(--font-sans)" }}>
+                How would you like to start?
+              </div>
+              <p style={{ fontSize: "13px", color: "var(--color-text-secondary)", margin: "0 0 var(--space-6)", fontFamily: "var(--font-sans)", lineHeight: 1.5 }}>
+                We can walk you through the essentials, or you can dive in on your own.
+              </p>
+              <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
+                <button
+                  onClick={() => setWizardStep(1)}
+                  className="ds-btn ds-btn-primary"
+                  style={{ width: "100%", justifyContent: "space-between", padding: "14px 20px", fontSize: "14px", height: "auto" }}
+                >
+                  <div style={{ textAlign: "left" }}>
+                    <div style={{ fontWeight: 600 }}>Walk me through it</div>
+                    <div style={{ fontSize: "12px", opacity: 0.8, marginTop: 2, fontWeight: 400 }}>Logo · color · flavor name — one at a time</div>
+                  </div>
+                  <ArrowRight size={16} style={{ flexShrink: 0 }} />
+                </button>
+                <button
+                  onClick={() => setWizardStep(null)}
+                  className="ds-btn ds-btn-secondary"
+                  style={{ width: "100%", justifyContent: "space-between", padding: "14px 20px", fontSize: "14px", height: "auto" }}
+                >
+                  <div style={{ textAlign: "left" }}>
+                    <div style={{ fontWeight: 600 }}>I'll explore on my own</div>
+                    <div style={{ fontSize: "12px", color: "var(--color-text-muted)", marginTop: 2, fontWeight: 400 }}>Open the full editor</div>
+                  </div>
+                  <ArrowRight size={16} style={{ flexShrink: 0 }} />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* ── View-mode tab bar (matches Figma bottom position) ── */}
         <div style={{
           display: "flex", justifyContent: "center",
@@ -346,29 +397,158 @@ export function PackagingEditor({ onRegisterCallbacks, onGoToNextStage, initialD
             Next <ChevronRight size={12} />
           </button>
 
-          {/* ── Next stage CTA ── */}
-          {onGoToNextStage && (
-            <button
-              type="button"
-              onClick={onGoToNextStage}
-              style={{
-                display: "flex", alignItems: "center", gap: "6px",
-                padding: "8px 18px", marginLeft: "var(--space-2)",
-                fontSize: "13px", fontFamily: "var(--font-sans)", fontWeight: 600,
-                background: "var(--color-text-primary)", color: "#fff",
-                border: "none", borderRadius: "var(--radius-sm)", cursor: "pointer",
-                flexShrink: 0,
-                transition: "opacity .15s",
-              }}
-            >
-              Continue to Legal <ArrowRight size={13} />
-            </button>
-          )}
         </div>
       </div>
 
+      {/* ════════════ WIZARD PANEL (steps 1–3) ════════════ */}
+      {(wizardStep === 1 || wizardStep === 2 || wizardStep === 3) && (
+        <div style={{
+          width: "288px", flexShrink: 0,
+          borderLeft: "1px solid var(--color-border)",
+          background: "var(--color-surface)",
+          display: "flex", flexDirection: "column", overflow: "hidden",
+        }}>
+          <div style={{ flex: 1, overflowY: "auto", padding: "var(--space-6)", display: "flex", flexDirection: "column", gap: "var(--space-5)" }}>
+
+            {/* Progress dots */}
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              {([1, 2, 3] as const).map(n => (
+                <div key={n} style={{
+                  width: n === wizardStep ? 20 : 8, height: 8,
+                  borderRadius: 4,
+                  background: n <= (wizardStep as number) ? "var(--color-accent)" : "var(--color-border)",
+                  transition: "width .2s, background .2s",
+                  flexShrink: 0,
+                }} />
+              ))}
+              <span style={{ fontSize: 11, color: "var(--color-text-muted)", marginLeft: 4, fontFamily: "var(--font-sans)" }}>
+                Step {wizardStep} of 3
+              </span>
+            </div>
+
+            {/* Step 1: Logo */}
+            {wizardStep === 1 && (
+              <>
+                <div>
+                  <div style={{ fontSize: "18px", fontWeight: 700, color: "var(--color-text-primary)", fontFamily: "var(--font-sans)", marginBottom: "var(--space-1)" }}>
+                    Upload your logo
+                  </div>
+                  <div style={{ fontSize: "13px", color: "var(--color-text-secondary)", fontFamily: "var(--font-sans)", lineHeight: 1.5 }}>
+                    It will appear on the front of your packaging.
+                  </div>
+                </div>
+                <UploadZone
+                  image={flavor.logoImage}
+                  label="Drop logo here"
+                  hint="PNG · SVG · transparent background"
+                  inputRef={logoInputRef}
+                  onChange={handleLogoUpload}
+                  previewHeight={140}
+                />
+              </>
+            )}
+
+            {/* Step 2: Color */}
+            {wizardStep === 2 && (
+              <>
+                <div>
+                  <div style={{ fontSize: "18px", fontWeight: 700, color: "var(--color-text-primary)", fontFamily: "var(--font-sans)", marginBottom: "var(--space-1)" }}>
+                    Choose a package color
+                  </div>
+                  <div style={{ fontSize: "13px", color: "var(--color-text-secondary)", fontFamily: "var(--font-sans)", lineHeight: 1.5 }}>
+                    Pick the base color for your packaging line.
+                  </div>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "var(--space-3)" }}>
+                  {PACKAGE_COLORS.map(c => (
+                    <button
+                      key={c.key}
+                      onClick={() => updateFlavor({ packageColor: c.key as PackageColor })}
+                      title={c.label}
+                      style={{
+                        aspectRatio: "1", borderRadius: "var(--radius-md)",
+                        background: c.hex,
+                        border: flavor.packageColor === c.key
+                          ? "3px solid var(--color-text-primary)"
+                          : "2px solid var(--color-border-light)",
+                        cursor: "pointer", position: "relative",
+                        transition: "border .12s, transform .1s",
+                        transform: flavor.packageColor === c.key ? "scale(1.06)" : "scale(1)",
+                        display: "flex", alignItems: "flex-end", justifyContent: "center",
+                        paddingBottom: "var(--space-2)",
+                      }}
+                    >
+                      {flavor.packageColor === c.key && (
+                        <Check size={14} style={{ color: c.key === "cream" ? "#1C1917" : "#fff", position: "absolute", top: 6, right: 6 }} />
+                      )}
+                      <span style={{ fontSize: "10px", fontFamily: "var(--font-sans)", fontWeight: 600, color: c.key === "cream" ? "#1C1917" : "#fff", opacity: 0.9 }}>
+                        {c.label}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {/* Step 3: Name */}
+            {wizardStep === 3 && (
+              <>
+                <div>
+                  <div style={{ fontSize: "18px", fontWeight: 700, color: "var(--color-text-primary)", fontFamily: "var(--font-sans)", marginBottom: "var(--space-1)" }}>
+                    Name your flavor
+                  </div>
+                  <div style={{ fontSize: "13px", color: "var(--color-text-secondary)", fontFamily: "var(--font-sans)", lineHeight: 1.5 }}>
+                    Give this variant a name and a short tagline.
+                  </div>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+                  <div>
+                    <label style={{ display: "block", fontSize: "11px", fontFamily: "var(--font-sans)", color: "var(--color-text-secondary)", marginBottom: "var(--space-1)" }}>Flavor name</label>
+                    <input
+                      className="ds-input"
+                      value={flavor.name}
+                      onChange={e => updateFlavor({ name: e.target.value })}
+                      placeholder="e.g. Mango Ice"
+                      style={{ fontSize: "15px", padding: "10px 12px" }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: "block", fontSize: "11px", fontFamily: "var(--font-sans)", color: "var(--color-text-secondary)", marginBottom: "var(--space-1)" }}>Tagline</label>
+                    <input
+                      className="ds-input"
+                      value={flavor.tagline}
+                      onChange={e => updateFlavor({ tagline: e.target.value })}
+                      placeholder="tropical · cooling"
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+
+            <div style={{ flex: 1 }} />
+
+            {/* Navigation */}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: "var(--space-3)", borderTop: "1px solid var(--color-border-light)" }}>
+              <button
+                onClick={() => setWizardStep(null)}
+                style={{ fontSize: "12px", fontFamily: "var(--font-sans)", color: "var(--color-text-muted)", background: "none", border: "none", cursor: "pointer", padding: "4px 0" }}
+              >
+                Skip all
+              </button>
+              <button
+                onClick={() => setWizardStep(wizardStep === 3 ? null : (wizardStep + 1) as 2 | 3)}
+                className="ds-btn ds-btn-primary"
+                style={{ fontSize: "13px", gap: "var(--space-1)" }}
+              >
+                {wizardStep === 3 ? "Open full editor" : "Next"} <ArrowRight size={13} />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ════════════ RIGHT PANEL ════════════ */}
-      {isPanelOpen && (
+      {wizardStep === null && isPanelOpen && (
         <div style={{
           width: "288px", flexShrink: 0,
           borderLeft: "1px solid var(--color-border)",
@@ -443,28 +623,30 @@ export function PackagingEditor({ onRegisterCallbacks, onGoToNextStage, initialD
           {deleteConfirm && (
             <div style={{
               padding: "var(--space-2) var(--space-4)",
-              background: "rgba(239,68,68,0.06)",
-              borderBottom: "1px solid rgba(239,68,68,0.15)",
-              fontSize: "11px", fontFamily: "var(--font-sans)", color: "#ef4444",
+              background: "rgba(212, 160, 26, 0.1)",
+              borderBottom: "1px solid rgba(212, 160, 26, 0.2)",
+              fontSize: "11px", fontFamily: "var(--font-sans)", color: "#8a6200",
+              display: "flex", alignItems: "center", gap: "6px",
             }}>
-              Click the trash icon again to confirm deletion.
+              <AlertTriangle size={12} style={{ flexShrink: 0 }} />
+              <span>Click the trash icon again to confirm deletion.</span>
             </div>
           )}
 
           {/* Panel tabs */}
-          <div style={{ display: "flex", borderBottom: "1px solid var(--color-border)", background: "var(--color-surface-raised)", flexShrink: 0 }}>
+          <div style={{ display: "flex", borderBottom: "1px solid var(--color-border)", background: "var(--color-bg)", flexShrink: 0 }}>
             {PANEL_TABS.map(tab => (
               <button
                 key={tab.key}
                 onClick={() => setPanelTab(tab.key)}
                 style={{
                   flex: 1, padding: "8px 4px",
-                  fontSize: "11px", fontFamily: "var(--font-sans)", fontWeight: 500,
+                  fontSize: "11px", fontFamily: "var(--font-sans)", fontWeight: panelTab === tab.key ? 600 : 500,
                   background: panelTab === tab.key ? "var(--color-surface)" : "transparent",
                   color: panelTab === tab.key ? "var(--color-text-primary)" : "var(--color-text-muted)",
                   border: "none",
                   borderBottom: panelTab === tab.key ? "2px solid var(--color-accent)" : "2px solid transparent",
-                  cursor: "pointer", transition: "color .13s, border-color .13s",
+                  cursor: "pointer", transition: "color .13s, border-color .13s, background .13s",
                 }}
               >
                 {tab.label}
@@ -564,6 +746,8 @@ export function PackagingEditor({ onRegisterCallbacks, onGoToNextStage, initialD
                   <input className="ds-input" value={flavor.tagline} onChange={e => updateFlavor({ tagline: e.target.value })} placeholder="tropical · cooling" />
                 </div>
 
+                <Divider />
+                <SectionLabel>Formulation</SectionLabel>
                 <div style={{ marginBottom: "var(--space-3)" }}>
                   <FieldLabel>Strength (mg)</FieldLabel>
                   <div style={{ display: "flex", gap: "6px" }}>
@@ -607,7 +791,7 @@ export function PackagingEditor({ onRegisterCallbacks, onGoToNextStage, initialD
                 </div>
 
                 <Divider />
-                <SectionLabel>Logo</SectionLabel>
+                <SectionLabel>Branding</SectionLabel>
                 <UploadZone image={flavor.logoImage} label="Upload logo" hint="PNG · SVG · transparent background" inputRef={logoInputRef} onChange={handleLogoUpload} previewHeight={52} />
                 {flavor.logoImage && (
                   <button
@@ -625,7 +809,7 @@ export function PackagingEditor({ onRegisterCallbacks, onGoToNextStage, initialD
                 )}
 
                 <Divider />
-                <SectionLabel>Health warning text</SectionLabel>
+                <SectionLabel>Compliance</SectionLabel>
                 <div style={{ fontSize: "10px", fontFamily: "var(--font-sans)", color: "var(--color-text-muted)", marginBottom: "var(--space-2)", lineHeight: 1.4 }}>
                   Shown on front &amp; back panels. Use ↵ for a line break.
                 </div>

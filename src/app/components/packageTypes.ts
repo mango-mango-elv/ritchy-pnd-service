@@ -82,7 +82,7 @@ export const TITLE_FONTS: { key: TitleFont; label: string; css: string }[] = [
 export const STRENGTHS = [0, 3, 6, 12, 18];
 
 export const DEFAULT_HEALTH_WARNING =
-  "ПРЕДУПРЕЖДЕНИЕ: Данный продукт содержит никотин.\nНикотин вызывает сильную зависимость.";
+  "WARNING: This product contains nicotine which is a highly addictive substance.";
 
 /** Fills any missing fields with safe defaults. */
 export const normalizeFlavor = (f: Flavor): Flavor => ({

@@ -2,6 +2,8 @@ import React from "react";
 import { useNavigate } from "react-router";
 import { Plus, Clock3, ArrowRight, Layers3 } from "lucide-react";
 import { listDrafts } from "../lib/drafts";
+import { PACKAGE_COLORS } from "../components/packageTypes";
+import type { PackageColor } from "../components/packageTypes";
 
 export function DashboardPage() {
   const navigate = useNavigate();
@@ -129,6 +131,34 @@ export function DashboardPage() {
               </div>
 
               <div style={{ fontSize: "17px", fontWeight: 600, color: "var(--color-text-primary)" }}>{draft.name}</div>
+
+              {draft.flavors.length > 0 && (
+                <div
+                  style={{ marginTop: "8px", display: "flex", alignItems: "center", gap: "4px" }}
+                  title={draft.flavors.map(f => f.name || f.letter).join(", ")}
+                >
+                  {draft.flavors.slice(0, 6).map((f, i) => {
+                    const hex = PACKAGE_COLORS.find(c => c.key === (f.packageColor as PackageColor))?.hex ?? "#F5F2EB";
+                    return (
+                      <div
+                        key={i}
+                        style={{
+                          width: "14px", height: "14px", borderRadius: "50%",
+                          background: hex,
+                          border: "1px solid rgba(0,0,0,0.12)",
+                          flexShrink: 0,
+                        }}
+                      />
+                    );
+                  })}
+                  {draft.flavors.length > 6 && (
+                    <span style={{ fontSize: "11px", color: "var(--color-text-muted)", marginLeft: "2px" }}>
+                      +{draft.flavors.length - 6}
+                    </span>
+                  )}
+                </div>
+              )}
+
               <div style={{ marginTop: "8px", display: "flex", alignItems: "center", gap: "6px", fontSize: "12px", color: "var(--color-text-muted)" }}>
                 <Clock3 size={12} /> updated {new Date(draft.updatedAt).toLocaleString()}
               </div>

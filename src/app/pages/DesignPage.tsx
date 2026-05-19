@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef } from "react";
-import { RotateCcw, Save, Check, PanelRightClose, PanelRightOpen } from "lucide-react";
+import { RotateCcw, Save, Check, PanelRightClose, PanelRightOpen, ArrowRight } from "lucide-react";
 import { useLocation, useNavigate } from "react-router";
 import { PackagingEditor } from "../components/PackagingEditor";
 import { useHeaderActions } from "../components/AppShell";
@@ -82,6 +82,17 @@ export function DesignPage() {
         title={isPanelOpen ? "Collapse panel" : "Expand panel"}
       >
         {isPanelOpen ? <PanelRightClose size={14} /> : <PanelRightOpen size={14} />}
+      </button>
+
+      <div style={{ width: "1px", height: "20px", background: "var(--color-border)", margin: "0 var(--space-1)" }} />
+
+      <button
+        type="button"
+        onClick={handleContinue}
+        className="ds-btn ds-btn-primary"
+        style={{ fontSize: "12px", gap: "var(--space-1)" }}
+      >
+        Continue to Legal <ArrowRight size={12} />
       </button>
     </div>
   );
