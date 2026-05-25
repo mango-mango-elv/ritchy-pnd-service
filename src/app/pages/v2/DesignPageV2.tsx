@@ -74,8 +74,8 @@ export function DesignPageV2() {
           <TemplateGrid selected={design.templateId} onSelect={id => patch({ templateId: id })} />
         </div>
 
-        {/* Preview (mobile: above form) */}
-        <div className="v2-preview-mobile" style={{ marginBottom: "var(--space-4)", display: "flex", justifyContent: "center" }}>
+        {/* Preview (mobile: above form, hidden on desktop) */}
+        <div className="v2-preview-mobile">
           <PackagePreview design={design} />
         </div>
 
@@ -83,8 +83,8 @@ export function DesignPageV2() {
         <div className="v2-design-layout">
           <DesignForm design={design} onChange={patch} />
 
-          {/* Preview (desktop: sticky right column) */}
-          <div className="v2-preview-desktop" style={{ position: "sticky", top: "66px" }}>
+          {/* Preview (desktop: sticky right column, hidden on mobile) */}
+          <div className="v2-preview-desktop">
             <PackagePreview design={design} />
           </div>
         </div>

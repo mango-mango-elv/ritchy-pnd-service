@@ -170,13 +170,31 @@ body {
   gap: 16px;
   align-items: start;
 }
-.v2-preview-mobile  { display: flex; }
-.v2-preview-desktop { display: none; }
+.v2-preview-mobile {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.v2-preview-desktop {
+  display: none;
+}
 
-@media (min-width: 640px) {
+@media (min-width: 768px) {
   .v2-design-layout {
     grid-template-columns: minmax(0, 1fr) auto;
   }
   .v2-preview-mobile  { display: none; }
-  .v2-preview-desktop { display: block; }
+  .v2-preview-desktop {
+    display: block;
+    position: sticky;
+    top: 66px;
+  }
+}
+
+/* V2 step bar — switch desktop/mobile variants */
+.v2-stepbar-desktop { display: none; }
+.v2-stepbar-mobile  { display: flex; }
+@media (min-width: 768px) {
+  .v2-stepbar-desktop { display: flex; }
+  .v2-stepbar-mobile  { display: none; }
 }

@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
+import { ShieldCheck } from "lucide-react";
 
 const WARNING_DEFAULTS: Record<string, string> = {
   eu: "This product contains nicotine which is a highly addictive substance. Not for sale to persons under the age of 18.",
   uk: "NICOTINE — This product contains nicotine which is a highly addictive substance.",
   us: "WARNING: This product contains nicotine. Nicotine is an addictive chemical.",
 };
+
+const REG_BADGES = ["TPD Article 20", "REACH", "CLP", "PCN", "Child-proof"];
 
 export function CompliancePage() {
   const navigate = useNavigate();
@@ -26,18 +29,51 @@ export function CompliancePage() {
   };
 
   return (
-    <div style={{ overflowY: "auto", padding: "var(--space-8) var(--space-5)" }}>
-      <div style={{ maxWidth: "560px", margin: "0 auto", display: "grid", gap: "var(--space-5)" }}>
+    <div style={{ overflowY: "auto", padding: "var(--space-6) var(--space-5) var(--space-8)" }}>
+      <div style={{ maxWidth: "640px", margin: "0 auto", display: "grid", gap: "var(--space-4)" }}>
 
         <div>
           <div style={{ fontSize: "11px", letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--color-text-muted)" }}>
             Step 4 of 5
           </div>
-          <h1 style={{ margin: "8px 0 0", fontSize: "26px", color: "var(--color-text-primary)" }}>Compliance</h1>
-          <p style={{ margin: "8px 0 0", color: "var(--color-text-secondary)", fontSize: "14px" }}>
-            Confirm regulatory warning text for your target market before submission.
+          <h1 style={{ margin: "6px 0 0", fontSize: "26px", color: "var(--color-text-primary)" }}>Compliance Preview</h1>
+          <p style={{ margin: "6px 0 0", color: "var(--color-text-secondary)", fontSize: "14px" }}>
+            We handle regulatory notifications. Review your target market and label warning text.
           </p>
         </div>
+
+        {/* Regulation badges */}
+        <section style={{
+          background: "rgba(37,99,235,0.05)",
+          border: "1px solid rgba(37,99,235,0.15)",
+          borderRadius: "var(--radius-lg)",
+          padding: "var(--space-4) var(--space-5)",
+          display: "flex", flexDirection: "column", gap: "var(--space-3)",
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <ShieldCheck size={16} color="#2563eb" />
+            <span style={{ fontSize: "13px", fontWeight: 600, color: "#2563eb" }}>
+              Article 20 compliant, every EU market
+            </span>
+          </div>
+          <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+            {REG_BADGES.map(b => (
+              <span key={b} style={{
+                fontSize: "11px", fontWeight: 600,
+                padding: "3px 9px",
+                background: "rgba(255,255,255,0.6)",
+                color: "#2563eb",
+                borderRadius: "var(--radius-full)",
+                border: "1px solid rgba(37,99,235,0.18)",
+              }}>
+                {b}
+              </span>
+            ))}
+          </div>
+          <p style={{ margin: 0, fontSize: "12px", color: "var(--color-text-secondary)", lineHeight: 1.5 }}>
+            All products are manufactured to TPD Article 20 standards. We handle regulatory notifications for the markets you select.
+          </p>
+        </section>
 
         <section style={{
           background: "rgba(255,255,255,0.82)",
@@ -45,7 +81,7 @@ export function CompliancePage() {
           WebkitBackdropFilter: "blur(20px) saturate(180%)",
           border: "1px solid rgba(0,0,0,0.07)",
           borderRadius: "var(--radius-lg)",
-          padding: "var(--space-6)",
+          padding: "var(--space-5)",
           boxShadow: "0 2px 8px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.90)",
           display: "grid", gap: "var(--space-4)",
         }}>
@@ -67,7 +103,7 @@ export function CompliancePage() {
 
           <div>
             <label style={{ display: "block", marginBottom: "6px", fontSize: "12px", color: "var(--color-text-secondary)" }}>
-              Warning Text
+              Health Warning Text
             </label>
             <textarea
               className="ds-input"
@@ -76,6 +112,9 @@ export function CompliancePage() {
               rows={4}
               style={{ resize: "vertical" }}
             />
+            <p style={{ margin: "6px 0 0", fontSize: "11px", color: "var(--color-text-muted)" }}>
+              This warning will be printed on every package, alongside nicotine strength and child-safety pictograms.
+            </p>
           </div>
 
           <label style={{ display: "flex", gap: "10px", alignItems: "flex-start", cursor: "pointer" }}>
@@ -86,12 +125,12 @@ export function CompliancePage() {
               style={{ marginTop: "2px", flexShrink: 0 }}
             />
             <span style={{ fontSize: "13px", color: "var(--color-text-secondary)", lineHeight: 1.5 }}>
-              I confirm that the label and warning text have been reviewed and are compliant with the regulations of the target market.
+              I confirm that the label and warning text have been reviewed and authorize Ritchy P&amp;D to submit regulatory notifications on my behalf.
             </span>
           </label>
         </section>
 
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: "var(--space-2)" }}>
           <button onClick={() => navigate("/v2/signup")} className="ds-btn ds-btn-secondary">← Back</button>
           <button
             onClick={handleContinue}

@@ -27,9 +27,12 @@ export function SignUpPage() {
           <div style={{ fontSize: "11px", letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--color-text-muted)" }}>
             Step 3 of 5
           </div>
-          <h1 style={{ margin: "8px 0 0", fontSize: "26px", color: "var(--color-text-primary)" }}>Save &amp; Sign Up</h1>
+          <h1 style={{ margin: "8px 0 0", fontSize: "26px", color: "var(--color-text-primary)" }}>Save your configuration</h1>
           <p style={{ margin: "8px 0 0", color: "var(--color-text-secondary)", fontSize: "14px" }}>
-            Create an account to save your design and track your order.
+            Don't lose your design. Enter your email and we'll save everything so you can come back anytime.
+          </p>
+          <p style={{ margin: "8px 0 0", color: "var(--color-text-muted)", fontSize: "12px" }}>
+            No spam. Just your saved configuration.
           </p>
         </div>
 

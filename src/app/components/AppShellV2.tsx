@@ -76,40 +76,67 @@ export function AppShellV2() {
 }
 
 function V2StepBar({ currentIdx }: { currentIdx: number }) {
+  const safeIdx = Math.max(0, currentIdx);
+  const total = V2_STAGES.length;
+  const pct = ((safeIdx + 1) / total) * 100;
+  const current = V2_STAGES[safeIdx];
+
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 0 }}>
-      {V2_STAGES.map((stage, idx) => {
-        const isActive    = idx === currentIdx;
-        const isCompleted = idx < currentIdx;
-        const isFuture    = idx > currentIdx;
-        return (
-          <React.Fragment key={stage.path}>
-            <span style={{
-              position: "relative",
-              padding: "4px 10px",
-              fontFamily: "var(--font-sans)",
-              fontWeight: isActive ? 600 : 400,
-              fontSize: "13px",
-              color: isActive ? "#111111" : isCompleted ? "#666666" : "#aaaaaa",
-              opacity: isFuture ? 0.5 : 1,
-            }}>
-              {stage.label}
-              {isActive && (
-                <span style={{
-                  position: "absolute", bottom: -1, left: "50%",
-                  transform: "translateX(-50%)",
-                  width: "65%", height: "2px",
-                  background: "#111111",
-                  borderRadius: "1px", display: "block",
-                }} />
+    <>
+      {/* Desktop: text steps */}
+      <div className="v2-stepbar-desktop" style={{ alignItems: "center", gap: 0 }}>
+        {V2_STAGES.map((stage, idx) => {
+          const isActive    = idx === currentIdx;
+          const isCompleted = idx < currentIdx;
+          const isFuture    = idx > currentIdx;
+          return (
+            <React.Fragment key={stage.path}>
+              <span style={{
+                position: "relative",
+                padding: "4px 10px",
+                fontFamily: "var(--font-sans)",
+                fontWeight: isActive ? 600 : 400,
+                fontSize: "13px",
+                color: isActive ? "#111111" : isCompleted ? "#666666" : "#aaaaaa",
+                opacity: isFuture ? 0.5 : 1,
+                whiteSpace: "nowrap",
+              }}>
+                {stage.label}
+                {isActive && (
+                  <span style={{
+                    position: "absolute", bottom: -1, left: "50%",
+                    transform: "translateX(-50%)",
+                    width: "65%", height: "2px",
+                    background: "#111111",
+                    borderRadius: "1px", display: "block",
+                  }} />
+                )}
+              </span>
+              {idx < V2_STAGES.length - 1 && (
+                <span style={{ fontSize: "11px", color: "rgba(0,0,0,0.20)", userSelect: "none", lineHeight: 1 }}>→</span>
               )}
-            </span>
-            {idx < V2_STAGES.length - 1 && (
-              <span style={{ fontSize: "11px", color: "rgba(0,0,0,0.20)", userSelect: "none", lineHeight: 1 }}>→</span>
-            )}
-          </React.Fragment>
-        );
-      })}
-    </div>
+            </React.Fragment>
+          );
+        })}
+      </div>
+
+      {/* Mobile: compact bar with current step + progress */}
+      <div className="v2-stepbar-mobile" style={{
+        flexDirection: "column", alignItems: "flex-end", gap: "4px", minWidth: 0,
+      }}>
+        <span style={{
+          fontSize: "12px", fontWeight: 600, color: "#111111",
+          fontFamily: "var(--font-sans)", whiteSpace: "nowrap",
+        }}>
+          {current?.label ?? ""} <span style={{ color: "#999", fontWeight: 400 }}>· {safeIdx + 1}/{total}</span>
+        </span>
+        <div style={{
+          width: "80px", height: "3px",
+          background: "rgba(0,0,0,0.08)", borderRadius: "999px", overflow: "hidden",
+        }}>
+          <div style={{ width: `${pct}%`, height: "100%", background: "#111111", transition: "width .25s" }} />
+        </div>
+      </div>
+    </>
   );
 }
