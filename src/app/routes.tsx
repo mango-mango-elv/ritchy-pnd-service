@@ -7,6 +7,13 @@ import { OrderPage }     from "./pages/OrderPage";
 import { CheckoutPage }  from "./pages/CheckoutPage";
 import { LoginPage }     from "./pages/LoginPage";
 import { DashboardPage } from "./pages/DashboardPage";
+import { AppShellV2 }        from "./components/AppShellV2";
+import { LandingPage }       from "./pages/v2/LandingPage";
+import { OrderContentsPage } from "./pages/v2/OrderContentsPage";
+import { DesignPageV2 }      from "./pages/v2/DesignPageV2";
+import { SignUpPage }        from "./pages/v2/SignUpPage";
+import { CompliancePage }    from "./pages/v2/CompliancePage";
+import { ConfirmPage }       from "./pages/v2/ConfirmPage";
 
 export const STAGES = [
   { path: "info",     label: "Info"     },
@@ -31,6 +38,17 @@ export const router = createBrowserRouter([
       { path: "/order",     Component: OrderPage    },
       { path: "/checkout",  Component: CheckoutPage },
       { path: "*",          loader: () => redirect("/") },
+    ],
+  },
+  {
+    Component: AppShellV2,
+    children: [
+      { path: "/v2",             Component: LandingPage       },
+      { path: "/v2/order",       Component: OrderContentsPage },
+      { path: "/v2/design",      Component: DesignPageV2      },
+      { path: "/v2/signup",      Component: SignUpPage        },
+      { path: "/v2/compliance",  Component: CompliancePage    },
+      { path: "/v2/confirm",     Component: ConfirmPage       },
     ],
   },
 ]);

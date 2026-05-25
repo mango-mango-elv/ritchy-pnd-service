@@ -162,3 +162,21 @@ body {
 .ds-btn-ghost:hover {
   background: rgba(0,0,0,0.04);
 }
+
+/* ── V2 Design page layout ───────────────────────────────────── */
+.v2-design-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  align-items: start;
+}
+.v2-preview-mobile  { display: flex; }
+.v2-preview-desktop { display: none; }
+
+@media (min-width: 640px) {
+  .v2-design-layout {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .v2-preview-mobile  { display: none; }
+  .v2-preview-desktop { display: block; }
+}
