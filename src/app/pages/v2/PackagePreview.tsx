@@ -50,11 +50,11 @@ function WarningZone() {
     })}>
       <p style={{
         margin: 0,
-        fontSize: "11px",
+        fontSize: "6.7cqw",
         fontWeight: 700,
         color: "#111",
         textAlign: "center",
-        lineHeight: 1.25,
+        lineHeight: 1.2,
         fontFamily: "var(--font-sans)",
       }}>
         {WARNING_TEXT}
@@ -65,6 +65,7 @@ function WarningZone() {
 
 /* ─── T1 — Flavor First ───────────────────────────────────────── */
 export function BoxT1Flavor({ brand, flavor, strength, nicLabel, gradient, logoDataUrl }: BoxProps) {
+  const nicText = `${nicLabel} • ${strength}`;
   return (
     <BoxRoot>
       {/* bg */}
@@ -73,42 +74,62 @@ export function BoxT1Flavor({ brand, flavor, strength, nicLabel, gradient, logoD
       {/* logo */}
       {logoDataUrl && (
         <img src={logoDataUrl} alt="logo" style={abs({
-          top: "3%", left: "7.3%", maxWidth: "40%", maxHeight: "8%", objectFit: "contain",
+          top: "3%", left: "7.5%", maxWidth: "40%", maxHeight: "8%", objectFit: "contain",
         })} />
       )}
 
       {/* flavor — large, top-left */}
-      <div style={abs({ top: "4.1%", left: "7.3%", right: "7.3%" })}>
+      <div style={abs({ top: logoDataUrl ? "12%" : "8%", left: "7.5%", right: "7.5%" })}>
         <p style={{
-          margin: 0, fontSize: "14px", fontWeight: 800, color: "#fff",
-          textTransform: "uppercase", lineHeight: 1.1, wordBreak: "break-word",
+          margin: 0,
+          fontSize: "14cqw",
+          fontWeight: 800,
+          color: "#ffffff",
+          textTransform: "uppercase",
+          lineHeight: 1.05,
+          wordBreak: "break-word",
           fontFamily: "var(--font-sans)",
         }}>
           {flavor}
         </p>
       </div>
 
-      {/* nic · strength */}
-      <p style={abs({
-        top: "22.3%", left: "7.3%", margin: 0,
-        fontSize: "8px", fontWeight: 500, color: "rgba(255,255,255,0.85)",
-        textTransform: "uppercase", letterSpacing: "0.08em",
-        fontFamily: "var(--font-sans)",
-      })}>
-        {nicLabel} · {strength}
-      </p>
+      {/* nic and strength */}
+      <div style={abs({ top: logoDataUrl ? "37%" : "33%", left: "7.5%", right: "7.5%" })}>
+        <p style={{
+          margin: 0,
+          fontSize: "6.5cqw",
+          fontWeight: 700,
+          color: "rgba(255, 255, 255, 0.95)",
+          textTransform: "uppercase",
+          letterSpacing: "0.02em",
+          fontFamily: "var(--font-sans)",
+        }}>
+          {nicText}
+        </p>
+      </div>
 
-      {/* separator */}
+      {/* thick separator line */}
       <div style={abs({
-        top: "27.27%", left: 0, right: 0, height: "1px",
-        background: "rgba(255,255,255,0.4)",
+        top: logoDataUrl ? "47%" : "43%",
+        left: 0,
+        right: 0,
+        height: "2.5cqw",
+        background: "#ffffff",
       })} />
 
-      {/* brand — small, lower-left */}
-      <div style={abs({ top: "57.58%", left: "6.71%", right: "47.56%", bottom: "38.02%" })}>
+      {/* brand — bottom-left */}
+      <div style={abs({
+        bottom: "35%",
+        left: "7.5%",
+        right: "7.5%",
+      })}>
         <p style={{
-          margin: 0, fontSize: "10px", fontWeight: 900, color: "#fff",
-          textTransform: "uppercase", lineHeight: 1.1, wordBreak: "break-word",
+          margin: 0,
+          fontSize: "11.5cqw",
+          fontWeight: 900,
+          color: "#ffffff",
+          textTransform: "uppercase",
           fontFamily: "var(--font-sans)",
         }}>
           {brand}
