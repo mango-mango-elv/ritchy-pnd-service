@@ -322,9 +322,11 @@ export function PackagePreview({ templateId, brandName, flavorName, strength, ni
       gap: "0",
       alignItems: "end",
       width: "100%",
+      maxWidth: "100%",
       maxHeight: "100%",
       aspectRatio: "19 / 22",
       padding: "4px 0",
+      boxSizing: "border-box",
     }}>
       <BottlePreview
         templateId={templateId}

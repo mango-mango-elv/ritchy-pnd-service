@@ -286,15 +286,16 @@ export function DesignPageV2() {
           {/* Divider */}
           <div style={{ height: "1px", background: "rgba(0,0,0,0.06)", margin: "16px 0", flexShrink: 0 }} />
 
-          {/* Preview — capped to 1:1 aspect ratio max */}
+          {/* Preview — dynamically sized to fit height and width perfectly */}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flex: 1, minHeight: 0 }}>
             <div style={{
               width: "100%",
-              aspectRatio: "1",
+              height: "100%",
               maxHeight: "100%",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              minHeight: 0,
             }}>
               <PackagePreview
                 templateId={design.templateId}
