@@ -18,15 +18,15 @@ export interface SKU {
   type: "salt" | "freebase";
   flavor: string;
   strength: "10mg" | "20mg";
+  colorTab:      "presets" | "custom" | "ai";
+  colorPresetId: string;
+  customColor:   string;
 }
 
 export interface DesignState {
   templateId:    string;
   brandName:     string;
   logoDataUrl:   string;
-  colorTab:      "presets" | "custom" | "ai";
-  colorPresetId: string;
-  customColor:   string;
   skus:          SKU[];
   selectedSkuId: string;
 }

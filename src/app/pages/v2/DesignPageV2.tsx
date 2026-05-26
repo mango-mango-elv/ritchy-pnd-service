@@ -28,10 +28,16 @@ export function DesignPageV2() {
       templateId:    "t1-flavor",
       brandName:     "",
       logoDataUrl:   "",
-      colorTab:      "presets",
-      colorPresetId: "dark-berry",
-      customColor:   "#6b21a8",
-      skus:          [{ id, displayName: flavor, type, flavor, strength: "20mg" }],
+      skus:          [{
+        id,
+        displayName: flavor,
+        type,
+        flavor,
+        strength: "20mg",
+        colorTab: "presets",
+        colorPresetId: "sunset",
+        customColor: "#ea580c",
+      }],
       selectedSkuId: id,
     };
   });
@@ -47,18 +53,33 @@ export function DesignPageV2() {
   const addSku = () => {
     if (design.skus.length >= 10) return;
     const id = mkId();
+    // Cycle default preset color so each flavor gets its own color on creation
+    const nextPreset = COLOR_PRESETS[design.skus.length % COLOR_PRESETS.length];
     setDesign(prev => ({
       ...prev,
-      skus: [...prev.skus, { id, displayName: "New Flavor", type: "salt", flavor: "Passion Fruit", strength: "20mg" }],
+      skus: [...prev.skus, {
+        id,
+        displayName: "New Flavor",
+        type: "salt",
+        flavor: "Passion Fruit",
+        strength: "20mg",
+        colorTab: "presets",
+        colorPresetId: nextPreset.id,
+        customColor: nextPreset.color,
+      }],
       selectedSkuId: id,
     }));
   };
 
   const selectedSku    = design.skus.find(s => s.id === design.selectedSkuId) ?? design.skus[0];
-  const selectedPreset = COLOR_PRESETS.find(p => p.id === design.colorPresetId) ?? COLOR_PRESETS[0];
-  const activeGradient = design.colorTab === "custom"
-    ? `linear-gradient(135deg, ${design.customColor} 0%, ${design.customColor} 100%)`
-    : selectedPreset.gradient;
+  const selectedPreset = selectedSku
+    ? (COLOR_PRESETS.find(p => p.id === selectedSku.colorPresetId) ?? COLOR_PRESETS[0])
+    : COLOR_PRESETS[0];
+  const activeGradient = selectedSku
+    ? (selectedSku.colorTab === "custom"
+      ? `linear-gradient(135deg, ${selectedSku.customColor} 0%, ${selectedSku.customColor} 100%)`
+      : selectedPreset.gradient)
+    : COLOR_PRESETS[0].gradient;
 
   const handleContinue = () => {
     sessionStorage.setItem("ritchy-v2-design", JSON.stringify({
@@ -67,7 +88,7 @@ export function DesignPageV2() {
       flavorName:  selectedSku?.displayName ?? "",
       tagline:     "",
       logoDataUrl: design.logoDataUrl,
-      accentColor: design.colorTab === "custom" ? design.customColor : selectedPreset.color,
+      accentColor: selectedSku ? (selectedSku.colorTab === "custom" ? selectedSku.customColor : selectedPreset.color) : selectedPreset.color,
       background:  { id: selectedPreset.id, label: selectedPreset.label, style: activeGradient },
     }));
     navigate("/v2/signup");
@@ -97,6 +118,10 @@ export function DesignPageV2() {
         <div className="v2-design-left-list">
           {design.skus.map(sku => {
             const active = design.selectedSkuId === sku.id;
+            const skuPreset = COLOR_PRESETS.find(p => p.id === sku.colorPresetId) ?? COLOR_PRESETS[0];
+            const skuGradient = sku.colorTab === "custom"
+              ? `linear-gradient(135deg, ${sku.customColor} 0%, ${sku.customColor} 100%)`
+              : skuPreset.gradient;
             return (
               <button
                 key={sku.id}
@@ -117,7 +142,7 @@ export function DesignPageV2() {
                   width: "26px", height: "26px",
                   borderRadius: "5px",
                   flexShrink: 0,
-                  background: activeGradient,
+                  background: skuGradient,
                 }} />
                 <span style={{
                   fontSize: "var(--text-md)",
@@ -261,17 +286,26 @@ export function DesignPageV2() {
           {/* Divider */}
           <div style={{ height: "1px", background: "rgba(0,0,0,0.06)", margin: "16px 0", flexShrink: 0 }} />
 
-          {/* Preview */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <PackagePreview
-              templateId={design.templateId}
-              brandName={design.brandName}
-              flavorName={selectedSku?.displayName ?? ""}
-              strength={selectedSku?.strength ?? "20mg"}
-              nicType={selectedSku?.type ?? "salt"}
-              gradient={activeGradient}
-              logoDataUrl={design.logoDataUrl}
-            />
+          {/* Preview — capped to 1:1 aspect ratio max */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flex: 1, minHeight: 0 }}>
+            <div style={{
+              width: "100%",
+              aspectRatio: "1",
+              maxHeight: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}>
+              <PackagePreview
+                templateId={design.templateId}
+                brandName={design.brandName}
+                flavorName={selectedSku?.displayName ?? ""}
+                strength={selectedSku?.strength ?? "20mg"}
+                nicType={selectedSku?.type ?? "salt"}
+                gradient={activeGradient}
+                logoDataUrl={design.logoDataUrl}
+              />
+            </div>
           </div>
         </div>
       </aside>

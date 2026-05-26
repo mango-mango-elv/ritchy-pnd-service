@@ -24,6 +24,18 @@ const WARNING_TEXT = "This product contains nicotine which is a highly addictive
 
 const abs = (style: React.CSSProperties): React.CSSProperties => ({ position: "absolute", ...style });
 
+/* ─── Box root wrapper ────────────────────────────────────────── */
+function BoxRoot({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="v2-box-root" style={{
+      position: "relative", width: "100%", aspectRatio: "164 / 363",
+      overflow: "hidden", borderRadius: "4px",
+    }}>
+      {children}
+    </div>
+  );
+}
+
 /* ─── Shared warning zone — exactly 32% of box height ────────── */
 function WarningZone() {
   return (
@@ -47,18 +59,6 @@ function WarningZone() {
       }}>
         {WARNING_TEXT}
       </p>
-    </div>
-  );
-}
-
-/* ─── Box root wrapper ────────────────────────────────────────── */
-function BoxRoot({ children }: { children: React.ReactNode }) {
-  return (
-    <div style={{
-      position: "relative", width: "100%", aspectRatio: "200 / 290",
-      overflow: "hidden", borderRadius: "4px",
-    }}>
-      {children}
     </div>
   );
 }
@@ -120,59 +120,63 @@ export function BoxT1Flavor({ brand, flavor, strength, nicLabel, gradient, logoD
   );
 }
 
-/* ─── T2 — Centered ──────────────────────────────────────────── */
+/* ─── T2 — Centered (matches Figma Template 12, canvas 164×363) ── */
 export function BoxT2Centered({ brand, flavor, strength, nicLabel, gradient, logoDataUrl }: BoxProps) {
   return (
     <BoxRoot>
-      {/* bg */}
+      {/* background */}
       <div style={abs({ inset: 0, background: gradient })} />
 
-      {/* logo */}
-      {logoDataUrl && (
-        <img src={logoDataUrl} alt="logo" style={abs({
-          top: "8%", left: "50%", transform: "translateX(-50%)",
-          maxWidth: "55%", maxHeight: "8%", objectFit: "contain",
-        })} />
-      )}
-
-      {/* brand — large, centered top zone */}
-      <div style={abs({ inset: "15.43% 0 70.25% 0", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 6%" })}>
+      {/* brand — 15.43%–29.75% zone, Albert Sans Black */}
+      <div style={abs({ top: "15.43%", left: 0, right: 0, bottom: "70.25%",
+        display: "flex", alignItems: "center", justifyContent: "center", padding: "0 4%" })}>
         <p style={{
-          margin: 0, fontSize: "24px", fontWeight: 900, color: "#fff",
-          textTransform: "uppercase", textAlign: "center", lineHeight: 0.9,
-          wordBreak: "break-word", fontFamily: "var(--font-sans)",
+          margin: 0,
+          fontSize: "18.3cqw",
+          fontWeight: 900,
+          fontFamily: "'Albert Sans', var(--font-sans)",
+          color: "#252525",
+          textTransform: "uppercase",
+          textAlign: "center",
+          lineHeight: 0.874,
+          wordBreak: "break-word",
         }}>
           {brand}
         </p>
       </div>
 
-      {/* separator */}
-      <div style={abs({
-        top: "56.47%", left: "6.71%", right: "6.71%", height: "1px",
-        background: "rgba(255,255,255,0.4)",
-      })} />
-
-      {/* flavor — centered */}
-      <div style={abs({ top: "58%", left: 0, right: 0, display: "flex", justifyContent: "center", padding: "0 6%" })}>
+      {/* flavor — at 40.5%, Albert Sans ExtraBold */}
+      <div style={abs({ top: "40.5%", left: 0, right: 0 })}>
         <p style={{
-          margin: 0, fontSize: "13px", fontWeight: 800, color: "#fff",
-          textTransform: "uppercase", textAlign: "center", lineHeight: 1.1,
-          wordBreak: "break-word", fontFamily: "var(--font-sans)",
+          margin: 0,
+          fontSize: "9.76cqw",
+          fontWeight: 800,
+          fontFamily: "'Albert Sans', var(--font-sans)",
+          color: "#252525",
+          textTransform: "uppercase",
+          textAlign: "center",
+          lineHeight: 1.06,
+          wordBreak: "break-word",
         }}>
           {flavor}
         </p>
       </div>
 
-      {/* footer: 20mg left · nic salt right */}
+      {/* divider — at 56.47% */}
       <div style={abs({
-        top: "57.6%", left: "6.7%", right: "6.7%",
-        display: "flex", justifyContent: "space-between", alignItems: "flex-end",
-        paddingTop: "28px",
+        top: "56.47%", left: "6.71%", right: "6.71%", height: "1px",
+        background: "rgba(37,37,37,0.3)",
+      })} />
+
+      {/* footer — strength left, nic label right, at 57.6% */}
+      <div style={abs({
+        top: "57.6%", left: "6.71%", right: "6.71%",
+        display: "flex", justifyContent: "space-between", paddingTop: "1.2%",
       })}>
-        <span style={{ fontSize: "9px", fontWeight: 500, color: "rgba(255,255,255,0.85)", fontFamily: "var(--font-sans)" }}>
+        <span style={{ fontSize: "6.1cqw", fontWeight: 500, color: "#252525", fontFamily: "var(--font-sans)" }}>
           {strength}
         </span>
-        <span style={{ fontSize: "9px", fontWeight: 500, color: "rgba(255,255,255,0.85)", fontFamily: "var(--font-sans)" }}>
+        <span style={{ fontSize: "6.1cqw", fontWeight: 500, color: "#252525", fontFamily: "var(--font-sans)" }}>
           {nicLabel}
         </span>
       </div>
@@ -314,10 +318,12 @@ export function PackagePreview({ templateId, brandName, flavorName, strength, ni
   return (
     <div style={{
       display: "grid",
-      gridTemplateColumns: "110fr 200fr",
-      gap: "clamp(8px, 3%, 16px)",
+      gridTemplateColumns: "9fr 10fr",
+      gap: "0",
       alignItems: "end",
       width: "100%",
+      maxHeight: "100%",
+      aspectRatio: "19 / 22",
       padding: "4px 0",
     }}>
       <BottlePreview
@@ -326,7 +332,7 @@ export function PackagePreview({ templateId, brandName, flavorName, strength, ni
         strength={strength} nicLabel={nicLabel}
         gradient={gradient}
       />
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "6px", width: "100%" }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "6px", width: "100%", marginLeft: "-14%" }}>
         <BoxComp
           brand={brand} flavor={flavor} strength={strength}
           nicLabel={nicLabel} gradient={gradient} logoDataUrl={logoDataUrl}

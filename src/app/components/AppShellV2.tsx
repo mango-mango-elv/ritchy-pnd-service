@@ -46,7 +46,7 @@ export function AppShellV2() {
             background: "rgba(245,245,247,0.80)",
             backdropFilter: "blur(20px) saturate(180%)",
             WebkitBackdropFilter: "blur(20px) saturate(180%)",
-            boxShadow: "0 1px 0 rgba(255,255,255,0.6), 0 2px 8px rgba(0,0,0,0.04)",
+            boxShadow: "none",
             position: "sticky", top: 0, zIndex: 100,
             flexShrink: 0,
           }}>
@@ -59,7 +59,7 @@ export function AppShellV2() {
                 <span style={{ color: "#fff", fontSize: "12px", fontWeight: 700 }}>R</span>
               </div>
               <span style={{ fontWeight: 700, fontSize: "14px", color: "#111111" }}>
-                Ritchy <span style={{ color: "#999999", fontWeight: 400 }}>P&amp;D</span>
+                Ritchy <span style={{ color: "#999999", fontWeight: 400 }}>Brand Factory</span>
               </span>
             </Link>
 
