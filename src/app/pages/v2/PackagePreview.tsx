@@ -185,8 +185,8 @@ export function BoxT2Centered({ brand, flavor, strength, nicLabel, gradient, log
 
       {/* divider — at 56.47% */}
       <div style={abs({
-        top: "56.47%", left: "6.71%", right: "6.71%", height: "1px",
-        background: "rgba(37,37,37,0.3)",
+        top: "56.47%", left: "6.71%", right: "6.71%", height: "1.2cqw",
+        background: "#252525",
       })} />
 
       {/* footer — strength left, nic label right, at 57.6% */}
@@ -303,40 +303,82 @@ function BottleLabelT2({ brand, flavor, strength, nicLabel, gradient }: Omit<Box
       position: "absolute",
       inset: "50.96% 27.71% 5.23% 9.04%",
       background: gradient,
-      display: "flex", flexDirection: "column",
-      alignItems: "center", justifyContent: "center",
-      overflow: "hidden", padding: "6% 5%",
+      overflow: "hidden",
+      containerType: "inline-size",
     }}>
-      {/* brand — larger, top */}
-      <p style={{
-        margin: "0 0 auto 0", fontSize: "14px", fontWeight: 900, color: "#fff",
-        textTransform: "uppercase", textAlign: "center", lineHeight: 0.95,
-        wordBreak: "break-word", fontFamily: "var(--font-sans)", width: "100%",
-      }}>
-        {brand}
-      </p>
-
-      {/* separator */}
-      <div style={{ width: "80%", height: "1px", background: "rgba(255,255,255,0.4)", flexShrink: 0, margin: "8% 0" }} />
-
-      {/* flavor */}
-      <p style={{
-        margin: "0 0 auto 0", fontSize: "10px", fontWeight: 800, color: "#fff",
-        textTransform: "uppercase", textAlign: "center", lineHeight: 1.1,
-        wordBreak: "break-word", fontFamily: "var(--font-sans)", width: "100%",
-      }}>
-        {flavor}
-      </p>
-
-      {/* footer */}
+      {/* brand — large, centered in the upper zone */}
       <div style={{
-        width: "100%", display: "flex", justifyContent: "space-between",
-        marginTop: "auto",
+        position: "absolute",
+        top: "15.43%",
+        left: 0,
+        right: 0,
+        bottom: "70.25%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "0 4%",
       }}>
-        <span style={{ fontSize: "7px", fontWeight: 500, color: "rgba(255,255,255,0.85)", fontFamily: "var(--font-sans)" }}>
+        <p style={{
+          margin: 0,
+          fontSize: "18.3cqw",
+          fontWeight: 900,
+          fontFamily: "'Albert Sans', var(--font-sans)",
+          color: "#252525",
+          textTransform: "uppercase",
+          textAlign: "center",
+          lineHeight: 0.874,
+          wordBreak: "break-word",
+        }}>
+          {brand}
+        </p>
+      </div>
+
+      {/* flavor — centered in the lower zone */}
+      <div style={{
+        position: "absolute",
+        top: "40.5%",
+        left: 0,
+        right: 0,
+      }}>
+        <p style={{
+          margin: 0,
+          fontSize: "9.76cqw",
+          fontWeight: 800,
+          fontFamily: "'Albert Sans', var(--font-sans)",
+          color: "#252525",
+          textTransform: "uppercase",
+          textAlign: "center",
+          lineHeight: 1.06,
+          wordBreak: "break-word",
+        }}>
+          {flavor}
+        </p>
+      </div>
+
+      {/* separator line — below flavor */}
+      <div style={{
+        position: "absolute",
+        top: "56.47%",
+        left: "6.71%",
+        right: "6.71%",
+        height: "1.2cqw",
+        background: "#252525",
+      }} />
+
+      {/* footer — strength left, nic salt right */}
+      <div style={{
+        position: "absolute",
+        top: "57.6%",
+        left: "6.71%",
+        right: "6.71%",
+        display: "flex",
+        justifyContent: "space-between",
+        paddingTop: "1.2%",
+      }}>
+        <span style={{ fontSize: "6.1cqw", fontWeight: 500, color: "#252525", fontFamily: "var(--font-sans)" }}>
           {strength}
         </span>
-        <span style={{ fontSize: "7px", fontWeight: 500, color: "rgba(255,255,255,0.85)", fontFamily: "var(--font-sans)" }}>
+        <span style={{ fontSize: "6.1cqw", fontWeight: 500, color: "#252525", fontFamily: "var(--font-sans)" }}>
           {nicLabel}
         </span>
       </div>
