@@ -74,19 +74,19 @@ export function BoxT1Flavor({ brand, flavor, strength, nicLabel, gradient, logoD
       {/* logo */}
       {logoDataUrl && (
         <img src={logoDataUrl} alt="logo" style={abs({
-          top: "3%", left: "7.5%", maxWidth: "40%", maxHeight: "8%", objectFit: "contain",
+          top: "2%", left: "7.5%", maxWidth: "45%", maxHeight: "8%", objectFit: "contain",
         })} />
       )}
 
       {/* flavor — large, top-left */}
-      <div style={abs({ top: logoDataUrl ? "12%" : "8%", left: "7.5%", right: "7.5%" })}>
+      <div style={abs({ top: logoDataUrl ? "12%" : "5%", left: "7.5%", right: "7.5%" })}>
         <p style={{
           margin: 0,
-          fontSize: "14cqw",
+          fontSize: "9cqw",
           fontWeight: 800,
           color: "#ffffff",
           textTransform: "uppercase",
-          lineHeight: 1.05,
+          lineHeight: 1.1,
           wordBreak: "break-word",
           fontFamily: "var(--font-sans)",
         }}>
@@ -95,38 +95,38 @@ export function BoxT1Flavor({ brand, flavor, strength, nicLabel, gradient, logoD
       </div>
 
       {/* nic and strength */}
-      <div style={abs({ top: logoDataUrl ? "37%" : "33%", left: "7.5%", right: "7.5%" })}>
+      <div style={abs({ top: logoDataUrl ? "26%" : "20%", left: "7.5%", right: "7.5%" })}>
         <p style={{
           margin: 0,
-          fontSize: "6.5cqw",
-          fontWeight: 700,
+          fontSize: "5cqw",
+          fontWeight: 600,
           color: "rgba(255, 255, 255, 0.95)",
           textTransform: "uppercase",
-          letterSpacing: "0.02em",
+          letterSpacing: "0.05em",
           fontFamily: "var(--font-sans)",
         }}>
           {nicText}
         </p>
       </div>
 
-      {/* thick separator line */}
+      {/* separator line */}
       <div style={abs({
-        top: logoDataUrl ? "47%" : "43%",
+        top: logoDataUrl ? "32%" : "27%",
         left: 0,
         right: 0,
-        height: "2.5cqw",
+        height: "1.2cqw",
         background: "#ffffff",
       })} />
 
       {/* brand — bottom-left */}
       <div style={abs({
-        bottom: "35%",
+        top: "58%",
         left: "7.5%",
         right: "7.5%",
       })}>
         <p style={{
           margin: 0,
-          fontSize: "11.5cqw",
+          fontSize: "6.5cqw",
           fontWeight: 900,
           color: "#ffffff",
           textTransform: "uppercase",
@@ -227,17 +227,17 @@ function BottleLabelT1({ brand, flavor, strength, nicLabel, gradient }: Omit<Box
       {/* flavor — top-left */}
       <div style={{
         position: "absolute",
-        top: "8%",
+        top: "5%",
         left: "7.5%",
         right: "7.5%",
       }}>
         <p style={{
           margin: 0,
-          fontSize: "14cqw",
+          fontSize: "9cqw",
           fontWeight: 800,
           color: "#ffffff",
           textTransform: "uppercase",
-          lineHeight: 1.05,
+          lineHeight: 1.1,
           wordBreak: "break-word",
           fontFamily: "var(--font-sans)",
         }}>
@@ -248,43 +248,43 @@ function BottleLabelT1({ brand, flavor, strength, nicLabel, gradient }: Omit<Box
       {/* nic and strength */}
       <div style={{
         position: "absolute",
-        top: "33%",
+        top: "20%",
         left: "7.5%",
         right: "7.5%",
       }}>
         <p style={{
           margin: 0,
-          fontSize: "6.5cqw",
-          fontWeight: 700,
+          fontSize: "5cqw",
+          fontWeight: 600,
           color: "rgba(255, 255, 255, 0.95)",
           textTransform: "uppercase",
-          letterSpacing: "0.02em",
+          letterSpacing: "0.05em",
           fontFamily: "var(--font-sans)",
         }}>
           {nicText}
         </p>
       </div>
 
-      {/* thick separator line */}
+      {/* separator line */}
       <div style={{
         position: "absolute",
-        top: "43%",
+        top: "27%",
         left: 0,
         right: 0,
-        height: "2.5cqw",
+        height: "1.2cqw",
         background: "#ffffff",
       }} />
 
       {/* brand — bottom-left */}
       <div style={{
         position: "absolute",
-        bottom: "6%",
+        bottom: "8%",
         left: "7.5%",
         right: "7.5%",
       }}>
         <p style={{
           margin: 0,
-          fontSize: "11.5cqw",
+          fontSize: "6.5cqw",
           fontWeight: 900,
           color: "#ffffff",
           textTransform: "uppercase",
