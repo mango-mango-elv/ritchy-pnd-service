@@ -20,6 +20,10 @@ interface BoxProps {
   logoDataUrl: string;
 }
 
+interface BottleProps extends BoxProps {
+  logoDataUrl: string;
+}
+
 const WARNING_TEXT = "This product contains nicotine which is a highly addictive substance.";
 
 const abs = (style: React.CSSProperties): React.CSSProperties => ({ position: "absolute", ...style });
@@ -119,22 +123,24 @@ export function BoxT1Flavor({ brand, flavor, strength, nicLabel, gradient, logoD
       })} />
 
       {/* brand — bottom-left */}
-      <div style={abs({
-        top: "58%",
-        left: "7.5%",
-        right: "7.5%",
-      })}>
-        <p style={{
-          margin: 0,
-          fontSize: "6.5cqw",
-          fontWeight: 900,
-          color: "#ffffff",
-          textTransform: "uppercase",
-          fontFamily: "var(--font-sans)",
-        }}>
-          {brand}
-        </p>
-      </div>
+      {!logoDataUrl && (
+        <div style={abs({
+          top: "58%",
+          left: "7.5%",
+          right: "7.5%",
+        })}>
+          <p style={{
+            margin: 0,
+            fontSize: "6.5cqw",
+            fontWeight: 900,
+            color: "#ffffff",
+            textTransform: "uppercase",
+            fontFamily: "var(--font-sans)",
+          }}>
+            {brand}
+          </p>
+        </div>
+      )}
 
       <WarningZone />
     </BoxRoot>
@@ -148,31 +154,35 @@ export function BoxT2Centered({ brand, flavor, strength, nicLabel, gradient, log
       {/* background */}
       <div style={abs({ inset: 0, background: gradient })} />
 
-      {/* logo */}
+      {/* logo centered in the upper brand zone */}
       {logoDataUrl && (
-        <img src={logoDataUrl} alt="logo" style={abs({
-          top: "6%", left: "50%", transform: "translateX(-50%)",
-          maxWidth: "45%", maxHeight: "8%", objectFit: "contain",
-        })} />
+        <div style={abs({
+          top: "12%", left: 0, right: 0, bottom: "70.25%",
+          display: "flex", alignItems: "center", justifyContent: "center", padding: "0 4%"
+        })}>
+          <img src={logoDataUrl} alt="logo" style={{ maxWidth: "60%", maxHeight: "80%", objectFit: "contain" }} />
+        </div>
       )}
 
       {/* brand — 15.43%–29.75% zone, Albert Sans Black */}
-      <div style={abs({ top: "15.43%", left: 0, right: 0, bottom: "70.25%",
-        display: "flex", alignItems: "center", justifyContent: "center", padding: "0 4%" })}>
-        <p style={{
-          margin: 0,
-          fontSize: "18.3cqw",
-          fontWeight: 900,
-          fontFamily: "'Albert Sans', var(--font-sans)",
-          color: "#252525",
-          textTransform: "uppercase",
-          textAlign: "center",
-          lineHeight: 0.874,
-          wordBreak: "break-word",
-        }}>
-          {brand}
-        </p>
-      </div>
+      {!logoDataUrl && (
+        <div style={abs({ top: "15.43%", left: 0, right: 0, bottom: "70.25%",
+          display: "flex", alignItems: "center", justifyContent: "center", padding: "0 4%" })}>
+          <p style={{
+            margin: 0,
+            fontSize: "18.3cqw",
+            fontWeight: 900,
+            fontFamily: "'Albert Sans', var(--font-sans)",
+            color: "#252525",
+            textTransform: "uppercase",
+            textAlign: "center",
+            lineHeight: 0.874,
+            wordBreak: "break-word",
+          }}>
+            {brand}
+          </p>
+        </div>
+      )}
 
       {/* flavor — at 40.5%, Albert Sans ExtraBold */}
       <div style={abs({ top: "40.5%", left: 0, right: 0 })}>
@@ -222,7 +232,7 @@ const BOX_MAP: Record<string, React.FC<BoxProps>> = {
 };
 
 /* ─── Bottle label layouts ────────────────────────────────────── */
-function BottleLabelT1({ brand, flavor, strength, nicLabel, gradient }: Omit<BoxProps, "logoDataUrl">) {
+function BottleLabelT1({ brand, flavor, strength, nicLabel, gradient, logoDataUrl }: BottleProps) {
   const nicText = `${nicLabel} • ${strength}`;
   return (
     <div style={{
@@ -283,29 +293,36 @@ function BottleLabelT1({ brand, flavor, strength, nicLabel, gradient }: Omit<Box
         background: "#ffffff",
       }} />
 
-      {/* brand — bottom-left */}
+      {/* brand/logo — bottom-left */}
       <div style={{
         position: "absolute",
         bottom: "8%",
         left: "7.5%",
         right: "7.5%",
+        height: "12cqw",
+        display: "flex",
+        alignItems: "flex-end",
       }}>
-        <p style={{
-          margin: 0,
-          fontSize: "6.5cqw",
-          fontWeight: 900,
-          color: "#ffffff",
-          textTransform: "uppercase",
-          fontFamily: "var(--font-sans)",
-        }}>
-          {brand}
-        </p>
+        {logoDataUrl ? (
+          <img src={logoDataUrl} alt="logo" style={{ maxWidth: "45%", maxHeight: "100%", objectFit: "contain" }} />
+        ) : (
+          <p style={{
+            margin: 0,
+            fontSize: "6.5cqw",
+            fontWeight: 900,
+            color: "#ffffff",
+            textTransform: "uppercase",
+            fontFamily: "var(--font-sans)",
+          }}>
+            {brand}
+          </p>
+        )}
       </div>
     </div>
   );
 }
 
-function BottleLabelT2({ brand, flavor, strength, nicLabel, gradient }: Omit<BoxProps, "logoDataUrl">) {
+function BottleLabelT2({ brand, flavor, strength, nicLabel, gradient, logoDataUrl }: BottleProps) {
   return (
     <div style={{
       position: "absolute",
@@ -314,7 +331,7 @@ function BottleLabelT2({ brand, flavor, strength, nicLabel, gradient }: Omit<Box
       overflow: "hidden",
       containerType: "inline-size",
     }}>
-      {/* brand — large, centered in the upper zone */}
+      {/* brand/logo — centered in the upper zone */}
       <div style={{
         position: "absolute",
         top: "15.43%",
@@ -326,19 +343,23 @@ function BottleLabelT2({ brand, flavor, strength, nicLabel, gradient }: Omit<Box
         justifyContent: "center",
         padding: "0 4%",
       }}>
-        <p style={{
-          margin: 0,
-          fontSize: "18.3cqw",
-          fontWeight: 900,
-          fontFamily: "'Albert Sans', var(--font-sans)",
-          color: "#252525",
-          textTransform: "uppercase",
-          textAlign: "center",
-          lineHeight: 0.874,
-          wordBreak: "break-word",
-        }}>
-          {brand}
-        </p>
+        {logoDataUrl ? (
+          <img src={logoDataUrl} alt="logo" style={{ maxWidth: "60%", maxHeight: "80%", objectFit: "contain" }} />
+        ) : (
+          <p style={{
+            margin: 0,
+            fontSize: "18.3cqw",
+            fontWeight: 900,
+            fontFamily: "'Albert Sans', var(--font-sans)",
+            color: "#252525",
+            textTransform: "uppercase",
+            textAlign: "center",
+            lineHeight: 0.874,
+            wordBreak: "break-word",
+          }}>
+            {brand}
+          </p>
+        )}
       </div>
 
       {/* flavor — centered in the lower zone */}
@@ -395,9 +416,10 @@ function BottleLabelT2({ brand, flavor, strength, nicLabel, gradient }: Omit<Box
 }
 
 /* ─── Bottle wrapper ──────────────────────────────────────────── */
-function BottlePreview({ templateId, brand, flavor, strength, nicLabel, gradient }: {
+function BottlePreview({ templateId, brand, flavor, strength, nicLabel, gradient, logoDataUrl }: {
   templateId: string; brand: string; flavor: string;
   strength: string; nicLabel: string; gradient: string;
+  logoDataUrl: string;
 }) {
   const LabelComp = templateId === "t1-flavor" ? BottleLabelT1 : BottleLabelT2;
   return (
@@ -408,7 +430,7 @@ function BottlePreview({ templateId, brand, flavor, strength, nicLabel, gradient
           alt="bottle"
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" }}
         />
-        <LabelComp brand={brand} flavor={flavor} strength={strength} nicLabel={nicLabel} gradient={gradient} />
+        <LabelComp brand={brand} flavor={flavor} strength={strength} nicLabel={nicLabel} gradient={gradient} logoDataUrl={logoDataUrl} />
       </div>
       <span style={{ fontSize: "var(--text-xs)", color: "var(--color-text-muted)", fontFamily: "var(--font-sans)" }}>Bottle</span>
     </div>
@@ -440,6 +462,7 @@ export function PackagePreview({ templateId, brandName, flavorName, strength, ni
         brand={brand} flavor={flavor}
         strength={strength} nicLabel={nicLabel}
         gradient={gradient}
+        logoDataUrl={logoDataUrl}
       />
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "6px", width: "100%", marginLeft: "-14%" }}>
         <BoxComp
