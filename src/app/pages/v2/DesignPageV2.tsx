@@ -28,6 +28,7 @@ export function DesignPageV2() {
       templateId:    "t1-flavor",
       brandName:     "",
       logoDataUrl:   "",
+      logoScale:     1.0,
       skus:          [{
         id,
         displayName: flavor,
@@ -88,6 +89,7 @@ export function DesignPageV2() {
       flavorName:  selectedSku?.displayName ?? "",
       tagline:     "",
       logoDataUrl: design.logoDataUrl,
+      logoScale:   design.logoScale ?? 1.0,
       accentColor: selectedSku ? (selectedSku.colorTab === "custom" ? selectedSku.customColor : selectedPreset.color) : selectedPreset.color,
       background:  { id: selectedPreset.id, label: selectedPreset.label, style: activeGradient },
     }));
@@ -208,6 +210,7 @@ export function DesignPageV2() {
               nicType={selectedSku?.type ?? "salt"}
               gradient={activeGradient}
               logoDataUrl={design.logoDataUrl}
+              logoScale={design.logoScale ?? 1.0}
             />
           </div>
 
@@ -307,6 +310,7 @@ export function DesignPageV2() {
                 nicType={selectedSku?.type ?? "salt"}
                 gradient={activeGradient}
                 logoDataUrl={design.logoDataUrl}
+                logoScale={design.logoScale ?? 1.0}
               />
             </div>
           </div>
