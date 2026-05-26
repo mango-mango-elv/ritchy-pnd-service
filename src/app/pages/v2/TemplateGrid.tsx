@@ -4,15 +4,15 @@ export interface Template {
   id: string;
   label: string;
   aspectRatio: number;
+  comingSoon?: boolean;
 }
 
 export const TEMPLATES: Template[] = [
-  { id: "standard-box", label: "Standard Box", aspectRatio: 3 / 4   },
-  { id: "tall-box",     label: "Tall Box",     aspectRatio: 2 / 5   },
-  { id: "wide-box",     label: "Wide Box",     aspectRatio: 16 / 9  },
-  { id: "bottle",       label: "Bottle",       aspectRatio: 1 / 3   },
-  { id: "slim-pouch",   label: "Slim Pouch",   aspectRatio: 1 / 4   },
-  { id: "wide-bex",     label: "Wide Bex",     aspectRatio: 4 / 3   },
+  { id: "t1-flavor",   label: "Flavor",   aspectRatio: 164 / 363 },
+  { id: "t2-centered", label: "Centered", aspectRatio: 164 / 363 },
+  { id: "t3-split",    label: "Split",    aspectRatio: 164 / 363, comingSoon: true },
+  { id: "t4-badge",    label: "Badge",    aspectRatio: 164 / 363, comingSoon: true },
+  { id: "t5-vertical", label: "Vertical", aspectRatio: 164 / 363, comingSoon: true },
 ];
 
 interface Props {
@@ -33,26 +33,28 @@ export function TemplateGrid({ selected, onSelect }: Props) {
         return (
           <button
             key={t.id}
-            onClick={() => onSelect(t.id)}
+            onClick={() => !t.comingSoon && onSelect(t.id)}
+            title={t.comingSoon ? "Coming soon" : t.label}
             style={{
               flexShrink: 0,
               display: "flex", flexDirection: "column", alignItems: "center", gap: "6px",
               padding: "var(--space-2)",
               background: "transparent",
-              border: isSelected ? "2px solid #2563eb" : "2px solid transparent",
+              border: isSelected ? "2px solid #111111" : "2px solid transparent",
               borderRadius: "var(--radius-md)",
-              cursor: "pointer",
+              cursor: t.comingSoon ? "default" : "pointer",
+              opacity: t.comingSoon ? 0.4 : 1,
             }}
           >
             <div style={{
               width: `${w}px`, height: `${h}px`,
-              background: isSelected ? "rgba(37,99,235,0.15)" : "rgba(0,0,0,0.09)",
+              background: isSelected ? "rgba(17,17,17,0.10)" : "rgba(0,0,0,0.07)",
               borderRadius: "4px",
               transition: "background .15s",
             }} />
             <span style={{
               fontSize: "10px", fontFamily: "var(--font-sans)",
-              color: isSelected ? "#2563eb" : "var(--color-text-muted)",
+              color: isSelected ? "#111111" : "var(--color-text-muted)",
               fontWeight: isSelected ? 600 : 400,
               whiteSpace: "nowrap",
             }}>

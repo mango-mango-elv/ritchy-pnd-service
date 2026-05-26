@@ -1,122 +1,330 @@
 import React from "react";
-import { TEMPLATES } from "./TemplateGrid";
-import type { DesignState } from "./DesignPageV2";
-
-function isLight(hex: string): boolean {
-  const c = hex.replace("#", "");
-  if (c.length < 6) return false;
-  const r = parseInt(c.slice(0, 2), 16);
-  const g = parseInt(c.slice(2, 4), 16);
-  const b = parseInt(c.slice(4, 6), 16);
-  return (r * 299 + g * 587 + b * 114) / 1000 > 128;
-}
+import bottleBg from "../../../assets/bottle-bg.png";
 
 interface Props {
-  design: DesignState;
+  templateId:  string;
+  brandName:   string;
+  flavorName:  string;
+  strength:    string;
+  nicType:     "salt" | "freebase";
+  gradient:    string;
+  logoDataUrl: string;
 }
 
-export function PackagePreview({ design }: Props) {
-  const template  = TEMPLATES.find(t => t.id === design.templateId) ?? TEMPLATES[0];
-  const bgStyle   = design.background?.style ?? "linear-gradient(135deg, #1a2a1a 0%, #2d4a2d 100%)";
-  const accent    = design.accentColor ?? "#ffffff";
-  const textColor = isLight(accent) ? "#111111" : "#ffffff";
+interface BoxProps {
+  brand:      string;
+  flavor:     string;
+  strength:   string;
+  nicLabel:   string;
+  gradient:   string;
+  logoDataUrl: string;
+}
 
-  const previewW = 220;
-  const rawH     = Math.round(previewW / template.aspectRatio);
-  const previewH = Math.min(Math.max(rawH, 140), 400);
-  const actualW  = Math.round(previewH * template.aspectRatio);
+const WARNING_TEXT = "This product contains nicotine which is a highly addictive substance.";
 
-  const isNarrow = template.aspectRatio < 0.45;
+const abs = (style: React.CSSProperties): React.CSSProperties => ({ position: "absolute", ...style });
 
+/* ─── Shared warning zone ─────────────────────────────────────── */
+function WarningZone() {
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--space-2)" }}>
-      <div style={{
-        width: `${actualW}px`, height: `${previewH}px`,
-        background: bgStyle,
-        borderRadius: "8px",
-        overflow: "hidden",
-        boxShadow: "0 8px 32px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.10)",
-        display: "flex", flexDirection: "column",
-        padding: isNarrow ? "10px 8px" : "16px",
-        position: "relative",
-        flexShrink: 0,
-        transition: "width .2s, height .2s",
-      }}>
-        {/* Logo */}
-        {design.logoDataUrl && (
-          <div style={{ display: "flex", justifyContent: "center", marginBottom: "8px" }}>
-            <img
-              src={design.logoDataUrl}
-              alt="logo"
-              style={{ maxWidth: isNarrow ? "44px" : "64px", maxHeight: "36px", objectFit: "contain" }}
-            />
-          </div>
-        )}
-
-        {/* Brand name */}
-        <div style={{
-          fontSize: isNarrow ? "13px" : "18px",
-          fontWeight: 700,
-          color: accent,
-          fontFamily: "var(--font-sans)",
-          lineHeight: 1.1,
-          wordBreak: "break-word",
+    <>
+      <div style={abs({ inset: "64.19% 0 0 0", background: "#fff" })} />
+      <div style={abs({
+        inset: "69.15% 10.98% 4.68% 10.37%",
+        display: "flex", alignItems: "center", justifyContent: "center",
+      })}>
+        <p style={{
+          margin: 0, fontSize: "7px", color: "#111", textAlign: "center",
+          lineHeight: 1.35, fontFamily: "var(--font-sans)", fontWeight: 600,
         }}>
-          {design.brandName || "Your Brand"}
-        </div>
+          {WARNING_TEXT}
+        </p>
+      </div>
+    </>
+  );
+}
 
-        {/* Divider */}
-        <div style={{
-          width: "32px", height: "2px",
-          background: accent,
-          opacity: 0.5,
-          margin: "8px 0",
-          flexShrink: 0,
-        }} />
+/* ─── Box root wrapper ────────────────────────────────────────── */
+function BoxRoot({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{
+      position: "relative", width: "100%", aspectRatio: "200 / 290",
+      overflow: "hidden", borderRadius: "4px",
+    }}>
+      {children}
+    </div>
+  );
+}
 
-        {/* Flavor */}
-        <div style={{
-          fontSize: isNarrow ? "9px" : "12px",
-          fontWeight: 600,
-          color: textColor,
-          textTransform: "uppercase",
-          letterSpacing: "0.08em",
+/* ─── T1 — Flavor First ───────────────────────────────────────── */
+export function BoxT1Flavor({ brand, flavor, strength, nicLabel, gradient, logoDataUrl }: BoxProps) {
+  return (
+    <BoxRoot>
+      {/* bg */}
+      <div style={abs({ inset: 0, background: gradient })} />
+
+      {/* logo */}
+      {logoDataUrl && (
+        <img src={logoDataUrl} alt="logo" style={abs({
+          top: "3%", left: "7.3%", maxWidth: "40%", maxHeight: "8%", objectFit: "contain",
+        })} />
+      )}
+
+      {/* flavor — large, top-left */}
+      <div style={abs({ top: "4.1%", left: "7.3%", right: "7.3%" })}>
+        <p style={{
+          margin: 0, fontSize: "14px", fontWeight: 800, color: "#fff",
+          textTransform: "uppercase", lineHeight: 1.1, wordBreak: "break-word",
           fontFamily: "var(--font-sans)",
         }}>
-          {design.flavorName || "Flavor"}
-        </div>
-
-        {/* Tagline */}
-        {design.tagline && (
-          <div style={{
-            fontSize: isNarrow ? "8px" : "10px",
-            color: textColor,
-            opacity: 0.7,
-            fontFamily: "var(--font-sans)",
-            marginTop: "4px",
-          }}>
-            {design.tagline}
-          </div>
-        )}
-
-        {/* Nicotine warning */}
-        <div style={{
-          position: "absolute", bottom: "6px", left: "6px", right: "6px",
-          background: "rgba(255,255,255,0.92)",
-          borderRadius: "3px",
-          padding: "3px 5px",
-          fontSize: "7px",
-          color: "#111111",
-          fontFamily: "var(--font-sans)",
-          lineHeight: 1.3,
-          textAlign: "center",
-        }}>
-          This product contains nicotine. Nicotine is an addictive chemical.
-        </div>
+          {flavor}
+        </p>
       </div>
 
-      <div style={{ fontSize: "11px", color: "var(--color-text-muted)", fontFamily: "var(--font-sans)" }}>
-        {template.label} · live preview
+      {/* nic · strength */}
+      <p style={abs({
+        top: "22.3%", left: "7.3%", margin: 0,
+        fontSize: "8px", fontWeight: 500, color: "rgba(255,255,255,0.85)",
+        textTransform: "uppercase", letterSpacing: "0.08em",
+        fontFamily: "var(--font-sans)",
+      })}>
+        {nicLabel} · {strength}
+      </p>
+
+      {/* separator */}
+      <div style={abs({
+        top: "27.27%", left: 0, right: 0, height: "1px",
+        background: "rgba(255,255,255,0.4)",
+      })} />
+
+      {/* brand — small, lower-left */}
+      <div style={abs({ top: "57.58%", left: "6.71%", right: "47.56%", bottom: "38.02%" })}>
+        <p style={{
+          margin: 0, fontSize: "10px", fontWeight: 900, color: "#fff",
+          textTransform: "uppercase", lineHeight: 1.1, wordBreak: "break-word",
+          fontFamily: "var(--font-sans)",
+        }}>
+          {brand}
+        </p>
+      </div>
+
+      <WarningZone />
+    </BoxRoot>
+  );
+}
+
+/* ─── T2 — Centered ──────────────────────────────────────────── */
+export function BoxT2Centered({ brand, flavor, strength, nicLabel, gradient, logoDataUrl }: BoxProps) {
+  return (
+    <BoxRoot>
+      {/* bg */}
+      <div style={abs({ inset: 0, background: gradient })} />
+
+      {/* logo */}
+      {logoDataUrl && (
+        <img src={logoDataUrl} alt="logo" style={abs({
+          top: "8%", left: "50%", transform: "translateX(-50%)",
+          maxWidth: "55%", maxHeight: "8%", objectFit: "contain",
+        })} />
+      )}
+
+      {/* brand — large, centered top zone */}
+      <div style={abs({ inset: "15.43% 0 70.25% 0", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 6%" })}>
+        <p style={{
+          margin: 0, fontSize: "24px", fontWeight: 900, color: "#fff",
+          textTransform: "uppercase", textAlign: "center", lineHeight: 0.9,
+          wordBreak: "break-word", fontFamily: "var(--font-sans)",
+        }}>
+          {brand}
+        </p>
+      </div>
+
+      {/* separator */}
+      <div style={abs({
+        top: "56.47%", left: "6.71%", right: "6.71%", height: "1px",
+        background: "rgba(255,255,255,0.4)",
+      })} />
+
+      {/* flavor — centered */}
+      <div style={abs({ top: "58%", left: 0, right: 0, display: "flex", justifyContent: "center", padding: "0 6%" })}>
+        <p style={{
+          margin: 0, fontSize: "13px", fontWeight: 800, color: "#fff",
+          textTransform: "uppercase", textAlign: "center", lineHeight: 1.1,
+          wordBreak: "break-word", fontFamily: "var(--font-sans)",
+        }}>
+          {flavor}
+        </p>
+      </div>
+
+      {/* footer: 20mg left · nic salt right */}
+      <div style={abs({
+        top: "57.6%", left: "6.7%", right: "6.7%",
+        display: "flex", justifyContent: "space-between", alignItems: "flex-end",
+        paddingTop: "28px",
+      })}>
+        <span style={{ fontSize: "9px", fontWeight: 500, color: "rgba(255,255,255,0.85)", fontFamily: "var(--font-sans)" }}>
+          {strength}
+        </span>
+        <span style={{ fontSize: "9px", fontWeight: 500, color: "rgba(255,255,255,0.85)", fontFamily: "var(--font-sans)" }}>
+          {nicLabel}
+        </span>
+      </div>
+
+      <WarningZone />
+    </BoxRoot>
+  );
+}
+
+/* ─── BOX routing ─────────────────────────────────────────────── */
+const BOX_MAP: Record<string, React.FC<BoxProps>> = {
+  "t1-flavor":   BoxT1Flavor,
+  "t2-centered": BoxT2Centered,
+};
+
+/* ─── Bottle label layouts ────────────────────────────────────── */
+function BottleLabelT1({ brand, flavor, strength, nicLabel, gradient }: Omit<BoxProps, "logoDataUrl">) {
+  return (
+    <div style={{
+      position: "absolute",
+      inset: "50.96% 27.71% 5.23% 9.04%",
+      background: gradient,
+      display: "flex", flexDirection: "column",
+      alignItems: "center", justifyContent: "center",
+      overflow: "hidden", padding: "6% 5%",
+    }}>
+      {/* flavor — top, larger */}
+      <p style={{
+        margin: "0 0 4% 0", fontSize: "11px", fontWeight: 800, color: "#fff",
+        textTransform: "uppercase", textAlign: "center", lineHeight: 1.1,
+        wordBreak: "break-word", fontFamily: "var(--font-sans)", width: "100%",
+      }}>
+        {flavor}
+      </p>
+
+      {/* separator */}
+      <div style={{ width: "80%", height: "1px", background: "rgba(255,255,255,0.4)", flexShrink: 0, marginBottom: "4%" }} />
+
+      {/* brand — small */}
+      <p style={{
+        margin: "0 0 auto 0", fontSize: "9px", fontWeight: 700, color: "rgba(255,255,255,0.9)",
+        textTransform: "uppercase", textAlign: "center", lineHeight: 1.1,
+        fontFamily: "var(--font-sans)", width: "100%",
+      }}>
+        {brand}
+      </p>
+
+      {/* footer */}
+      <div style={{
+        width: "100%", display: "flex", justifyContent: "space-between",
+        marginTop: "auto",
+      }}>
+        <span style={{ fontSize: "7px", fontWeight: 500, color: "rgba(255,255,255,0.85)", fontFamily: "var(--font-sans)" }}>
+          {strength}
+        </span>
+        <span style={{ fontSize: "7px", fontWeight: 500, color: "rgba(255,255,255,0.85)", fontFamily: "var(--font-sans)" }}>
+          {nicLabel}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function BottleLabelT2({ brand, flavor, strength, nicLabel, gradient }: Omit<BoxProps, "logoDataUrl">) {
+  return (
+    <div style={{
+      position: "absolute",
+      inset: "50.96% 27.71% 5.23% 9.04%",
+      background: gradient,
+      display: "flex", flexDirection: "column",
+      alignItems: "center", justifyContent: "center",
+      overflow: "hidden", padding: "6% 5%",
+    }}>
+      {/* brand — larger, top */}
+      <p style={{
+        margin: "0 0 auto 0", fontSize: "14px", fontWeight: 900, color: "#fff",
+        textTransform: "uppercase", textAlign: "center", lineHeight: 0.95,
+        wordBreak: "break-word", fontFamily: "var(--font-sans)", width: "100%",
+      }}>
+        {brand}
+      </p>
+
+      {/* separator */}
+      <div style={{ width: "80%", height: "1px", background: "rgba(255,255,255,0.4)", flexShrink: 0, margin: "8% 0" }} />
+
+      {/* flavor */}
+      <p style={{
+        margin: "0 0 auto 0", fontSize: "10px", fontWeight: 800, color: "#fff",
+        textTransform: "uppercase", textAlign: "center", lineHeight: 1.1,
+        wordBreak: "break-word", fontFamily: "var(--font-sans)", width: "100%",
+      }}>
+        {flavor}
+      </p>
+
+      {/* footer */}
+      <div style={{
+        width: "100%", display: "flex", justifyContent: "space-between",
+        marginTop: "auto",
+      }}>
+        <span style={{ fontSize: "7px", fontWeight: 500, color: "rgba(255,255,255,0.85)", fontFamily: "var(--font-sans)" }}>
+          {strength}
+        </span>
+        <span style={{ fontSize: "7px", fontWeight: 500, color: "rgba(255,255,255,0.85)", fontFamily: "var(--font-sans)" }}>
+          {nicLabel}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Bottle wrapper ──────────────────────────────────────────── */
+function BottlePreview({ templateId, brand, flavor, strength, nicLabel, gradient }: {
+  templateId: string; brand: string; flavor: string;
+  strength: string; nicLabel: string; gradient: string;
+}) {
+  const LabelComp = templateId === "t1-flavor" ? BottleLabelT1 : BottleLabelT2;
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "6px", width: "100%" }}>
+      <div style={{ position: "relative", width: "100%", aspectRatio: "1083 / 2375" }}>
+        <img
+          src={bottleBg}
+          alt="bottle"
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+        />
+        <LabelComp brand={brand} flavor={flavor} strength={strength} nicLabel={nicLabel} gradient={gradient} />
+      </div>
+      <span style={{ fontSize: "var(--text-xs)", color: "var(--color-text-muted)", fontFamily: "var(--font-sans)" }}>Bottle</span>
+    </div>
+  );
+}
+
+/* ─── Main export ─────────────────────────────────────────────── */
+export function PackagePreview({ templateId, brandName, flavorName, strength, nicType, gradient, logoDataUrl }: Props) {
+  const brand    = brandName  || "YOUR BRAND";
+  const flavor   = flavorName || "FLAVOR";
+  const nicLabel = nicType === "salt" ? "Nic salt" : "Free Base";
+  const BoxComp  = BOX_MAP[templateId] ?? BoxT2Centered;
+
+  return (
+    <div style={{
+      display: "grid",
+      gridTemplateColumns: "110fr 200fr",
+      gap: "clamp(8px, 3%, 16px)",
+      alignItems: "end",
+      width: "100%",
+      padding: "4px 0",
+    }}>
+      <BottlePreview
+        templateId={templateId}
+        brand={brand} flavor={flavor}
+        strength={strength} nicLabel={nicLabel}
+        gradient={gradient}
+      />
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "6px", width: "100%" }}>
+        <BoxComp
+          brand={brand} flavor={flavor} strength={strength}
+          nicLabel={nicLabel} gradient={gradient} logoDataUrl={logoDataUrl}
+        />
+        <span style={{ fontSize: "var(--text-xs)", color: "var(--color-text-muted)", fontFamily: "var(--font-sans)" }}>Box</span>
       </div>
     </div>
   );
