@@ -29,7 +29,7 @@ export const router = createBrowserRouter([
   {
     Component: AppShell,
     children: [
-      { path: "/",          Component: LoginPage    },
+      { path: "/",          loader: () => redirect("/v2") },
       { path: "/login",     Component: LoginPage    },
       { path: "/dashboard", Component: DashboardPage },
       { path: "/info",      Component: InfoPage     },
@@ -37,7 +37,7 @@ export const router = createBrowserRouter([
       { path: "/legal",     Component: LegalPage    },
       { path: "/order",     Component: OrderPage    },
       { path: "/checkout",  Component: CheckoutPage },
-      { path: "*",          loader: () => redirect("/") },
+      { path: "*",          loader: () => redirect("/v2") },
     ],
   },
   {
