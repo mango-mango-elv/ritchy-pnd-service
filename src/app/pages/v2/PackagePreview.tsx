@@ -148,6 +148,14 @@ export function BoxT2Centered({ brand, flavor, strength, nicLabel, gradient, log
       {/* background */}
       <div style={abs({ inset: 0, background: gradient })} />
 
+      {/* logo */}
+      {logoDataUrl && (
+        <img src={logoDataUrl} alt="logo" style={abs({
+          top: "6%", left: "50%", transform: "translateX(-50%)",
+          maxWidth: "45%", maxHeight: "8%", objectFit: "contain",
+        })} />
+      )}
+
       {/* brand — 15.43%–29.75% zone, Albert Sans Black */}
       <div style={abs({ top: "15.43%", left: 0, right: 0, bottom: "70.25%",
         display: "flex", alignItems: "center", justifyContent: "center", padding: "0 4%" })}>
