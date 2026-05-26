@@ -296,6 +296,8 @@ export function DesignPageV2() {
               alignItems: "center",
               justifyContent: "center",
               minHeight: 0,
+              padding: "12px 32px",
+              boxSizing: "border-box",
             }}>
               <PackagePreview
                 templateId={design.templateId}
