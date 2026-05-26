@@ -31,6 +31,8 @@ export interface DesignState {
   templateId:    string;
   brandName:     string;
   logoDataUrl:   string;
+  logoScale?:    number;
   skus:          SKU[];
   selectedSkuId: string;
 }
+

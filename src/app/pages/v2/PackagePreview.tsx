@@ -9,6 +9,7 @@ interface Props {
   nicType:     "salt" | "freebase";
   gradient:    string;
   logoDataUrl: string;
+  logoScale?:  number;
 }
 
 interface BoxProps {
@@ -18,6 +19,7 @@ interface BoxProps {
   nicLabel:   string;
   gradient:   string;
   logoDataUrl: string;
+  logoScale?:  number;
 }
 
 interface BottleProps extends BoxProps {
@@ -68,7 +70,7 @@ function WarningZone() {
 }
 
 /* ─── T1 — Flavor First ───────────────────────────────────────── */
-export function BoxT1Flavor({ brand, flavor, strength, nicLabel, gradient, logoDataUrl }: BoxProps) {
+export function BoxT1Flavor({ brand, flavor, strength, nicLabel, gradient, logoDataUrl, logoScale }: BoxProps) {
   const nicText = `${nicLabel} • ${strength}`;
   return (
     <BoxRoot>
@@ -125,7 +127,17 @@ export function BoxT1Flavor({ brand, flavor, strength, nicLabel, gradient, logoD
         alignItems: "flex-end",
       })}>
         {logoDataUrl ? (
-          <img src={logoDataUrl} alt="logo" style={{ maxWidth: "45%", maxHeight: "100%", objectFit: "contain" }} />
+          <img
+            src={logoDataUrl}
+            alt="logo"
+            style={{
+              maxWidth: "45%",
+              maxHeight: "100%",
+              objectFit: "contain",
+              transform: logoScale && logoScale !== 1 ? `scale(${logoScale})` : undefined,
+              transformOrigin: "bottom left",
+            }}
+          />
         ) : (
           <p style={{
             margin: 0,
@@ -146,7 +158,7 @@ export function BoxT1Flavor({ brand, flavor, strength, nicLabel, gradient, logoD
 }
 
 /* ─── T2 — Centered (matches Figma Template 12, canvas 164×363) ── */
-export function BoxT2Centered({ brand, flavor, strength, nicLabel, gradient, logoDataUrl }: BoxProps) {
+export function BoxT2Centered({ brand, flavor, strength, nicLabel, gradient, logoDataUrl, logoScale }: BoxProps) {
   return (
     <BoxRoot>
       {/* background */}
@@ -158,7 +170,17 @@ export function BoxT2Centered({ brand, flavor, strength, nicLabel, gradient, log
           top: "12%", left: 0, right: 0, bottom: "70.25%",
           display: "flex", alignItems: "center", justifyContent: "center", padding: "0 4%"
         })}>
-          <img src={logoDataUrl} alt="logo" style={{ maxWidth: "60%", maxHeight: "80%", objectFit: "contain" }} />
+          <img
+            src={logoDataUrl}
+            alt="logo"
+            style={{
+              maxWidth: "60%",
+              maxHeight: "80%",
+              objectFit: "contain",
+              transform: logoScale && logoScale !== 1 ? `scale(${logoScale})` : undefined,
+              transformOrigin: "center center",
+            }}
+          />
         </div>
       )}
 
@@ -230,7 +252,7 @@ const BOX_MAP: Record<string, React.FC<BoxProps>> = {
 };
 
 /* ─── Bottle label layouts ────────────────────────────────────── */
-function BottleLabelT1({ brand, flavor, strength, nicLabel, gradient, logoDataUrl }: BottleProps) {
+function BottleLabelT1({ brand, flavor, strength, nicLabel, gradient, logoDataUrl, logoScale }: BottleProps) {
   const nicText = `${nicLabel} • ${strength}`;
   return (
     <div style={{
@@ -302,7 +324,17 @@ function BottleLabelT1({ brand, flavor, strength, nicLabel, gradient, logoDataUr
         alignItems: "flex-end",
       }}>
         {logoDataUrl ? (
-          <img src={logoDataUrl} alt="logo" style={{ maxWidth: "45%", maxHeight: "100%", objectFit: "contain" }} />
+          <img
+            src={logoDataUrl}
+            alt="logo"
+            style={{
+              maxWidth: "45%",
+              maxHeight: "100%",
+              objectFit: "contain",
+              transform: logoScale && logoScale !== 1 ? `scale(${logoScale})` : undefined,
+              transformOrigin: "bottom left",
+            }}
+          />
         ) : (
           <p style={{
             margin: 0,
@@ -320,7 +352,7 @@ function BottleLabelT1({ brand, flavor, strength, nicLabel, gradient, logoDataUr
   );
 }
 
-function BottleLabelT2({ brand, flavor, strength, nicLabel, gradient, logoDataUrl }: BottleProps) {
+function BottleLabelT2({ brand, flavor, strength, nicLabel, gradient, logoDataUrl, logoScale }: BottleProps) {
   return (
     <div style={{
       position: "absolute",
@@ -342,7 +374,17 @@ function BottleLabelT2({ brand, flavor, strength, nicLabel, gradient, logoDataUr
         padding: "0 4%",
       }}>
         {logoDataUrl ? (
-          <img src={logoDataUrl} alt="logo" style={{ maxWidth: "60%", maxHeight: "80%", objectFit: "contain" }} />
+          <img
+            src={logoDataUrl}
+            alt="logo"
+            style={{
+              maxWidth: "60%",
+              maxHeight: "80%",
+              objectFit: "contain",
+              transform: logoScale && logoScale !== 1 ? `scale(${logoScale})` : undefined,
+              transformOrigin: "center center",
+            }}
+          />
         ) : (
           <p style={{
             margin: 0,
@@ -414,10 +456,11 @@ function BottleLabelT2({ brand, flavor, strength, nicLabel, gradient, logoDataUr
 }
 
 /* ─── Bottle wrapper ──────────────────────────────────────────── */
-function BottlePreview({ templateId, brand, flavor, strength, nicLabel, gradient, logoDataUrl }: {
+function BottlePreview({ templateId, brand, flavor, strength, nicLabel, gradient, logoDataUrl, logoScale }: {
   templateId: string; brand: string; flavor: string;
   strength: string; nicLabel: string; gradient: string;
   logoDataUrl: string;
+  logoScale?: number;
 }) {
   const LabelComp = templateId === "t1-flavor" ? BottleLabelT1 : BottleLabelT2;
   return (
@@ -428,7 +471,7 @@ function BottlePreview({ templateId, brand, flavor, strength, nicLabel, gradient
           alt="bottle"
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" }}
         />
-        <LabelComp brand={brand} flavor={flavor} strength={strength} nicLabel={nicLabel} gradient={gradient} logoDataUrl={logoDataUrl} />
+        <LabelComp brand={brand} flavor={flavor} strength={strength} nicLabel={nicLabel} gradient={gradient} logoDataUrl={logoDataUrl} logoScale={logoScale} />
       </div>
       <span style={{ fontSize: "var(--text-xs)", color: "var(--color-text-muted)", fontFamily: "var(--font-sans)" }}>Bottle</span>
     </div>
@@ -436,7 +479,7 @@ function BottlePreview({ templateId, brand, flavor, strength, nicLabel, gradient
 }
 
 /* ─── Main export ─────────────────────────────────────────────── */
-export function PackagePreview({ templateId, brandName, flavorName, strength, nicType, gradient, logoDataUrl }: Props) {
+export function PackagePreview({ templateId, brandName, flavorName, strength, nicType, gradient, logoDataUrl, logoScale }: Props) {
   const brand    = brandName  || "YOUR BRAND";
   const flavor   = flavorName || "FLAVOR";
   const nicLabel = nicType === "salt" ? "Nic salt" : "Free Base";
@@ -461,11 +504,13 @@ export function PackagePreview({ templateId, brandName, flavorName, strength, ni
         strength={strength} nicLabel={nicLabel}
         gradient={gradient}
         logoDataUrl={logoDataUrl}
+        logoScale={logoScale}
       />
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "6px", width: "100%", marginLeft: "-14%" }}>
         <BoxComp
           brand={brand} flavor={flavor} strength={strength}
           nicLabel={nicLabel} gradient={gradient} logoDataUrl={logoDataUrl}
+          logoScale={logoScale}
         />
         <span style={{ fontSize: "var(--text-xs)", color: "var(--color-text-muted)", fontFamily: "var(--font-sans)" }}>Box</span>
       </div>

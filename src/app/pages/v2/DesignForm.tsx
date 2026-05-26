@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, ChevronDown, ChevronUp } from "lucide-react";
 import { COLOR_PRESETS, type DesignState, type SKU } from "./design-types";
 
 const FLAVOR_OPTIONS = [
@@ -19,11 +19,23 @@ interface Props {
 export function DesignForm({ design, patch, selectedSku, patchSku }: Props) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [aiRunning, setAiRunning] = useState(false);
+  const [brandExpanded, setBrandExpanded] = useState(() => {
+    return !(design.brandName.trim() || design.logoDataUrl);
+  });
 
   const handleLogoFile = (file: File) => {
     const reader = new FileReader();
-    reader.onload = e => patch({ logoDataUrl: e.target?.result as string });
+    reader.onload = e => {
+      patch({ logoDataUrl: e.target?.result as string });
+      setBrandExpanded(false); // auto-collapse accordion on logo upload
+    };
     reader.readAsDataURL(file);
+  };
+
+  const scale = design.logoScale ?? 1.0;
+  const adjustScale = (amount: number) => {
+    const next = Math.min(2.0, Math.max(0.5, parseFloat((scale + amount).toFixed(2))));
+    patch({ logoScale: next });
   };
 
   const handleAIGenerate = () => {
@@ -42,64 +54,200 @@ export function DesignForm({ design, patch, selectedSku, patchSku }: Props) {
 
       {/* ── Brand ── */}
       <Card first>
-        <CardTitle>Brand</CardTitle>
-        <p style={{ margin: "0 0 10px", fontSize: "var(--text-sm)", color: "var(--color-text-muted)" }}>
-          Will be applied for all flavors in this line
-        </p>
-        <input
-          className="ds-input"
-          placeholder="EARTH VAPOR"
-          value={design.brandName}
-          onChange={e => patch({ brandName: e.target.value })}
-          style={{ fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", marginBottom: "10px" }}
-        />
-        <label style={{ display: "block", marginBottom: "5px", fontSize: "var(--text-sm)", color: "var(--color-text-secondary)" }}>
-          Upload logo
-        </label>
         <div
-          onDrop={e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f?.type.startsWith("image/")) handleLogoFile(f); }}
-          onDragOver={e => e.preventDefault()}
-          onClick={() => fileRef.current?.click()}
+          onClick={() => setBrandExpanded(!brandExpanded)}
           style={{
-            border: "1.5px dashed var(--color-border)",
-            borderRadius: "var(--radius-md)",
-            padding: "10px",
-            textAlign: "center",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
             cursor: "pointer",
-            color: "var(--color-text-muted)",
-            fontSize: "12px",
-            background: "rgba(0,0,0,0.02)",
-            fontFamily: "var(--font-sans)",
+            userSelect: "none",
+            padding: "4px 0",
+            marginBottom: brandExpanded ? "8px" : 0,
           }}
         >
-          {design.logoDataUrl ? (
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
-              <img src={design.logoDataUrl} alt="logo" style={{ maxHeight: "40px", maxWidth: "100%", objectFit: "contain" }} />
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  patch({ logoDataUrl: "" });
-                }}
-                style={{
-                  border: "none",
-                  background: "rgba(220, 38, 38, 0.08)",
-                  color: "#dc2626",
-                  padding: "4px 10px",
-                  borderRadius: "var(--radius-md)",
-                  fontSize: "10px",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                }}
-              >
-                ✕ Remove logo
-              </button>
-            </div>
-          ) : (
-            <>📤 Drag &amp; Drop or Click to upload</>
-          )}
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
+            <h3 style={{ margin: 0, fontSize: "var(--text-lg)", fontWeight: 700, color: "var(--color-text-primary)" }}>
+              Brand
+            </h3>
+            {!brandExpanded && (design.brandName.trim() || design.logoDataUrl) && (
+              <span style={{
+                fontSize: "11px",
+                color: "var(--color-text-muted)",
+                background: "rgba(0,0,0,0.04)",
+                padding: "2px 8px",
+                borderRadius: "100px",
+                fontWeight: 500,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                maxWidth: "200px",
+              }}>
+                {design.brandName.trim() && <span>Name: {design.brandName}</span>}
+                {design.brandName.trim() && design.logoDataUrl && <span style={{ opacity: 0.5 }}>•</span>}
+                {design.logoDataUrl && <span>Logo loaded</span>}
+              </span>
+            )}
+          </div>
+          <div style={{ color: "var(--color-text-muted)", display: "flex", alignItems: "center" }}>
+            {brandExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+          </div>
         </div>
-        <input ref={fileRef} type="file" accept="image/*" style={{ display: "none" }}
-          onChange={e => { const f = e.target.files?.[0]; if (f) handleLogoFile(f); }} />
+
+        {brandExpanded && (
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <p style={{ margin: "0 0 10px", fontSize: "var(--text-sm)", color: "var(--color-text-muted)" }}>
+              Will be applied for all flavors in this line
+            </p>
+            <input
+              className="ds-input"
+              placeholder="EARTH VAPOR"
+              value={design.brandName}
+              onChange={e => patch({ brandName: e.target.value })}
+              onBlur={() => {
+                if (design.brandName.trim()) {
+                  setBrandExpanded(false); // auto-collapse on brand input blur
+                }
+              }}
+              onKeyDown={e => {
+                if (e.key === "Enter") {
+                  (e.target as HTMLInputElement).blur();
+                }
+              }}
+              style={{ fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", marginBottom: "10px" }}
+            />
+            <label style={{ display: "block", marginBottom: "5px", fontSize: "var(--text-sm)", color: "var(--color-text-secondary)" }}>
+              Upload logo
+            </label>
+            <div
+              onDrop={e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f?.type.startsWith("image/")) handleLogoFile(f); }}
+              onDragOver={e => e.preventDefault()}
+              onClick={() => fileRef.current?.click()}
+              style={{
+                border: "1.5px dashed var(--color-border)",
+                borderRadius: "var(--radius-md)",
+                padding: "10px",
+                textAlign: "center",
+                cursor: "pointer",
+                color: "var(--color-text-muted)",
+                fontSize: "12px",
+                background: "rgba(0,0,0,0.02)",
+                fontFamily: "var(--font-sans)",
+              }}
+            >
+              {design.logoDataUrl ? (
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
+                  <img src={design.logoDataUrl} alt="logo" style={{ maxHeight: "40px", maxWidth: "100%", objectFit: "contain" }} />
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      patch({ logoDataUrl: "" });
+                    }}
+                    style={{
+                      border: "none",
+                      background: "rgba(220, 38, 38, 0.08)",
+                      color: "#dc2626",
+                      padding: "4px 10px",
+                      borderRadius: "var(--radius-md)",
+                      fontSize: "10px",
+                      fontWeight: 600,
+                      cursor: "pointer",
+                    }}
+                  >
+                    ✕ Remove logo
+                  </button>
+                </div>
+              ) : (
+                <>📤 Drag &amp; Drop or Click to upload</>
+              )}
+            </div>
+            <input ref={fileRef} type="file" accept="image/*" style={{ display: "none" }}
+              onChange={e => { const f = e.target.files?.[0]; if (f) handleLogoFile(f); }} />
+
+            {/* Logo scaling selector */}
+            {design.logoDataUrl && (
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginTop: "12px",
+                padding: "8px 12px",
+                background: "rgba(0,0,0,0.02)",
+                borderRadius: "var(--radius-md)",
+                border: "1px solid var(--color-border)",
+              }}>
+                <span style={{ fontSize: "var(--text-sm)", color: "var(--color-text-secondary)", fontWeight: 500 }}>
+                  Logo Size
+                </span>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <button
+                    onClick={() => adjustScale(-0.1)}
+                    disabled={scale <= 0.5}
+                    style={{
+                      width: "28px",
+                      height: "28px",
+                      borderRadius: "50%",
+                      border: "1px solid var(--color-border)",
+                      background: "#fff",
+                      color: "var(--color-text-primary)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "16px",
+                      fontWeight: 600,
+                      cursor: scale <= 0.5 ? "not-allowed" : "pointer",
+                      opacity: scale <= 0.5 ? 0.5 : 1,
+                      userSelect: "none",
+                      transition: "background 0.15s, border-color 0.15s",
+                    }}
+                    onMouseEnter={e => scale > 0.5 && (e.currentTarget.style.background = "rgba(0,0,0,0.03)")}
+                    onMouseLeave={e => (e.currentTarget.style.background = "#fff")}
+                  >
+                    −
+                  </button>
+                  <span style={{
+                    fontSize: "var(--text-sm)",
+                    fontWeight: 600,
+                    color: "var(--color-text-primary)",
+                    width: "48px",
+                    textAlign: "center",
+                    fontFamily: "monospace",
+                  }}>
+                    {Math.round(scale * 100)}%
+                  </span>
+                  <button
+                    onClick={() => adjustScale(0.1)}
+                    disabled={scale >= 2.0}
+                    style={{
+                      width: "28px",
+                      height: "28px",
+                      borderRadius: "50%",
+                      border: "1px solid var(--color-border)",
+                      background: "#fff",
+                      color: "var(--color-text-primary)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "16px",
+                      fontWeight: 600,
+                      cursor: scale >= 2.0 ? "not-allowed" : "pointer",
+                      opacity: scale >= 2.0 ? 0.5 : 1,
+                      userSelect: "none",
+                      transition: "background 0.15s, border-color 0.15s",
+                    }}
+                    onMouseEnter={e => scale < 2.0 && (e.currentTarget.style.background = "rgba(0,0,0,0.03)")}
+                    onMouseLeave={e => (e.currentTarget.style.background = "#fff")}
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </Card>
 
       {/* ── Color ── */}
