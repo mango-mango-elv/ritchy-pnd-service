@@ -355,7 +355,7 @@ function MiniBoxT1({ gradient, brand, flavor }: { gradient: string; brand: strin
       <p style={{ position: "absolute", top: "22.3%", left: "7.3%", margin: 0, fontSize: "8px", fontWeight: 500, color: "rgba(255,255,255,0.8)", fontFamily: "var(--font-sans)" }}>Nic salt · 20mg</p>
       <div style={{ position: "absolute", top: "27.27%", left: 0, right: 0, height: "1px", background: "rgba(255,255,255,0.4)" }} />
       <p style={{ position: "absolute", top: "57.58%", left: "6.71%", right: "47.56%", margin: 0, fontSize: "10px", fontWeight: 900, color: "#fff", textTransform: "uppercase", lineHeight: 1.1, fontFamily: "var(--font-sans)" }}>{brand.slice(0, 10)}</p>
-      <div style={{ position: "absolute", inset: "64.19% 0 0 0", background: "#fff" }} />
+      <div style={{ position: "absolute", top: "68%", left: 0, right: 0, bottom: 0, border: "5px solid #000", background: "#fff" }} />
     </div>
   );
 }
@@ -369,7 +369,7 @@ function MiniBoxT2({ gradient, brand, flavor }: { gradient: string; brand: strin
       </div>
       <div style={{ position: "absolute", top: "56.47%", left: "6.71%", right: "6.71%", height: "1px", background: "rgba(255,255,255,0.4)" }} />
       <p style={{ position: "absolute", top: "58.5%", left: 0, right: 0, margin: 0, fontSize: "13px", fontWeight: 800, color: "#fff", textTransform: "uppercase", textAlign: "center", fontFamily: "var(--font-sans)" }}>{flavor.slice(0, 12)}</p>
-      <div style={{ position: "absolute", inset: "64.19% 0 0 0", background: "#fff" }} />
+      <div style={{ position: "absolute", top: "68%", left: 0, right: 0, bottom: 0, border: "5px solid #000", background: "#fff" }} />
     </div>
   );
 }

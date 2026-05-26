@@ -24,23 +24,30 @@ const WARNING_TEXT = "This product contains nicotine which is a highly addictive
 
 const abs = (style: React.CSSProperties): React.CSSProperties => ({ position: "absolute", ...style });
 
-/* ─── Shared warning zone ─────────────────────────────────────── */
+/* ─── Shared warning zone — exactly 32% of box height ────────── */
 function WarningZone() {
   return (
-    <>
-      <div style={abs({ inset: "64.19% 0 0 0", background: "#fff" })} />
-      <div style={abs({
-        inset: "69.15% 10.98% 4.68% 10.37%",
-        display: "flex", alignItems: "center", justifyContent: "center",
-      })}>
-        <p style={{
-          margin: 0, fontSize: "7px", color: "#111", textAlign: "center",
-          lineHeight: 1.35, fontFamily: "var(--font-sans)", fontWeight: 600,
-        }}>
-          {WARNING_TEXT}
-        </p>
-      </div>
-    </>
+    <div style={abs({
+      top: "68%", left: 0, right: 0, bottom: 0,
+      boxSizing: "border-box",
+      border: "5px solid #000",
+      background: "#fff",
+      display: "flex", alignItems: "center", justifyContent: "center",
+      padding: "3px 8px",
+      overflow: "hidden",
+    })}>
+      <p style={{
+        margin: 0,
+        fontSize: "11px",
+        fontWeight: 700,
+        color: "#111",
+        textAlign: "center",
+        lineHeight: 1.25,
+        fontFamily: "var(--font-sans)",
+      }}>
+        {WARNING_TEXT}
+      </p>
+    </div>
   );
 }
 
