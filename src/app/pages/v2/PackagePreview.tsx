@@ -75,15 +75,8 @@ export function BoxT1Flavor({ brand, flavor, strength, nicLabel, gradient, logoD
       {/* bg */}
       <div style={abs({ inset: 0, background: gradient })} />
 
-      {/* logo */}
-      {logoDataUrl && (
-        <img src={logoDataUrl} alt="logo" style={abs({
-          top: "2%", left: "7.5%", maxWidth: "45%", maxHeight: "8%", objectFit: "contain",
-        })} />
-      )}
-
       {/* flavor — large, top-left */}
-      <div style={abs({ top: logoDataUrl ? "12%" : "5%", left: "7.5%", right: "7.5%" })}>
+      <div style={abs({ top: "5%", left: "7.5%", right: "7.5%" })}>
         <p style={{
           margin: 0,
           fontSize: "9cqw",
@@ -99,7 +92,7 @@ export function BoxT1Flavor({ brand, flavor, strength, nicLabel, gradient, logoD
       </div>
 
       {/* nic and strength */}
-      <div style={abs({ top: logoDataUrl ? "26%" : "20%", left: "7.5%", right: "7.5%" })}>
+      <div style={abs({ top: "20%", left: "7.5%", right: "7.5%" })}>
         <p style={{
           margin: 0,
           fontSize: "5cqw",
@@ -115,20 +108,25 @@ export function BoxT1Flavor({ brand, flavor, strength, nicLabel, gradient, logoD
 
       {/* separator line */}
       <div style={abs({
-        top: logoDataUrl ? "32%" : "27%",
+        top: "27%",
         left: 0,
         right: 0,
         height: "1.2cqw",
         background: "#ffffff",
       })} />
 
-      {/* brand — bottom-left */}
-      {!logoDataUrl && (
-        <div style={abs({
-          top: "58%",
-          left: "7.5%",
-          right: "7.5%",
-        })}>
+      {/* brand logo/text — bottom-left */}
+      <div style={abs({
+        bottom: "35%",
+        left: "7.5%",
+        right: "7.5%",
+        height: "12cqw",
+        display: "flex",
+        alignItems: "flex-end",
+      })}>
+        {logoDataUrl ? (
+          <img src={logoDataUrl} alt="logo" style={{ maxWidth: "45%", maxHeight: "100%", objectFit: "contain" }} />
+        ) : (
           <p style={{
             margin: 0,
             fontSize: "6.5cqw",
@@ -139,8 +137,8 @@ export function BoxT1Flavor({ brand, flavor, strength, nicLabel, gradient, logoD
           }}>
             {brand}
           </p>
-        </div>
-      )}
+        )}
+      </div>
 
       <WarningZone />
     </BoxRoot>
