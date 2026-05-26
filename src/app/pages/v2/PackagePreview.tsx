@@ -194,47 +194,83 @@ const BOX_MAP: Record<string, React.FC<BoxProps>> = {
 
 /* ─── Bottle label layouts ────────────────────────────────────── */
 function BottleLabelT1({ brand, flavor, strength, nicLabel, gradient }: Omit<BoxProps, "logoDataUrl">) {
+  const nicText = `${nicLabel} • ${strength}`;
   return (
     <div style={{
       position: "absolute",
       inset: "50.96% 27.71% 5.23% 9.04%",
       background: gradient,
-      display: "flex", flexDirection: "column",
-      alignItems: "center", justifyContent: "center",
-      overflow: "hidden", padding: "6% 5%",
+      overflow: "hidden",
+      containerType: "inline-size",
     }}>
-      {/* flavor — top, larger */}
-      <p style={{
-        margin: "0 0 4% 0", fontSize: "11px", fontWeight: 800, color: "#fff",
-        textTransform: "uppercase", textAlign: "center", lineHeight: 1.1,
-        wordBreak: "break-word", fontFamily: "var(--font-sans)", width: "100%",
-      }}>
-        {flavor}
-      </p>
-
-      {/* separator */}
-      <div style={{ width: "80%", height: "1px", background: "rgba(255,255,255,0.4)", flexShrink: 0, marginBottom: "4%" }} />
-
-      {/* brand — small */}
-      <p style={{
-        margin: "0 0 auto 0", fontSize: "9px", fontWeight: 700, color: "rgba(255,255,255,0.9)",
-        textTransform: "uppercase", textAlign: "center", lineHeight: 1.1,
-        fontFamily: "var(--font-sans)", width: "100%",
-      }}>
-        {brand}
-      </p>
-
-      {/* footer */}
+      {/* flavor — top-left */}
       <div style={{
-        width: "100%", display: "flex", justifyContent: "space-between",
-        marginTop: "auto",
+        position: "absolute",
+        top: "8%",
+        left: "7.5%",
+        right: "7.5%",
       }}>
-        <span style={{ fontSize: "7px", fontWeight: 500, color: "rgba(255,255,255,0.85)", fontFamily: "var(--font-sans)" }}>
-          {strength}
-        </span>
-        <span style={{ fontSize: "7px", fontWeight: 500, color: "rgba(255,255,255,0.85)", fontFamily: "var(--font-sans)" }}>
-          {nicLabel}
-        </span>
+        <p style={{
+          margin: 0,
+          fontSize: "14cqw",
+          fontWeight: 800,
+          color: "#ffffff",
+          textTransform: "uppercase",
+          lineHeight: 1.05,
+          wordBreak: "break-word",
+          fontFamily: "var(--font-sans)",
+        }}>
+          {flavor}
+        </p>
+      </div>
+
+      {/* nic and strength */}
+      <div style={{
+        position: "absolute",
+        top: "33%",
+        left: "7.5%",
+        right: "7.5%",
+      }}>
+        <p style={{
+          margin: 0,
+          fontSize: "6.5cqw",
+          fontWeight: 700,
+          color: "rgba(255, 255, 255, 0.95)",
+          textTransform: "uppercase",
+          letterSpacing: "0.02em",
+          fontFamily: "var(--font-sans)",
+        }}>
+          {nicText}
+        </p>
+      </div>
+
+      {/* thick separator line */}
+      <div style={{
+        position: "absolute",
+        top: "43%",
+        left: 0,
+        right: 0,
+        height: "2.5cqw",
+        background: "#ffffff",
+      }} />
+
+      {/* brand — bottom-left */}
+      <div style={{
+        position: "absolute",
+        bottom: "6%",
+        left: "7.5%",
+        right: "7.5%",
+      }}>
+        <p style={{
+          margin: 0,
+          fontSize: "11.5cqw",
+          fontWeight: 900,
+          color: "#ffffff",
+          textTransform: "uppercase",
+          fontFamily: "var(--font-sans)",
+        }}>
+          {brand}
+        </p>
       </div>
     </div>
   );
