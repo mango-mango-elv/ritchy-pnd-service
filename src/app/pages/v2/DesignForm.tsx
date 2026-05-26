@@ -72,10 +72,31 @@ export function DesignForm({ design, patch, selectedSku, patchSku }: Props) {
             fontFamily: "var(--font-sans)",
           }}
         >
-          {design.logoDataUrl
-            ? <img src={design.logoDataUrl} alt="logo" style={{ maxHeight: "40px", maxWidth: "100%", objectFit: "contain" }} />
-            : <>📤 Drag &amp; Drop or Click to upload</>
-          }
+          {design.logoDataUrl ? (
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
+              <img src={design.logoDataUrl} alt="logo" style={{ maxHeight: "40px", maxWidth: "100%", objectFit: "contain" }} />
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  patch({ logoDataUrl: "" });
+                }}
+                style={{
+                  border: "none",
+                  background: "rgba(220, 38, 38, 0.08)",
+                  color: "#dc2626",
+                  padding: "4px 10px",
+                  borderRadius: "var(--radius-md)",
+                  fontSize: "10px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                ✕ Remove logo
+              </button>
+            </div>
+          ) : (
+            <>📤 Drag &amp; Drop or Click to upload</>
+          )}
         </div>
         <input ref={fileRef} type="file" accept="image/*" style={{ display: "none" }}
           onChange={e => { const f = e.target.files?.[0]; if (f) handleLogoFile(f); }} />
