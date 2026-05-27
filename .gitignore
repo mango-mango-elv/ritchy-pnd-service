@@ -12,3 +12,4 @@ pnpm-debug.log*
 .env
 .env.*
 !.env.example
+.git-credential-mango

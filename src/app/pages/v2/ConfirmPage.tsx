@@ -76,7 +76,7 @@ export function ConfirmPage() {
             </div>
           ))}
         </div>
-        <button onClick={() => navigate("/v2")} className="ds-btn ds-btn-secondary">
+        <button onClick={() => navigate("/")} className="ds-btn ds-btn-secondary">
           ← Back to start
         </button>
       </div>
@@ -84,7 +84,7 @@ export function ConfirmPage() {
   }
 
   return (
-    <div style={{ overflowY: "auto", padding: "var(--space-6) var(--space-5) var(--space-8)" }}>
+    <div className="v2-page-container">
       <div style={{ maxWidth: "640px", margin: "0 auto", display: "grid", gap: "var(--space-4)" }}>
 
         <div>
@@ -122,11 +122,11 @@ export function ConfirmPage() {
           </p>
         </div>
 
-        <div style={{ display: "flex", justifyContent: "space-between", marginTop: "var(--space-2)" }}>
-          <button onClick={() => navigate("/v2/compliance")} className="ds-btn ds-btn-secondary">← Back</button>
+        <div className="v2-nav-footer">
+          <button onClick={() => navigate("/compliance")} className="v2-footer-btn v2-footer-btn-secondary">← Back</button>
           <button
             onClick={() => setSubmitted(true)}
-            className="ds-btn ds-btn-primary"
+            className="v2-footer-btn v2-footer-btn-primary"
             style={{ minWidth: "180px" }}
           >
             Generate Invoice &amp; Submit

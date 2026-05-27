@@ -25,11 +25,11 @@ export function CompliancePage() {
   const handleContinue = () => {
     if (!confirmed) return;
     sessionStorage.setItem("ritchy-v2-compliance", JSON.stringify({ market, warning }));
-    navigate("/v2/confirm");
+    navigate("/confirm");
   };
 
   return (
-    <div style={{ overflowY: "auto", padding: "var(--space-6) var(--space-5) var(--space-8)" }}>
+    <div className="v2-page-container">
       <div style={{ maxWidth: "640px", margin: "0 auto", display: "grid", gap: "var(--space-4)" }}>
 
         <div>
@@ -130,11 +130,11 @@ export function CompliancePage() {
           </label>
         </section>
 
-        <div style={{ display: "flex", justifyContent: "space-between", marginTop: "var(--space-2)" }}>
-          <button onClick={() => navigate("/v2/signup")} className="ds-btn ds-btn-secondary">← Back</button>
+        <div className="v2-nav-footer">
+          <button onClick={() => navigate("/signup")} className="v2-footer-btn v2-footer-btn-secondary">← Back</button>
           <button
             onClick={handleContinue}
-            className="ds-btn ds-btn-primary"
+            className="v2-footer-btn v2-footer-btn-primary"
             disabled={!confirmed}
             style={{ opacity: confirmed ? 1 : 0.4, cursor: confirmed ? "pointer" : "default" }}
           >

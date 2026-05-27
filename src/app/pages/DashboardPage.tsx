@@ -123,7 +123,7 @@ export function DashboardPage() {
           gap: "var(--space-5)",
         }}>
           <button
-            onClick={() => navigate("/info")}
+            onClick={() => navigate("/v1/info")}
             style={{
               minHeight: "220px",
               border: "1.5px dashed rgba(0,0,0,0.12)",
@@ -161,7 +161,7 @@ export function DashboardPage() {
           </button>
 
           {drafts.map((draft) => (
-            <DraftCard key={draft.id} draft={draft} onOpen={() => navigate("/design", { state: { draftId: draft.id } })} />
+            <DraftCard key={draft.id} draft={draft} onOpen={() => navigate("/v1/design", { state: { draftId: draft.id } })} />
           ))}
         </div>
       </div>

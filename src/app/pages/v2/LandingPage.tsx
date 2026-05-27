@@ -75,7 +75,7 @@ export function LandingPage() {
 
         <div style={{ display: "flex", gap: "var(--space-3)", flexWrap: "wrap", justifyContent: "center" }}>
           <button
-            onClick={() => navigate("/v2/order")}
+            onClick={() => navigate("/order")}
             style={{
               padding: "14px 28px",
               background: "#111111", color: "#ffffff",
@@ -221,7 +221,7 @@ export function LandingPage() {
         textAlign: "center",
       }}>
         <button
-          onClick={() => navigate("/v2/order")}
+          onClick={() => navigate("/order")}
           style={{
             padding: "14px 28px",
             background: "#111111", color: "#ffffff",

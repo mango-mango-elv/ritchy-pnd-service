@@ -2,11 +2,11 @@ import React, { createContext, useContext } from "react";
 import { Outlet, Link, useNavigate, useLocation } from "react-router";
 
 const V2_STAGES = [
-  { path: "/v2/order",      label: "Order"      },
-  { path: "/v2/design",     label: "Design"     },
-  { path: "/v2/signup",     label: "Sign Up"    },
-  { path: "/v2/compliance", label: "Compliance" },
-  { path: "/v2/confirm",    label: "Confirm"    },
+  { path: "/order",      label: "Order"      },
+  { path: "/design",     label: "Design"     },
+  { path: "/signup",     label: "Sign Up"    },
+  { path: "/compliance", label: "Compliance" },
+  { path: "/confirm",    label: "Confirm"    },
 ] as const;
 
 interface V2NavCtx {
@@ -19,13 +19,13 @@ export function useV2Nav() { return useContext(V2NavContext); }
 export function AppShellV2() {
   const location = useLocation();
   const navigate = useNavigate();
-  const isLanding = location.pathname === "/v2" || location.pathname === "/v2/";
+  const isLanding = location.pathname === "/" || location.pathname === "";
   const currentIdx = V2_STAGES.findIndex(s => s.path === location.pathname);
 
   const navCtx: V2NavCtx = {
     goNext: () => { const n = V2_STAGES[currentIdx + 1]; if (n) navigate(n.path); },
     goBack: () => {
-      if (currentIdx <= 0) navigate("/v2");
+      if (currentIdx <= 0) navigate("/");
       else { const p = V2_STAGES[currentIdx - 1]; if (p) navigate(p.path); }
     },
   };
@@ -50,7 +50,7 @@ export function AppShellV2() {
             position: "sticky", top: 0, zIndex: 100,
             flexShrink: 0,
           }}>
-            <Link to="/v2" style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", textDecoration: "none" }}>
+            <Link to="/" style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", textDecoration: "none" }}>
               <div style={{
                 width: "26px", height: "26px", borderRadius: "var(--radius-full)",
                 background: "#111111",

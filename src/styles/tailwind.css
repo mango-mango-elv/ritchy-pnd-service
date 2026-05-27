@@ -180,6 +180,9 @@ body {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  min-width: 0; /* Forces container to stay within parent flex bounds */
+  order: 1; /* Choose Flavor at top */
 }
 .v2-design-left-list {
   display: flex;
@@ -191,6 +194,8 @@ body {
   scrollbar-width: none;
   scroll-snap-type: x mandatory;
   scroll-padding-left: 12px;
+  -webkit-overflow-scrolling: touch; /* Buttery-smooth momentum scrolling on iOS */
+  width: 100%;
 }
 .v2-design-left-list::-webkit-scrollbar { display: none; }
 .v2-design-left-list .v2-sku-pill {
@@ -199,19 +204,33 @@ body {
   scroll-snap-align: start;
 }
 .v2-design-stage {
-  display: contents;
+  display: flex;
+  flex-direction: column;
+  order: 2; /* Stage container second on mobile */
 }
 .v2-design-center {
   flex: 1;
-  overflow-y: auto;
-  padding: 0 4px;
+  display: flex;
+  flex-direction: column;
+  overflow: visible; /* Flows naturally on mobile */
+  background: #ffffff;
+  border-radius: 14px;
+  min-width: 0;
+  order: 2; /* Form card second */
+}
+.v2-design-center-scroll {
+  flex: 1;
+  overflow-y: visible; /* Flows naturally on mobile */
+  padding: 16px 16px 0;
+  -webkit-overflow-scrolling: touch;
 }
 .v2-design-right {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  overflow-y: auto;
+  overflow-y: visible; /* Flows naturally on mobile */
   flex-shrink: 0;
+  order: 1; /* Template + Preview mockup first inside stage on mobile */
 }
 /* Box template container — enables cqw font scaling */
 .v2-box-root {
@@ -233,31 +252,43 @@ body {
 }
 .v2-design-center-footer {
   display: flex;
-  justify-content: space-between;
-  padding: 16px 0 12px;
-  margin-top: 8px;
+  flex-direction: column;
+  padding: 16px;
+  background: #ffffff;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.04);
+  z-index: 1000;
+  flex-shrink: 0;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 @media (min-width: 1024px) {
   .v2-design-center-footer {
     position: sticky;
-    bottom: 0;
-    background: linear-gradient(to top, #ffffff 65%, rgba(255,255,255,0));
-    padding: 18px 20px 12px;
-    margin: 0 -20px;
-    z-index: 2;
+    padding: 20px 24px;
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.04);
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
   }
 }
 
 /* Hide scrollbars on all v2 design panels while keeping scroll */
 .v2-design-left,
-.v2-design-center,
+.v2-design-center-scroll,
 .v2-design-right {
   scrollbar-width: none;
 }
 .v2-design-left::-webkit-scrollbar,
-.v2-design-center::-webkit-scrollbar,
+.v2-design-center-scroll::-webkit-scrollbar,
 .v2-design-right::-webkit-scrollbar {
   display: none;
+}
+
+@media (max-width: 1023px) {
+  .v2-design-center-scroll {
+    padding-bottom: 96px; /* space for fixed footer */
+  }
 }
 
 @media (min-width: 1024px) {
@@ -270,6 +301,7 @@ body {
     padding: 0;
     background: transparent;
     overflow: hidden;
+    order: unset;
   }
   .v2-design-page {
     flex-direction: row;
@@ -286,6 +318,7 @@ body {
     width: 230px;
     flex-shrink: 0;
     overflow-y: auto;
+    order: unset;
   }
   .v2-design-left-list {
     flex-direction: column;
@@ -300,15 +333,16 @@ body {
   .v2-design-center {
     flex: 0 1 600px;
     min-width: 0;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
     padding: 0;
     background: #ffffff;
     border-radius: 14px;
+    order: unset;
   }
-  .v2-design-center-inner {
-    max-width: 560px;
-    margin: 0 auto;
-    padding: 16px 20px 0;
+  .v2-design-center-scroll {
+    padding: 20px 24px 0;
   }
   .v2-design-right {
     flex: 1 1 auto;
@@ -316,7 +350,12 @@ body {
     max-width: 540px;
     overflow-y: auto;
     padding: 0;
+    order: unset;
   }
+
+
+
+
   .v2-design-preview-mobile {
     display: none;
   }
@@ -335,4 +374,194 @@ body {
 @media (min-width: 768px) {
   .v2-stepbar-desktop { display: flex; }
   .v2-stepbar-mobile  { display: none; }
+}
+
+/* Template Selector List - horizontal scroll on mobile, grid on desktop */
+.v2-template-selector-list {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 4px 0;
+  width: 100%;
+}
+.v2-template-selector-list::-webkit-scrollbar {
+  display: none;
+}
+.v2-template-selector-btn {
+  flex-shrink: 0;
+  width: 68px;
+}
+
+@media (min-width: 1024px) {
+  .v2-template-selector-list {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    overflow-x: visible;
+    padding: 0;
+  }
+  .v2-template-selector-btn {
+    width: 100%;
+  }
+}
+
+/* Premium Navigation Footer Buttons styling */
+.v2-footer-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px; /* Elegant touch target size */
+  border-radius: 12px; /* Smooth rounded corners matching card radius */
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid transparent;
+  user-select: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.v2-footer-btn:active {
+  transform: scale(0.97);
+}
+.v2-footer-btn-primary {
+  background: #111111;
+  color: #ffffff;
+  border-color: #111111;
+}
+.v2-footer-btn-primary:hover {
+  background: #27272a;
+  border-color: #27272a;
+  box-shadow: 0 6px 20px rgba(17, 17, 17, 0.15);
+  transform: translateY(-1px);
+}
+.v2-footer-btn-secondary {
+  background: #ffffff;
+  color: #18181b;
+  border-color: var(--color-border);
+}
+.v2-footer-btn-secondary:hover {
+  background: #f4f4f5;
+  border-color: #d4d4d8;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+  transform: translateY(-1px);
+}
+
+/* Premium Circular Custom Color Picker Swatch */
+input[type="color"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+input[type="color"]:hover {
+  transform: scale(1.06);
+}
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+input[type="color"]::-webkit-color-swatch {
+  border: 1.5px solid var(--color-border);
+  border-radius: 50%;
+}
+input[type="color"]::-moz-focus-inner {
+  border: none;
+  padding: 0;
+}
+input[type="color"]::-moz-color-swatch {
+  border: 1.5px solid var(--color-border);
+  border-radius: 50%;
+}
+
+/* Shared page container wrapper for steps 1, 3, 4, 5 */
+.v2-page-container {
+  overflow-y: auto;
+  padding: var(--space-6) var(--space-5) var(--space-8);
+  box-sizing: border-box;
+}
+
+@media (max-width: 1023px) {
+  .v2-page-container {
+    padding-bottom: 96px !important; /* space for fixed footer */
+  }
+}
+
+/* Premium Navigation Footer Bar on other wizard pages */
+.v2-nav-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-top: var(--space-4);
+}
+
+@media (max-width: 1023px) {
+  .v2-nav-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.06);
+    padding: 16px;
+    margin-top: 0;
+    z-index: 1000;
+  }
+}
+
+/* Accordion slide-down interpolation */
+.v2-accordion-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+.v2-accordion-wrapper.expanded {
+  grid-template-rows: 1fr;
+}
+.v2-accordion-content {
+  min-height: 0;
+  transition: visibility 0.35s;
+  visibility: hidden;
+}
+.v2-accordion-wrapper.expanded .v2-accordion-content {
+  visibility: visible;
+}
+
+/* AI Generation Shimmer Pulse */
+@keyframes aiShimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.v2-ai-shimmer {
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+}
+.v2-ai-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.45) 50%, rgba(255,255,255,0) 100%);
+  background-size: 200% 100%;
+  animation: aiShimmer 1.5s infinite linear;
+  z-index: 50;
+  pointer-events: none;
+}
+.v2-ai-shimmer-pulse {
+  animation: pulse 1.5s infinite ease-in-out;
 }

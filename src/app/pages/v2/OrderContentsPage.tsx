@@ -68,11 +68,11 @@ export function OrderContentsPage() {
       nicType, strength, size, qty,
       estTotal,
     }));
-    navigate("/v2/design");
+    navigate("/design");
   };
 
   return (
-    <div style={{ overflowY: "auto", padding: "var(--space-6) var(--space-5) var(--space-8)" }}>
+    <div className="v2-page-container">
       <div style={{ maxWidth: "640px", margin: "0 auto", display: "grid", gap: "var(--space-4)" }}>
 
         <div>
@@ -197,9 +197,9 @@ export function OrderContentsPage() {
           </div>
         </div>
 
-        <div style={{ display: "flex", justifyContent: "space-between", marginTop: "var(--space-2)" }}>
-          <button onClick={() => navigate("/v2")} className="ds-btn ds-btn-secondary">← Back</button>
-          <button onClick={handleContinue} className="ds-btn ds-btn-primary">Continue to Design →</button>
+        <div className="v2-nav-footer">
+          <button onClick={() => navigate("/")} className="v2-footer-btn v2-footer-btn-secondary">← Back</button>
+          <button onClick={handleContinue} className="v2-footer-btn v2-footer-btn-primary">Continue to Design →</button>
         </div>
 
       </div>

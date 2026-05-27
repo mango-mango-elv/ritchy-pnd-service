@@ -16,11 +16,11 @@ export function SignUpPage() {
     if (form.password !== form.confirm) { setError("Passwords do not match."); return; }
     setError("");
     sessionStorage.setItem("ritchy-v2-user", JSON.stringify({ email: form.email }));
-    navigate("/v2/compliance");
+    navigate("/compliance");
   };
 
   return (
-    <div style={{ overflowY: "auto", padding: "var(--space-8) var(--space-5)" }}>
+    <div className="v2-page-container">
       <div style={{ maxWidth: "440px", margin: "0 auto", display: "grid", gap: "var(--space-5)" }}>
 
         <div>
@@ -108,8 +108,8 @@ export function SignUpPage() {
           </div>
         </form>
 
-        <div style={{ display: "flex", justifyContent: "flex-start" }}>
-          <button onClick={() => navigate("/v2/design")} className="ds-btn ds-btn-secondary">← Back to Design</button>
+        <div className="v2-nav-footer">
+          <button onClick={() => navigate("/design")} className="v2-footer-btn v2-footer-btn-secondary">← Back to Design</button>
         </div>
       </div>
     </div>

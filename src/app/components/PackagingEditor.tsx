@@ -133,6 +133,8 @@ export function PackagingEditor({ onRegisterCallbacks, onGoToNextStage, initialD
   const [isPanelOpen,   setIsPanelOpen]   = useState(true);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [wizardStep,    setWizardStep]    = useState<WizardStep>("choice");
+  /** Color being hovered for preview — null means use the committed color */
+  const [hoverColor,    setHoverColor]    = useState<PackageColor | null>(null);
 
   const totalSlots = 10;
 
@@ -140,7 +142,11 @@ export function PackagingEditor({ onRegisterCallbacks, onGoToNextStage, initialD
   const logoInputRef      = useRef<HTMLInputElement>(null);
   const skullIconInputRef = useRef<HTMLInputElement>(null);
 
-  const flavor = normalizeFlavor(flavors[activeFlavor]);
+  const flavor = normalizeFlavor(
+    hoverColor
+      ? { ...flavors[activeFlavor], packageColor: hoverColor }
+      : flavors[activeFlavor]
+  );
 
   /* ── Flavor update helpers ── */
   const updateFlavor = useCallback((updates: Partial<Flavor>) => {
@@ -461,34 +467,59 @@ export function PackagingEditor({ onRegisterCallbacks, onGoToNextStage, initialD
                   <div style={{ fontSize: "13px", color: "var(--color-text-secondary)", fontFamily: "var(--font-sans)", lineHeight: 1.5 }}>
                     Pick the base color for your packaging line.
                   </div>
+                  {hoverColor && (
+                    <div style={{
+                      marginTop: "var(--space-2)",
+                      fontSize: "11px", fontFamily: "var(--font-sans)",
+                      color: "var(--color-text-muted)",
+                      display: "flex", alignItems: "center", gap: 6,
+                    }}>
+                      <div style={{
+                        width: 10, height: 10, borderRadius: "50%",
+                        background: PACKAGE_COLORS.find(c => c.key === hoverColor)?.hex,
+                        border: "1px solid var(--color-border)", flexShrink: 0,
+                      }} />
+                      Previewing {PACKAGE_COLORS.find(c => c.key === hoverColor)?.label} — click to apply
+                    </div>
+                  )}
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "var(--space-3)" }}>
-                  {PACKAGE_COLORS.map(c => (
-                    <button
-                      key={c.key}
-                      onClick={() => updateFlavor({ packageColor: c.key as PackageColor })}
-                      title={c.label}
-                      style={{
-                        aspectRatio: "1", borderRadius: "var(--radius-md)",
-                        background: c.hex,
-                        border: flavor.packageColor === c.key
-                          ? "3px solid var(--color-text-primary)"
-                          : "2px solid var(--color-border-light)",
-                        cursor: "pointer", position: "relative",
-                        transition: "border .12s, transform .1s",
-                        transform: flavor.packageColor === c.key ? "scale(1.06)" : "scale(1)",
-                        display: "flex", alignItems: "flex-end", justifyContent: "center",
-                        paddingBottom: "var(--space-2)",
-                      }}
-                    >
-                      {flavor.packageColor === c.key && (
-                        <Check size={14} style={{ color: c.key === "cream" ? "#1C1917" : "#fff", position: "absolute", top: 6, right: 6 }} />
-                      )}
-                      <span style={{ fontSize: "10px", fontFamily: "var(--font-sans)", fontWeight: 600, color: c.key === "cream" ? "#1C1917" : "#fff", opacity: 0.9 }}>
-                        {c.label}
-                      </span>
-                    </button>
-                  ))}
+                  {PACKAGE_COLORS.map(c => {
+                    const committed = flavors[activeFlavor].packageColor;
+                    const isSelected = committed === c.key;
+                    const isPreviewed = hoverColor === c.key;
+                    return (
+                      <button
+                        key={c.key}
+                        onClick={() => { updateFlavor({ packageColor: c.key as PackageColor }); setHoverColor(null); }}
+                        onMouseEnter={() => setHoverColor(c.key as PackageColor)}
+                        onMouseLeave={() => setHoverColor(null)}
+                        title={c.label}
+                        style={{
+                          aspectRatio: "1", borderRadius: "var(--radius-md)",
+                          background: c.hex,
+                          border: isSelected
+                            ? "3px solid var(--color-text-primary)"
+                            : isPreviewed
+                              ? "3px solid rgba(255,255,255,0.7)"
+                              : "2px solid var(--color-border-light)",
+                          cursor: "pointer", position: "relative",
+                          transition: "border .1s, transform .1s, box-shadow .1s",
+                          transform: isSelected || isPreviewed ? "scale(1.06)" : "scale(1)",
+                          boxShadow: isPreviewed && !isSelected ? "0 0 0 3px rgba(0,0,0,0.15)" : "none",
+                          display: "flex", alignItems: "flex-end", justifyContent: "center",
+                          paddingBottom: "var(--space-2)",
+                        }}
+                      >
+                        {isSelected && (
+                          <Check size={14} style={{ color: c.key === "cream" ? "#1C1917" : "#fff", position: "absolute", top: 6, right: 6 }} />
+                        )}
+                        <span style={{ fontSize: "10px", fontFamily: "var(--font-sans)", fontWeight: 600, color: c.key === "cream" ? "#1C1917" : "#fff", opacity: 0.9 }}>
+                          {c.label}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </>
             )}
@@ -706,26 +737,48 @@ export function PackagingEditor({ onRegisterCallbacks, onGoToNextStage, initialD
                 <Divider />
 
                 <SectionLabel>Package color</SectionLabel>
-                <div style={{ display: "flex", gap: "6px", marginBottom: "var(--space-3)" }}>
-                  {PACKAGE_COLORS.map(c => (
-                    <button
-                      key={c.key}
-                      onClick={() => updateFlavor({ packageColor: c.key as PackageColor })}
-                      title={c.label}
-                      style={{
-                        width: "24px", height: "24px", borderRadius: "var(--radius-full)",
-                        background: c.hex,
-                        border: flavor.packageColor === c.key ? "2px solid var(--color-text-primary)" : "1.5px solid var(--color-border-light)",
-                        cursor: "pointer", flexShrink: 0,
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                      }}
-                    >
-                      {flavor.packageColor === c.key && <Check size={10} style={{ color: c.key === "cream" ? "#1C1917" : "#fff" }} />}
-                    </button>
-                  ))}
+                <div style={{ display: "flex", gap: "6px", marginBottom: "var(--space-2)" }}>
+                  {PACKAGE_COLORS.map(c => {
+                    const committed = flavors[activeFlavor].packageColor;
+                    const isSelected = committed === c.key;
+                    const isPreviewed = hoverColor === c.key;
+                    return (
+                      <button
+                        key={c.key}
+                        onClick={() => { updateFlavor({ packageColor: c.key as PackageColor }); setHoverColor(null); }}
+                        onMouseEnter={() => setHoverColor(c.key as PackageColor)}
+                        onMouseLeave={() => setHoverColor(null)}
+                        title={c.label}
+                        style={{
+                          width: "28px", height: "28px", borderRadius: "var(--radius-full)",
+                          background: c.hex,
+                          border: isSelected
+                            ? "2.5px solid var(--color-text-primary)"
+                            : isPreviewed
+                              ? "2.5px solid rgba(255,255,255,0.6)"
+                              : "1.5px solid var(--color-border-light)",
+                          cursor: "pointer", flexShrink: 0,
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          transition: "border .1s, transform .1s, box-shadow .1s",
+                          transform: isPreviewed ? "scale(1.18)" : "scale(1)",
+                          boxShadow: isPreviewed && !isSelected ? "0 0 0 2.5px rgba(0,0,0,0.18)" : "none",
+                        }}
+                      >
+                        {isSelected && <Check size={10} style={{ color: c.key === "cream" ? "#1C1917" : "#fff" }} />}
+                      </button>
+                    );
+                  })}
                 </div>
-                <div style={{ fontSize: "10px", fontFamily: "var(--font-sans)", color: "var(--color-text-muted)", marginBottom: "var(--space-4)" }}>
-                  {PACKAGE_COLORS.find(c => c.key === flavor.packageColor)?.label ?? "—"}
+                <div style={{
+                  fontSize: "10px", fontFamily: "var(--font-sans)",
+                  color: hoverColor ? "var(--color-text-primary)" : "var(--color-text-muted)",
+                  marginBottom: "var(--space-4)",
+                  transition: "color .15s",
+                  minHeight: "14px",
+                }}>
+                  {hoverColor
+                    ? <>Previewing <strong>{PACKAGE_COLORS.find(c => c.key === hoverColor)?.label}</strong> — click to apply</>
+                    : (PACKAGE_COLORS.find(c => c.key === flavors[activeFlavor].packageColor)?.label ?? "—")}
                 </div>
 
                 <SectionLabel>Title font</SectionLabel>

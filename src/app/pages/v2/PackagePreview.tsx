@@ -10,6 +10,15 @@ interface Props {
   gradient:    string;
   logoDataUrl: string;
   logoScale?:  number;
+  bgImageDataUrl?: string;
+  bgImagePositionBox?: { x: number; y: number; };
+  bgImageScaleBox?: number;
+  bgImagePositionBottle?: { x: number; y: number; };
+  bgImageScaleBottle?: number;
+  onBgPositionBoxChange?: (pos: { x: number; y: number; }) => void;
+  onBgPositionBottleChange?: (pos: { x: number; y: number; }) => void;
+  colorTab?: string;
+  graphicsColor?: string;
 }
 
 interface BoxProps {
@@ -20,6 +29,12 @@ interface BoxProps {
   gradient:   string;
   logoDataUrl: string;
   logoScale?:  number;
+  bgImageDataUrl?: string;
+  bgImagePosition?: { x: number; y: number; };
+  bgImageScale?: number;
+  onBgPositionChange?: (pos: { x: number; y: number; }) => void;
+  colorTab?: string;
+  graphicsColor?: string;
 }
 
 interface BottleProps extends BoxProps {
@@ -29,6 +44,79 @@ interface BottleProps extends BoxProps {
 const WARNING_TEXT = "This product contains nicotine which is a highly addictive substance.";
 
 const abs = (style: React.CSSProperties): React.CSSProperties => ({ position: "absolute", ...style });
+
+/* ─── Shared Image Background ─────────────────────────────────── */
+function ImageBackground({
+  bgImageDataUrl,
+  bgImagePosition = { x: 0, y: 0 },
+  bgImageScale = 1.0,
+  onBgPositionChange,
+  draggable
+}: {
+  bgImageDataUrl: string;
+  bgImagePosition?: { x: number; y: number; };
+  bgImageScale?: number;
+  onBgPositionChange?: (pos: { x: number; y: number; }) => void;
+  draggable?: boolean;
+}) {
+  const handlePointerDown = (e: React.PointerEvent) => {
+    if (!draggable || !onBgPositionChange) return;
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const startBgX = bgImagePosition.x;
+    const startBgY = bgImagePosition.y;
+
+    const target = e.currentTarget as HTMLElement;
+    target.setPointerCapture(e.pointerId);
+
+    const handlePointerMove = (moveEvent: PointerEvent) => {
+      const dx = moveEvent.clientX - startX;
+      const dy = moveEvent.clientY - startY;
+      onBgPositionChange({ x: startBgX + dx, y: startBgY + dy });
+    };
+
+    const handlePointerUp = (upEvent: PointerEvent) => {
+      target.releasePointerCapture(e.pointerId);
+      target.removeEventListener("pointermove", handlePointerMove);
+      target.removeEventListener("pointerup", handlePointerUp);
+    };
+
+    target.addEventListener("pointermove", handlePointerMove);
+    target.addEventListener("pointerup", handlePointerUp);
+  };
+
+  return (
+    <div
+      onPointerDown={handlePointerDown}
+      style={{
+        position: "absolute",
+        inset: 0,
+        overflow: "hidden",
+        cursor: draggable ? "move" : "default",
+        touchAction: draggable ? "none" : "auto",
+      }}
+    >
+      <img
+        src={bgImageDataUrl}
+        alt="background"
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: `translate(-50%, -50%) translate(${bgImagePosition.x}px, ${bgImagePosition.y}px) scale(${bgImageScale})`,
+          transformOrigin: "center center",
+          height: "100%",
+          width: "auto",
+          maxWidth: "none",
+          maxHeight: "none",
+          display: "block",
+          pointerEvents: "none",
+          userSelect: "none",
+        }}
+      />
+    </div>
+  );
+}
 
 /* ─── Box root wrapper ────────────────────────────────────────── */
 function BoxRoot({ children }: { children: React.ReactNode }) {
@@ -53,6 +141,7 @@ function WarningZone() {
       display: "flex", alignItems: "center", justifyContent: "center",
       padding: "3px 8px",
       overflow: "hidden",
+      pointerEvents: "none",
     })}>
       <p style={{
         margin: 0,
@@ -69,21 +158,33 @@ function WarningZone() {
   );
 }
 
+
 /* ─── T1 — Flavor First ───────────────────────────────────────── */
-export function BoxT1Flavor({ brand, flavor, strength, nicLabel, gradient, logoDataUrl, logoScale }: BoxProps) {
+export function BoxT1Flavor({ brand, flavor, strength, nicLabel, gradient, logoDataUrl, logoScale, bgImageDataUrl, bgImagePosition, bgImageScale, onBgPositionChange, colorTab, graphicsColor }: BoxProps) {
   const nicText = `${nicLabel} • ${strength}`;
+  const textColor = graphicsColor ?? "#ffffff";
   return (
     <BoxRoot>
       {/* bg */}
-      <div style={abs({ inset: 0, background: gradient })} />
+      {bgImageDataUrl ? (
+        <ImageBackground
+          bgImageDataUrl={bgImageDataUrl}
+          bgImagePosition={bgImagePosition}
+          bgImageScale={bgImageScale}
+          onBgPositionChange={onBgPositionChange}
+          draggable={colorTab === "image"}
+        />
+      ) : (
+        <div style={abs({ inset: 0, background: gradient })} />
+      )}
 
       {/* flavor — large, top-left */}
-      <div style={abs({ top: "5%", left: "7.5%", right: "7.5%" })}>
+      <div style={abs({ top: "5%", left: "7.5%", right: "7.5%", pointerEvents: "none" })}>
         <p style={{
           margin: 0,
           fontSize: "9cqw",
           fontWeight: 800,
-          color: "#ffffff",
+          color: textColor,
           textTransform: "uppercase",
           lineHeight: 1.1,
           wordBreak: "break-word",
@@ -94,12 +195,13 @@ export function BoxT1Flavor({ brand, flavor, strength, nicLabel, gradient, logoD
       </div>
 
       {/* nic and strength */}
-      <div style={abs({ top: "20%", left: "7.5%", right: "7.5%" })}>
+      <div style={abs({ top: "20%", left: "7.5%", right: "7.5%", pointerEvents: "none" })}>
         <p style={{
           margin: 0,
           fontSize: "5cqw",
           fontWeight: 600,
-          color: "rgba(255, 255, 255, 0.95)",
+          color: textColor,
+          opacity: 0.95,
           textTransform: "uppercase",
           letterSpacing: "0.05em",
           fontFamily: "var(--font-sans)",
@@ -114,7 +216,8 @@ export function BoxT1Flavor({ brand, flavor, strength, nicLabel, gradient, logoD
         left: 0,
         right: 0,
         height: "1.2cqw",
-        background: "#ffffff",
+        background: textColor,
+        pointerEvents: "none",
       })} />
 
       {/* brand logo/text — bottom-left */}
@@ -125,6 +228,7 @@ export function BoxT1Flavor({ brand, flavor, strength, nicLabel, gradient, logoD
         height: "12cqw",
         display: "flex",
         alignItems: "flex-end",
+        pointerEvents: "none",
       })}>
         {logoDataUrl ? (
           <img
@@ -143,7 +247,7 @@ export function BoxT1Flavor({ brand, flavor, strength, nicLabel, gradient, logoD
             margin: 0,
             fontSize: "6.5cqw",
             fontWeight: 900,
-            color: "#ffffff",
+            color: textColor,
             textTransform: "uppercase",
             fontFamily: "var(--font-sans)",
           }}>
@@ -158,17 +262,29 @@ export function BoxT1Flavor({ brand, flavor, strength, nicLabel, gradient, logoD
 }
 
 /* ─── T2 — Centered (matches Figma Template 12, canvas 164×363) ── */
-export function BoxT2Centered({ brand, flavor, strength, nicLabel, gradient, logoDataUrl, logoScale }: BoxProps) {
+export function BoxT2Centered({ brand, flavor, strength, nicLabel, gradient, logoDataUrl, logoScale, bgImageDataUrl, bgImagePosition, bgImageScale, onBgPositionChange, colorTab, graphicsColor }: BoxProps) {
+  const textColor = graphicsColor ?? "#252525";
   return (
     <BoxRoot>
       {/* background */}
-      <div style={abs({ inset: 0, background: gradient })} />
+      {bgImageDataUrl ? (
+        <ImageBackground
+          bgImageDataUrl={bgImageDataUrl}
+          bgImagePosition={bgImagePosition}
+          bgImageScale={bgImageScale}
+          onBgPositionChange={onBgPositionChange}
+          draggable={colorTab === "image"}
+        />
+      ) : (
+        <div style={abs({ inset: 0, background: gradient })} />
+      )}
 
       {/* logo centered in the upper brand zone */}
       {logoDataUrl && (
         <div style={abs({
           top: "12%", left: 0, right: 0, bottom: "70.25%",
-          display: "flex", alignItems: "center", justifyContent: "center", padding: "0 4%"
+          display: "flex", alignItems: "center", justifyContent: "center", padding: "0 4%",
+          pointerEvents: "none"
         })}>
           <img
             src={logoDataUrl}
@@ -187,13 +303,14 @@ export function BoxT2Centered({ brand, flavor, strength, nicLabel, gradient, log
       {/* brand — 15.43%–29.75% zone, Albert Sans Black */}
       {!logoDataUrl && (
         <div style={abs({ top: "15.43%", left: 0, right: 0, bottom: "70.25%",
-          display: "flex", alignItems: "center", justifyContent: "center", padding: "0 4%" })}>
+          display: "flex", alignItems: "center", justifyContent: "center", padding: "0 4%",
+          pointerEvents: "none" })}>
           <p style={{
             margin: 0,
             fontSize: "18.3cqw",
             fontWeight: 900,
             fontFamily: "'Albert Sans', var(--font-sans)",
-            color: "#252525",
+            color: textColor,
             textTransform: "uppercase",
             textAlign: "center",
             lineHeight: 0.874,
@@ -205,13 +322,13 @@ export function BoxT2Centered({ brand, flavor, strength, nicLabel, gradient, log
       )}
 
       {/* flavor — at 40.5%, Albert Sans ExtraBold */}
-      <div style={abs({ top: "40.5%", left: 0, right: 0 })}>
+      <div style={abs({ top: "40.5%", left: 0, right: 0, pointerEvents: "none" })}>
         <p style={{
           margin: 0,
           fontSize: "9.76cqw",
           fontWeight: 800,
           fontFamily: "'Albert Sans', var(--font-sans)",
-          color: "#252525",
+          color: textColor,
           textTransform: "uppercase",
           textAlign: "center",
           lineHeight: 1.06,
@@ -224,18 +341,20 @@ export function BoxT2Centered({ brand, flavor, strength, nicLabel, gradient, log
       {/* divider — at 56.47% */}
       <div style={abs({
         top: "56.47%", left: "6.71%", right: "6.71%", height: "1.2cqw",
-        background: "#252525",
+        background: textColor,
+        pointerEvents: "none",
       })} />
 
       {/* footer — strength left, nic label right, at 57.6% */}
       <div style={abs({
         top: "57.6%", left: "6.71%", right: "6.71%",
         display: "flex", justifyContent: "space-between", paddingTop: "1.2%",
+        pointerEvents: "none",
       })}>
-        <span style={{ fontSize: "6.1cqw", fontWeight: 500, color: "#252525", fontFamily: "var(--font-sans)" }}>
+        <span style={{ fontSize: "6.1cqw", fontWeight: 500, color: textColor, fontFamily: "var(--font-sans)" }}>
           {strength}
         </span>
-        <span style={{ fontSize: "6.1cqw", fontWeight: 500, color: "#252525", fontFamily: "var(--font-sans)" }}>
+        <span style={{ fontSize: "6.1cqw", fontWeight: 500, color: textColor, fontFamily: "var(--font-sans)" }}>
           {nicLabel}
         </span>
       </div>
@@ -252,28 +371,40 @@ const BOX_MAP: Record<string, React.FC<BoxProps>> = {
 };
 
 /* ─── Bottle label layouts ────────────────────────────────────── */
-function BottleLabelT1({ brand, flavor, strength, nicLabel, gradient, logoDataUrl, logoScale }: BottleProps) {
+function BottleLabelT1({ brand, flavor, strength, nicLabel, gradient, logoDataUrl, logoScale, bgImageDataUrl, bgImagePosition, bgImageScale, onBgPositionChange, colorTab, graphicsColor }: BottleProps) {
   const nicText = `${nicLabel} • ${strength}`;
+  const textColor = graphicsColor ?? "#ffffff";
   return (
     <div style={{
       position: "absolute",
       inset: "50.96% 27.71% 5.23% 9.04%",
-      background: gradient,
       overflow: "hidden",
       containerType: "inline-size",
     }}>
+      {bgImageDataUrl ? (
+        <ImageBackground
+          bgImageDataUrl={bgImageDataUrl}
+          bgImagePosition={bgImagePosition}
+          bgImageScale={bgImageScale}
+          onBgPositionChange={onBgPositionChange}
+          draggable={colorTab === "image"}
+        />
+      ) : (
+        <div style={abs({ inset: 0, background: gradient })} />
+      )}
       {/* flavor — top-left */}
       <div style={{
         position: "absolute",
         top: "5%",
         left: "7.5%",
         right: "7.5%",
+        pointerEvents: "none",
       }}>
         <p style={{
           margin: 0,
           fontSize: "9cqw",
           fontWeight: 800,
-          color: "#ffffff",
+          color: textColor,
           textTransform: "uppercase",
           lineHeight: 1.1,
           wordBreak: "break-word",
@@ -289,12 +420,14 @@ function BottleLabelT1({ brand, flavor, strength, nicLabel, gradient, logoDataUr
         top: "20%",
         left: "7.5%",
         right: "7.5%",
+        pointerEvents: "none",
       }}>
         <p style={{
           margin: 0,
           fontSize: "5cqw",
           fontWeight: 600,
-          color: "rgba(255, 255, 255, 0.95)",
+          color: textColor,
+          opacity: 0.95,
           textTransform: "uppercase",
           letterSpacing: "0.05em",
           fontFamily: "var(--font-sans)",
@@ -310,7 +443,8 @@ function BottleLabelT1({ brand, flavor, strength, nicLabel, gradient, logoDataUr
         left: 0,
         right: 0,
         height: "1.2cqw",
-        background: "#ffffff",
+        background: textColor,
+        pointerEvents: "none",
       }} />
 
       {/* brand/logo — bottom-left */}
@@ -322,6 +456,7 @@ function BottleLabelT1({ brand, flavor, strength, nicLabel, gradient, logoDataUr
         height: "12cqw",
         display: "flex",
         alignItems: "flex-end",
+        pointerEvents: "none",
       }}>
         {logoDataUrl ? (
           <img
@@ -340,7 +475,7 @@ function BottleLabelT1({ brand, flavor, strength, nicLabel, gradient, logoDataUr
             margin: 0,
             fontSize: "6.5cqw",
             fontWeight: 900,
-            color: "#ffffff",
+            color: textColor,
             textTransform: "uppercase",
             fontFamily: "var(--font-sans)",
           }}>
@@ -352,15 +487,26 @@ function BottleLabelT1({ brand, flavor, strength, nicLabel, gradient, logoDataUr
   );
 }
 
-function BottleLabelT2({ brand, flavor, strength, nicLabel, gradient, logoDataUrl, logoScale }: BottleProps) {
+function BottleLabelT2({ brand, flavor, strength, nicLabel, gradient, logoDataUrl, logoScale, bgImageDataUrl, bgImagePosition, bgImageScale, onBgPositionChange, colorTab, graphicsColor }: BottleProps) {
+  const textColor = graphicsColor ?? "#252525";
   return (
     <div style={{
       position: "absolute",
       inset: "50.96% 27.71% 5.23% 9.04%",
-      background: gradient,
       overflow: "hidden",
       containerType: "inline-size",
     }}>
+      {bgImageDataUrl ? (
+        <ImageBackground
+          bgImageDataUrl={bgImageDataUrl}
+          bgImagePosition={bgImagePosition}
+          bgImageScale={bgImageScale}
+          onBgPositionChange={onBgPositionChange}
+          draggable={colorTab === "image"}
+        />
+      ) : (
+        <div style={abs({ inset: 0, background: gradient })} />
+      )}
       {/* brand/logo — centered in the upper zone */}
       <div style={{
         position: "absolute",
@@ -372,6 +518,7 @@ function BottleLabelT2({ brand, flavor, strength, nicLabel, gradient, logoDataUr
         alignItems: "center",
         justifyContent: "center",
         padding: "0 4%",
+        pointerEvents: "none",
       }}>
         {logoDataUrl ? (
           <img
@@ -391,7 +538,7 @@ function BottleLabelT2({ brand, flavor, strength, nicLabel, gradient, logoDataUr
             fontSize: "18.3cqw",
             fontWeight: 900,
             fontFamily: "'Albert Sans', var(--font-sans)",
-            color: "#252525",
+            color: textColor,
             textTransform: "uppercase",
             textAlign: "center",
             lineHeight: 0.874,
@@ -408,13 +555,14 @@ function BottleLabelT2({ brand, flavor, strength, nicLabel, gradient, logoDataUr
         top: "40.5%",
         left: 0,
         right: 0,
+        pointerEvents: "none",
       }}>
         <p style={{
           margin: 0,
           fontSize: "9.76cqw",
           fontWeight: 800,
           fontFamily: "'Albert Sans', var(--font-sans)",
-          color: "#252525",
+          color: textColor,
           textTransform: "uppercase",
           textAlign: "center",
           lineHeight: 1.06,
@@ -431,7 +579,8 @@ function BottleLabelT2({ brand, flavor, strength, nicLabel, gradient, logoDataUr
         left: "6.71%",
         right: "6.71%",
         height: "1.2cqw",
-        background: "#252525",
+        background: textColor,
+        pointerEvents: "none",
       }} />
 
       {/* footer — strength left, nic salt right */}
@@ -443,11 +592,12 @@ function BottleLabelT2({ brand, flavor, strength, nicLabel, gradient, logoDataUr
         display: "flex",
         justifyContent: "space-between",
         paddingTop: "1.2%",
+        pointerEvents: "none",
       }}>
-        <span style={{ fontSize: "6.1cqw", fontWeight: 500, color: "#252525", fontFamily: "var(--font-sans)" }}>
+        <span style={{ fontSize: "6.1cqw", fontWeight: 500, color: textColor, fontFamily: "var(--font-sans)" }}>
           {strength}
         </span>
-        <span style={{ fontSize: "6.1cqw", fontWeight: 500, color: "#252525", fontFamily: "var(--font-sans)" }}>
+        <span style={{ fontSize: "6.1cqw", fontWeight: 500, color: textColor, fontFamily: "var(--font-sans)" }}>
           {nicLabel}
         </span>
       </div>
@@ -456,11 +606,17 @@ function BottleLabelT2({ brand, flavor, strength, nicLabel, gradient, logoDataUr
 }
 
 /* ─── Bottle wrapper ──────────────────────────────────────────── */
-function BottlePreview({ templateId, brand, flavor, strength, nicLabel, gradient, logoDataUrl, logoScale }: {
+function BottlePreview({ templateId, brand, flavor, strength, nicLabel, gradient, logoDataUrl, logoScale, bgImageDataUrl, bgImagePosition, bgImageScale, onBgPositionChange, colorTab, graphicsColor }: {
   templateId: string; brand: string; flavor: string;
   strength: string; nicLabel: string; gradient: string;
   logoDataUrl: string;
   logoScale?: number;
+  bgImageDataUrl?: string;
+  bgImagePosition?: { x: number; y: number; };
+  bgImageScale?: number;
+  onBgPositionChange?: (pos: { x: number; y: number; }) => void;
+  colorTab?: string;
+  graphicsColor?: string;
 }) {
   const LabelComp = templateId === "t1-flavor" ? BottleLabelT1 : BottleLabelT2;
   return (
@@ -469,9 +625,9 @@ function BottlePreview({ templateId, brand, flavor, strength, nicLabel, gradient
         <img
           src={bottleBg}
           alt="bottle"
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block", pointerEvents: "none" }}
         />
-        <LabelComp brand={brand} flavor={flavor} strength={strength} nicLabel={nicLabel} gradient={gradient} logoDataUrl={logoDataUrl} logoScale={logoScale} />
+        <LabelComp brand={brand} flavor={flavor} strength={strength} nicLabel={nicLabel} gradient={gradient} logoDataUrl={logoDataUrl} logoScale={logoScale} bgImageDataUrl={bgImageDataUrl} bgImagePosition={bgImagePosition} bgImageScale={bgImageScale} onBgPositionChange={onBgPositionChange} colorTab={colorTab} graphicsColor={graphicsColor} />
       </div>
       <span style={{ fontSize: "var(--text-xs)", color: "var(--color-text-muted)", fontFamily: "var(--font-sans)" }}>Bottle</span>
     </div>
@@ -479,7 +635,11 @@ function BottlePreview({ templateId, brand, flavor, strength, nicLabel, gradient
 }
 
 /* ─── Main export ─────────────────────────────────────────────── */
-export function PackagePreview({ templateId, brandName, flavorName, strength, nicType, gradient, logoDataUrl, logoScale }: Props) {
+export function PackagePreview({
+  templateId, brandName, flavorName, strength, nicType, gradient, logoDataUrl, logoScale,
+  bgImageDataUrl, bgImagePositionBox, bgImageScaleBox, bgImagePositionBottle, bgImageScaleBottle,
+  onBgPositionBoxChange, onBgPositionBottleChange, colorTab, graphicsColor
+}: Props) {
   const brand    = brandName  || "YOUR BRAND";
   const flavor   = flavorName || "FLAVOR";
   const nicLabel = nicType === "salt" ? "Nic salt" : "Free Base";
@@ -505,12 +665,23 @@ export function PackagePreview({ templateId, brandName, flavorName, strength, ni
         gradient={gradient}
         logoDataUrl={logoDataUrl}
         logoScale={logoScale}
+        bgImageDataUrl={bgImageDataUrl}
+        bgImagePosition={bgImagePositionBottle}
+        bgImageScale={bgImageScaleBottle}
+        onBgPositionChange={onBgPositionBottleChange}
+        colorTab={colorTab}
+        graphicsColor={graphicsColor}
       />
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "6px", width: "100%", marginLeft: "-14%" }}>
         <BoxComp
           brand={brand} flavor={flavor} strength={strength}
           nicLabel={nicLabel} gradient={gradient} logoDataUrl={logoDataUrl}
-          logoScale={logoScale}
+          logoScale={logoScale} bgImageDataUrl={bgImageDataUrl}
+          bgImagePosition={bgImagePositionBox}
+          bgImageScale={bgImageScaleBox}
+          onBgPositionChange={onBgPositionBoxChange}
+          colorTab={colorTab}
+          graphicsColor={graphicsColor}
         />
         <span style={{ fontSize: "var(--text-xs)", color: "var(--color-text-muted)", fontFamily: "var(--font-sans)" }}>Box</span>
       </div>

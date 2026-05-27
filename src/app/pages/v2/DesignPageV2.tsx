@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { Plus } from "lucide-react";
+import { Toaster, toast } from "sonner";
 import { DesignForm } from "./DesignForm";
 import { PackagePreview } from "./PackagePreview";
 import { TEMPLATES } from "./TemplateGrid";
@@ -18,6 +19,7 @@ function mkId() { return `sku-${_id++}`; }
 
 export function DesignPageV2() {
   const navigate = useNavigate();
+  const [aiRunning, setAiRunning] = useState(false);
 
   const [design, setDesign] = useState<DesignState>(() => {
     const order = readSession<Record<string, unknown>>("ritchy-v2-order", {});
@@ -82,7 +84,39 @@ export function DesignPageV2() {
       : selectedPreset.gradient)
     : COLOR_PRESETS[0].gradient;
 
+  const getGraphicsDefaultColor = (sku: SKU) => {
+    if (sku.colorPresetId === "alabaster" || sku.colorPresetId === "gold") {
+      return "black";
+    }
+    return "white";
+  };
+  const activeGraphicsTab = selectedSku
+    ? (selectedSku.graphicsColorTab ?? getGraphicsDefaultColor(selectedSku))
+    : "white";
+  const activeGraphicsColor = activeGraphicsTab === "custom"
+    ? (selectedSku?.graphicsCustomColor ?? "#ffffff")
+    : (activeGraphicsTab === "black" ? "#252525" : "#ffffff");
+
+  const isBrandCompleted = !!(design.brandName.trim() || design.logoDataUrl);
+  const isColorCompleted = selectedSku
+    ? (selectedSku.colorTab !== "image" || !!selectedSku.bgImageDataUrl)
+    : false;
+  const isFlavorCompleted = selectedSku ? selectedSku.displayName.trim() !== "" : false;
+  const canProceed = isBrandCompleted && isColorCompleted && isFlavorCompleted;
+
   const handleContinue = () => {
+    if (!isBrandCompleted) {
+      toast.error("Please specify Brand Name or upload a Logo");
+      return;
+    }
+    if (!isColorCompleted) {
+      toast.error("Please upload a Background Image");
+      return;
+    }
+    if (!isFlavorCompleted) {
+      toast.error("Please specify Flavor Name");
+      return;
+    }
     sessionStorage.setItem("ritchy-v2-design", JSON.stringify({
       templateId:  design.templateId,
       brandName:   design.brandName,
@@ -91,13 +125,15 @@ export function DesignPageV2() {
       logoDataUrl: design.logoDataUrl,
       logoScale:   design.logoScale ?? 1.0,
       accentColor: selectedSku ? (selectedSku.colorTab === "custom" ? selectedSku.customColor : selectedPreset.color) : selectedPreset.color,
+      graphicsColor: activeGraphicsColor,
       background:  { id: selectedPreset.id, label: selectedPreset.label, style: activeGradient },
     }));
-    navigate("/v2/signup");
+    navigate("/signup");
   };
 
   return (
     <div className="v2-design-page">
+      <Toaster richColors position="top-center" />
 
       {/* ── Left sidebar: SKU list ── */}
       <aside className="v2-design-left">
@@ -183,7 +219,7 @@ export function DesignPageV2() {
       <div className="v2-design-stage">
       {/* ── Center: form ── */}
       <main className="v2-design-center">
-        <div className="v2-design-center-inner">
+        <div className="v2-design-center-scroll">
           <div style={{ marginBottom: "12px", paddingTop: "2px" }}>
             <div style={{ fontSize: "var(--text-xs)", letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--color-text-muted)" }}>
               Step 2 of 5
@@ -198,25 +234,17 @@ export function DesignPageV2() {
             patch={patch}
             selectedSku={selectedSku}
             patchSku={p => selectedSku && patchSku(selectedSku.id, p)}
+            aiRunning={aiRunning}
+            setAiRunning={setAiRunning}
           />
 
-          {/* Mobile preview (below form on small screens) */}
-          <div className="v2-design-preview-mobile">
-            <PackagePreview
-              templateId={design.templateId}
-              brandName={design.brandName}
-              flavorName={selectedSku?.displayName ?? ""}
-              strength={selectedSku?.strength ?? "20mg"}
-              nicType={selectedSku?.type ?? "salt"}
-              gradient={activeGradient}
-              logoDataUrl={design.logoDataUrl}
-              logoScale={design.logoScale ?? 1.0}
-            />
-          </div>
 
-          <div className="v2-design-center-footer">
-            <button onClick={() => navigate("/v2/order")} className="ds-btn ds-btn-secondary">← Back</button>
-            <button onClick={handleContinue} className="ds-btn ds-btn-primary">Continue →</button>
+        </div>
+
+        <div className="v2-design-center-footer">
+          <div style={{ display: "flex", justifyContent: "space-between", width: "100%", gap: "12px" }}>
+            <button onClick={() => navigate("/order")} className="v2-footer-btn v2-footer-btn-secondary">← Back</button>
+            <button onClick={handleContinue} disabled={!canProceed} className="v2-footer-btn v2-footer-btn-primary" style={{ opacity: canProceed ? 1 : 0.5, cursor: canProceed ? 'pointer' : 'not-allowed' }}>Continue →</button>
           </div>
         </div>
       </main>
@@ -232,7 +260,7 @@ export function DesignPageV2() {
                 Will be applied for all flavors in this line
               </div>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "8px" }}>
+            <div className="v2-template-selector-list">
               {TEMPLATES.map(t => {
                 const active = design.templateId === t.id;
                 return (
@@ -240,8 +268,8 @@ export function DesignPageV2() {
                     key={t.id}
                     onClick={() => patch({ templateId: t.id })}
                     title={t.label}
+                    className="v2-template-selector-btn"
                     style={{
-                      width: "100%",
                       aspectRatio: "1 / 1",
                       border: active ? "2px solid #111111" : "1.5px solid var(--color-border)",
                       borderRadius: "10px",
@@ -291,17 +319,21 @@ export function DesignPageV2() {
 
           {/* Preview — dynamically sized to fit height and width perfectly */}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flex: 1, minHeight: 0 }}>
-            <div style={{
-              width: "100%",
-              height: "100%",
-              maxHeight: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              minHeight: 0,
-              padding: "12px 32px",
-              boxSizing: "border-box",
-            }}>
+            <div 
+              className={aiRunning ? "v2-ai-shimmer v2-ai-shimmer-pulse" : ""}
+              style={{
+                width: "100%",
+                height: "100%",
+                maxHeight: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: 0,
+                padding: "12px 32px",
+                boxSizing: "border-box",
+                transition: "all 0.3s ease",
+              }}
+            >
               <PackagePreview
                 templateId={design.templateId}
                 brandName={design.brandName}
@@ -311,6 +343,15 @@ export function DesignPageV2() {
                 gradient={activeGradient}
                 logoDataUrl={design.logoDataUrl}
                 logoScale={design.logoScale ?? 1.0}
+                bgImageDataUrl={selectedSku?.bgImageDataUrl}
+                bgImagePositionBox={selectedSku?.bgImagePositionBox}
+                bgImageScaleBox={selectedSku?.bgImageScaleBox ?? 1.0}
+                bgImagePositionBottle={selectedSku?.bgImagePositionBottle}
+                bgImageScaleBottle={selectedSku?.bgImageScaleBottle ?? 1.0}
+                onBgPositionBoxChange={pos => selectedSku && patchSku(selectedSku.id, { bgImagePositionBox: pos })}
+                onBgPositionBottleChange={pos => selectedSku && patchSku(selectedSku.id, { bgImagePositionBottle: pos })}
+                colorTab={selectedSku?.colorTab}
+                graphicsColor={activeGraphicsColor}
               />
             </div>
           </div>

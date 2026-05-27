@@ -50,15 +50,15 @@ export function AppShell() {
   const navigate = useNavigate();
   const [headerActions, setHeaderActions] = useState<React.ReactNode>(null);
 
-  const currentPath = location.pathname.replace(/^\//, "") as StagePath;
+  const currentPath = location.pathname.replace(/^\/v1\//, "").replace(/^\//, "") as StagePath;
   const isWorkflow  = WORKFLOW_PATHS.has(currentPath);
   const currentIdx  = Math.max(0, STAGES.findIndex(s => s.path === currentPath));
 
   const navCtx: StageNavCtx = {
     currentIdx,
-    goTo:   (path) => navigate(`/${path}`),
-    goNext: () => { const n = STAGES[currentIdx + 1]; if (n) navigate(`/${n.path}`); },
-    goBack: () => { const p = STAGES[currentIdx - 1]; if (p) navigate(`/${p.path}`); },
+    goTo:   (path) => navigate(`/v1/${path}`),
+    goNext: () => { const n = STAGES[currentIdx + 1]; if (n) navigate(`/v1/${n.path}`); },
+    goBack: () => { const p = STAGES[currentIdx - 1]; if (p) navigate(`/v1/${p.path}`); },
   };
 
   return (
@@ -142,7 +142,7 @@ function StepBar({ currentIdx }: { currentIdx: number }) {
         return (
           <React.Fragment key={stage.path}>
             <Link
-              to={`/${stage.path}`}
+              to={`/v1/${stage.path}`}
               onClick={(e) => { if (isFuture) e.preventDefault(); }}
               style={{
                 position: "relative",

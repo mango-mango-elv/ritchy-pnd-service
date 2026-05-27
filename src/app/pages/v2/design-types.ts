@@ -22,9 +22,16 @@ export interface SKU {
   type: "salt" | "freebase";
   flavor: string;
   strength: "10mg" | "20mg";
-  colorTab:      "presets" | "custom" | "ai";
+  colorTab:      "presets" | "custom" | "ai" | "image";
   colorPresetId: string;
   customColor:   string;
+  bgImageDataUrl?: string;
+  bgImagePositionBox?: { x: number; y: number; };
+  bgImageScaleBox?: number;
+  bgImagePositionBottle?: { x: number; y: number; };
+  bgImageScaleBottle?: number;
+  graphicsColorTab?: "white" | "black" | "custom";
+  graphicsCustomColor?: string;
 }
 
 export interface DesignState {
