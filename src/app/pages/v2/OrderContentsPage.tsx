@@ -421,60 +421,6 @@ export function OrderContentsPage() {
               </div>
             </div>
 
-            {/* 3. Nicotine Strength */}
-            <div className="sku-form-section">
-              <div className="sku-section-label">3 · Nicotine Strength</div>
-              <div className="fc-pills">
-                {nicotineType === "salt"
-                  ? SALT_STRENGTHS.map(s => (
-                      <button
-                        key={s}
-                        className={`fc-pill ${strength === s ? "active" : ""}`}
-                        onClick={() => setStrength(s)}
-                      >
-                        {s} mg
-                      </button>
-                    ))
-                  : FREEBASE_STRENGTHS.map(s => (
-                      <button
-                        key={s}
-                        className={`fc-pill ${strength === s ? "active" : ""}`}
-                        onClick={() => setStrength(s)}
-                      >
-                        {s} mg
-                      </button>
-                    ))}
-              </div>
-            </div>
-
-            {/* 4. SKU Quantity */}
-            <div className="sku-form-section">
-              <div className="sku-section-label">
-                4 · Quantity <span className="sku-section-hint">(minimum 50 per SKU)</span>
-              </div>
-              <div className="fc-qty-input-wrap">
-                <button
-                  className="fc-qty-btn"
-                  onClick={() => setQuantity(prev => Math.max(MOQ_MIN_SKU, prev - 50))}
-                >
-                  −
-                </button>
-                <input
-                  type="number"
-                  min={MOQ_MIN_SKU}
-                  value={quantity}
-                  onChange={e => setQuantity(Math.max(MOQ_MIN_SKU, parseInt(e.target.value) || MOQ_MIN_SKU))}
-                  className="fc-qty-input"
-                />
-                <button
-                  className="fc-qty-btn"
-                  onClick={() => setQuantity(prev => prev + 50)}
-                >
-                  +
-                </button>
-              </div>
-            </div>
-
           </div>
 
         </div>
