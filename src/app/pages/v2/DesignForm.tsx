@@ -99,7 +99,7 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
           {!design.logoDataUrl && (
             <input
               className="ds-input"
-              placeholder="Enter Brand Name (e.g. EARTH VAPOR)"
+              placeholder="Brand Name"
               value={design.brandName}
               onChange={e => patch({ brandName: e.target.value })}
               onKeyDown={e => {
@@ -482,7 +482,7 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
           <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             <input
               className="ds-input"
-              placeholder="Enter Flavor Name (e.g. PEPPERMINT)"
+              placeholder="Flavor Name"
               value={selectedSku.displayName}
               onChange={e => patchSku({ displayName: e.target.value })}
               onBlur={() => setFlavorTouched(true)}
