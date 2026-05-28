@@ -271,89 +271,115 @@ export function OrderContentsPage() {
       {/* LEFT COLUMN: Product Selection / SKU Form */}
       <main className="v2-design-center v2-configurator-center" style={{ flex: "1 1 auto", maxWidth: "none", background: "#ffffff", borderRadius: "14px", overflow: "hidden", display: "flex", flexDirection: "column" }}>
         <div
-          className="v2-design-center-scroll"
+          className="v2-design-center-scroll hide-scrollbar fc-step1-scroll-container"
           onClick={(e) => {
             if (e.target === e.currentTarget) setSelectedFlavorId("");
           }}
-          style={{ flex: 1, overflowY: "auto", padding: "20px 24px 90px" }}
+          style={{ flex: 1, overflowY: "auto" }}
         >
           
           {/* Header */}
           <div
-            style={{ marginBottom: "28px", paddingTop: "2px" }}
+            className="fc-step1-header"
             onClick={(e) => {
               if (e.target === e.currentTarget) setSelectedFlavorId("");
             }}
           >
-            <div style={{ fontSize: "var(--text-xs)", letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--color-text-muted)" }}>
-              Step 1 of 5
-            </div>
-            <h1 style={{ margin: "4px 0 0", fontSize: "var(--text-xl)", fontWeight: 700, color: "var(--color-text-primary)" }}>
+            <h1 className="fc-step1-title" style={{ margin: 0, fontWeight: 700, letterSpacing: "-0.015em", color: "var(--color-text-primary)" }}>
               Configure Order Contents
             </h1>
-            <p style={{ margin: "2px 0 0", color: "var(--color-text-secondary)", fontSize: "13px" }}>
+            <p className="fc-step1-subtitle" style={{ color: "var(--color-text-secondary)" }}>
               Build your product catalog with multiple flavors and nicotine strengths.
             </p>
           </div>
 
           <div
-            className="sku-builder"
+            className="sku-builder fc-step1-builder-container"
             onClick={(e) => {
               if (e.target === e.currentTarget) setSelectedFlavorId("");
             }}
-            style={{ display: "flex", flexDirection: "column", gap: "32px", width: "100%", alignItems: "stretch" }}
+            style={{ display: "flex", flexDirection: "column", width: "100%", alignItems: "stretch" }}
           >
             
-            {/* 1. Nicotine Type */}
-            <div className="sku-form-section">
-              <div className="sku-section-label">1 · Nicotine Type</div>
-              <div className="nic-type-cards">
-                <button
-                  className={`nic-type-card ${nicotineType === "salt" ? "selected" : ""}`}
-                  onClick={() => setNicotineType("salt")}
-                >
-                  <span className="nic-type-name">Nicotine Salt</span>
-                  <span className="nic-type-desc">Smooth hit, higher nic</span>
-                  {nicotineType === "salt" && (
-                    <div className="nic-type-check">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
-                    </div>
-                  )}
-                </button>
-                <button
-                  className={`nic-type-card ${nicotineType === "freebase" ? "selected" : ""}`}
-                  onClick={() => setNicotineType("freebase")}
-                >
-                  <span className="nic-type-name">Free Base</span>
-                  <span className="nic-type-desc">Classic throat hit</span>
-                  {nicotineType === "freebase" && (
-                    <div className="nic-type-check">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
-                    </div>
-                  )}
-                </button>
+            {/* Nicotine Type */}
+            <div className="sku-form-section fc-step1-form-section" style={{ display: "flex", flexDirection: "column" }}>
+              <div style={{ fontSize: "11px", fontWeight: 600, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "4px" }}>
+                Nicotine Type
+              </div>
+              <div style={{
+                display: "flex", gap: "2px",
+                background: "rgba(0,0,0,0.03)", borderRadius: "8px", padding: "3px",
+              }}>
+                {(["salt", "freebase"] as const).map(type => {
+                  const isActive = nicotineType === type;
+                  const label = type === "salt" ? "Nicotine Salt" : "Free Base";
+                  const desc = type === "salt" ? "Smooth hit, higher nic" : "Classic throat hit";
+                  return (
+                    <button
+                      key={type}
+                      onClick={() => setNicotineType(type)}
+                      className="fc-nic-type-btn"
+                      style={{
+                        flex: 1,
+                        border: "none",
+                        borderRadius: "6px",
+                        background: isActive ? "#ffffff" : "transparent",
+                        boxShadow: isActive ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
+                        color: isActive ? "#111111" : "var(--color-text-secondary)",
+                        cursor: "pointer",
+                        transition: "all 0.15s ease",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        gap: "0"
+                      }}
+                    >
+                      <span className="fc-nic-type-btn-title" style={{ fontWeight: 600, color: isActive ? "#111111" : "var(--color-text-primary)" }}>{label}</span>
+                      <span className="fc-nic-type-btn-desc" style={{ color: isActive ? "var(--color-text-muted)" : "rgba(0,0,0,0.4)", fontWeight: 400 }}>{desc}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
-            {/* 2. Flavor Catalog */}
-            <div className="sku-form-section">
-              <div className="sku-section-label">2 · Flavor</div>
+            {/* Flavor Catalog */}
+            <div className="sku-form-section fc-step1-form-section" style={{ display: "flex", flexDirection: "column" }}>
+              <div style={{ fontSize: "11px", fontWeight: 600, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "4px" }}>
+                Flavor
+              </div>
               
               {/* Category tabs */}
-              <div className="fc-category-tabs">
-                {CATEGORIES.map(cat => (
-                  <button
-                    key={cat}
-                    className={`fc-cat-tab ${selectedCategory === cat ? "active" : ""}`}
-                    onClick={() => setSelectedCategory(cat)}
-                  >
-                    {cat}
-                  </button>
-                ))}
+              <div style={{
+                display: "flex",
+                gap: "4px",
+                overflowX: "auto",
+                scrollbarWidth: "none",
+                WebkitOverflowScrolling: "touch",
+                padding: "2px 0",
+                width: "100%"
+              }}>
+                {CATEGORIES.map(cat => {
+                  const isActive = selectedCategory === cat;
+                  return (
+                    <button
+                      key={cat}
+                      onClick={() => setSelectedCategory(cat)}
+                      className="fc-category-tab-btn"
+                      style={{
+                        fontWeight: isActive ? 600 : 500,
+                        borderRadius: "100px",
+                        border: "none",
+                        background: isActive ? "rgba(17, 17, 17, 0.08)" : "transparent",
+                        color: isActive ? "#111111" : "var(--color-text-secondary)",
+                        cursor: "pointer",
+                        whiteSpace: "nowrap",
+                        transition: "all 0.15s ease"
+                      }}
+                    >
+                      {cat}
+                    </button>
+                  );
+                })}
               </div>
 
               {/* Flavor Cards grid */}
@@ -369,17 +395,15 @@ export function OrderContentsPage() {
                         setSelectedFlavorId(selectedFlavorId === flavorItem.id ? "" : flavorItem.id);
                       }}
                       style={{
-                        background: `linear-gradient(to bottom, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.2)), linear-gradient(135deg, ${flavorItem.gradient[0]}, ${flavorItem.gradient[1]})`,
+                        background: `linear-gradient(to bottom, rgba(255, 255, 255, 0.12), rgba(0, 0, 0, 0.12)), linear-gradient(135deg, ${flavorItem.gradient[0]}, ${flavorItem.gradient[1]})`,
                         border: "none",
-                        boxShadow: active ? "0 0 0 3px #111111, 0 6px 16px rgba(0,0,0,0.15), inset 0 0 0 1px rgba(255,255,255,0.25)" : "0 2px 4px rgba(0,0,0,0.03)",
+                        boxShadow: active ? "0 0 0 2px #ffffff, 0 0 0 4px #111111, 0 8px 20px rgba(0,0,0,0.18)" : "0 2px 6px rgba(0,0,0,0.03)",
                         transform: active ? "translateY(-1.5px) scale(1.01)" : "none",
-                        padding: "10px 12px",
                         display: "flex",
                         flexDirection: "column",
-                        alignItems: "flex-start",
-                        justifyContent: "space-between",
-                        minHeight: "75px",
-                        textAlign: "left",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        textAlign: "center",
                         transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)"
                       }}
                     >
@@ -395,25 +419,12 @@ export function OrderContentsPage() {
                         style={{
                           color: "#ffffff",
                           fontWeight: 700,
-                          fontSize: "14px",
                           letterSpacing: "-0.01em",
                           lineHeight: "1.2",
                           wordBreak: "break-word"
                         }}
                       >
                         {flavorItem.name}
-                      </span>
-                      <span
-                        className="fc-flavor-cat"
-                        style={{
-                          color: "rgba(255,255,255,0.5)",
-                          fontSize: "8px",
-                          fontWeight: 600,
-                          letterSpacing: "0.06em",
-                          textTransform: "uppercase"
-                        }}
-                      >
-                        {flavorItem.category}
                       </span>
                     </button>
                   );
@@ -428,61 +439,67 @@ export function OrderContentsPage() {
         {/* Floating Add to Order button footer (Only shown when a flavor is selected) */}
         {selectedFlavorId && (
           <div
-            className="v2-sticky-add-footer"
+            className="v2-sticky-add-footer fc-step1-sticky-footer"
             style={{
               position: "sticky",
               bottom: 0,
-              padding: "12px 20px",
               background: "#ffffff",
-              borderTop: "1px solid rgba(0,0,0,0.06)",
-              boxShadow: "0 -6px 20px rgba(0,0,0,0.05)",
+              borderTop: "none",
+              boxShadow: "0 -8px 30px rgba(0,0,0,0.06)",
               display: "flex",
               flexDirection: "column",
-              gap: "10px",
               zIndex: 10
             }}
           >
             {/* Inline selectors row */}
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px", flexWrap: "wrap" }}>
+            <div className="fc-step1-footer-selectors-row" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap" }}>
               {/* Strength selector */}
-              <div style={{ display: "flex", flexDirection: "column", gap: "4px", flex: "1 1 auto" }}>
-                <span style={{ fontSize: "10px", fontWeight: 700, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "2px", flex: "1 1 auto" }}>
+                <span style={{ fontSize: "9px", fontWeight: 700, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "2px" }}>
                   Nicotine Strength
                 </span>
-                <div style={{ display: "flex", gap: "6px" }}>
-                  {(nicotineType === "salt" ? SALT_STRENGTHS : FREEBASE_STRENGTHS).map(s => (
-                    <button
-                      key={s}
-                      onClick={() => setStrength(s)}
-                      style={{
-                        padding: "5px 10px",
-                        fontSize: "11px",
-                        fontWeight: 600,
-                        borderRadius: "6px",
-                        border: "1.5px solid",
-                        borderColor: strength === s ? "#111111" : "rgba(0,0,0,0.08)",
-                        background: strength === s ? "#111111" : "#ffffff",
-                        color: strength === s ? "#ffffff" : "#111111",
-                        cursor: "pointer",
-                        transition: "all 0.15s"
-                      }}
-                    >
-                      {s} mg
-                    </button>
-                  ))}
+                <div style={{
+                  display: "flex", gap: "2px",
+                  background: "rgba(0,0,0,0.03)", borderRadius: "6px", padding: "2px",
+                  alignSelf: "flex-start"
+                }}>
+                  {(nicotineType === "salt" ? SALT_STRENGTHS : FREEBASE_STRENGTHS).map(s => {
+                    const isActive = strength === s;
+                    return (
+                      <button
+                        key={s}
+                        onClick={() => setStrength(s)}
+                        className="fc-step1-footer-strength-btn"
+                        style={{
+                          fontWeight: isActive ? 600 : 500,
+                          borderRadius: "4px",
+                          border: "none",
+                          background: isActive ? "#ffffff" : "transparent",
+                          boxShadow: isActive ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
+                          color: isActive ? "#111111" : "var(--color-text-secondary)",
+                          cursor: "pointer",
+                          transition: "all 0.15s"
+                        }}
+                      >
+                        {s} mg
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
               {/* Quantity selector */}
-              <div style={{ display: "flex", flexDirection: "column", gap: "4px", flex: "0 0 auto", alignItems: "flex-end" }}>
-                <span style={{ fontSize: "10px", fontWeight: 700, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "2px", flex: "0 0 auto", alignItems: "flex-end" }}>
+                <span style={{ fontSize: "9px", fontWeight: 700, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "2px" }}>
                   Quantity
                 </span>
-                <div className="fc-qty-input-wrap" style={{ margin: 0, height: "30px", background: "#f3f4f6", border: "1px solid rgba(0,0,0,0.05)", borderRadius: "6px", overflow: "hidden", display: "flex", alignItems: "center" }}>
+                <div className="fc-qty-input-wrap" style={{ margin: 0, height: "28px", background: "rgba(0,0,0,0.03)", border: "none", borderRadius: "6px", overflow: "hidden", display: "flex", alignItems: "center" }}>
                   <button
                     className="fc-qty-btn"
-                    style={{ width: "30px", height: "30px", border: "none", background: "transparent", cursor: "pointer", fontSize: "14px", fontWeight: "bold" }}
+                    style={{ width: "28px", height: "28px", border: "none", background: "transparent", cursor: "pointer", fontSize: "12px", fontWeight: 600, color: "var(--color-text-secondary)" }}
                     onClick={() => setQuantity(prev => Math.max(MOQ_MIN_SKU, prev - 50))}
+                    onMouseEnter={e => e.currentTarget.style.background = "rgba(0,0,0,0.04)"}
+                    onMouseLeave={e => e.currentTarget.style.background = "transparent"}
                   >
                     −
                   </button>
@@ -492,12 +509,14 @@ export function OrderContentsPage() {
                     value={quantity}
                     onChange={e => setQuantity(Math.max(MOQ_MIN_SKU, parseInt(e.target.value) || MOQ_MIN_SKU))}
                     className="fc-qty-input"
-                    style={{ width: "45px", height: "30px", fontSize: "12px", border: "none", background: "transparent", textAlign: "center", fontWeight: 600 }}
+                    style={{ width: "48px", height: "28px", padding: 0, fontSize: "11px", border: "none", background: "transparent", textAlign: "center", fontWeight: 700, color: "var(--color-text-primary)", outline: "none" }}
                   />
                   <button
                     className="fc-qty-btn"
-                    style={{ width: "30px", height: "30px", border: "none", background: "transparent", cursor: "pointer", fontSize: "14px", fontWeight: "bold" }}
+                    style={{ width: "28px", height: "28px", border: "none", background: "transparent", cursor: "pointer", fontSize: "12px", fontWeight: 600, color: "var(--color-text-secondary)" }}
                     onClick={() => setQuantity(prev => prev + 50)}
+                    onMouseEnter={e => e.currentTarget.style.background = "rgba(0,0,0,0.04)"}
+                    onMouseLeave={e => e.currentTarget.style.background = "transparent"}
                   >
                     +
                   </button>
@@ -506,9 +525,9 @@ export function OrderContentsPage() {
             </div>
 
             <button
-              className="sku-add-btn"
+              className="sku-add-btn fc-step1-add-btn"
               onClick={handleAddSku}
-              style={{ margin: 0, width: "100%", height: "42px" }}
+              style={{ margin: 0, width: "100%" }}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <line x1="12" y1="5" x2="12" y2="19" />
@@ -525,21 +544,52 @@ export function OrderContentsPage() {
         <div className="v2-design-right-card" style={{ display: "flex", flexDirection: "column", height: "100%", padding: "20px", boxSizing: "border-box", minHeight: 0 }}>
           
           {/* FIXED HEADER: Pricing Mode Toggle (Always Pinned at Top) */}
-          <div style={{ flexShrink: 0, display: "flex", flexDirection: "column", gap: "10px", marginBottom: "16px" }}>
-            <div className="pricing-mode-toggle" style={{ margin: 0 }}>
-              <button
-                className={`pricing-mode-tab ${pricingMode === "spot" ? "active" : ""}`}
-                onClick={() => setPricingMode("spot")}
-              >
-                Spot (one-time)
-              </button>
-              <button
-                className={`pricing-mode-tab ${pricingMode === "subscribe" ? "active" : ""}`}
-                onClick={() => setPricingMode("subscribe")}
-              >
-                Subscribe
-                <span className="pricing-mode-badge">−17% to −30%</span>
-              </button>
+          <div style={{ flexShrink: 0, display: "flex", flexDirection: "column", gap: "10px", marginBottom: "20px" }}>
+            <div style={{
+              display: "flex", gap: "2px",
+              background: "rgba(0,0,0,0.03)", borderRadius: "8px", padding: "3px",
+            }}>
+              {(["spot", "subscribe"] as const).map(mode => {
+                const isActive = pricingMode === mode;
+                const label = mode === "spot" ? "Spot (one-time)" : "Subscribe";
+                return (
+                  <button
+                    key={mode}
+                    onClick={() => setPricingMode(mode)}
+                    style={{
+                      flex: 1, padding: "7px 6px",
+                      border: "none",
+                      borderRadius: "6px",
+                      background: isActive ? "#ffffff" : "transparent",
+                      boxShadow: isActive ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
+                      color: isActive ? "#111111" : "var(--color-text-secondary)",
+                      fontSize: "12px",
+                      fontWeight: isActive ? 600 : 500,
+                      cursor: "pointer",
+                      transition: "all 0.15s ease",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "6px"
+                    }}
+                  >
+                    <span>{label}</span>
+                    {mode === "subscribe" && (
+                      <span style={{
+                        color: "#166534",
+                        background: "#dcfce7",
+                        borderRadius: "100px",
+                        padding: "1px 6px",
+                        fontSize: "9px",
+                        fontWeight: 700,
+                        letterSpacing: "0.02em"
+                      }}>
+                        −30% Max
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
             </div>
 
             {pricingMode === "subscribe" && (
@@ -551,15 +601,15 @@ export function OrderContentsPage() {
           </div>
 
           {/* Scrollable Catalog & Configuration settings */}
-          <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "16px", paddingRight: "4px" }}>
+          <div className="hide-scrollbar" style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "16px", paddingRight: "4px" }}>
 
             {/* Combined Header & MOQ Indicator */}
             <div style={{
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              paddingBottom: "12px",
-              borderBottom: "1px solid rgba(0,0,0,0.06)",
+              paddingBottom: "8px",
+              borderBottom: "none",
               marginBottom: "4px",
               flexShrink: 0
             }}>
@@ -631,7 +681,7 @@ export function OrderContentsPage() {
                 </p>
               </div>
             ) : (
-              <div className="sku-list" style={{ flexShrink: 0, borderBottom: "1px solid rgba(0,0,0,0.04)", paddingBottom: "8px" }}>
+              <div className="sku-list" style={{ flexShrink: 0, borderBottom: "none", paddingBottom: "0", display: "flex", flexDirection: "column", gap: "2px" }}>
                 {skus.map(sku => {
                   const skuPrice = sku.quantity * unitPrice;
                   return (
@@ -673,10 +723,18 @@ export function OrderContentsPage() {
               <div className="sub-panel">
 
                 {/* 1. Slider controls */}
-                <div className="sub-slider-section">
-                  <div className="sub-slider-label">
+                <div style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "8px",
+                  padding: "14px",
+                  background: "rgba(0,0,0,0.02)",
+                  borderRadius: "10px",
+                  border: "none"
+                }}>
+                  <div className="sub-slider-label" style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", fontSize: "10px", textTransform: "uppercase", fontWeight: 600, color: "var(--color-text-secondary)" }}>
                     <span>Annual volume commit</span>
-                    <span className="sub-slider-value">
+                    <span className="sub-slider-value" style={{ fontSize: "14px", fontWeight: 700, color: "#111111" }}>
                       {subscriptionPlan.annualUnits.toLocaleString()} / yr
                     </span>
                   </div>
@@ -687,92 +745,161 @@ export function OrderContentsPage() {
                     step={1}
                     value={SUBSCRIPTION_PLANS.findIndex(p => p.key === subscriptionPlan.key)}
                     onChange={e => setSubPlan(SUBSCRIPTION_PLANS[parseInt(e.target.value)])}
-                    className="sub-slider"
+                    style={{
+                      width: "100%",
+                      accentColor: "#111111",
+                      cursor: "pointer",
+                      height: "4px",
+                      margin: "6px 0",
+                      background: "rgba(0,0,0,0.1)",
+                      borderRadius: "2px",
+                      outline: "none"
+                    }}
                   />
-                  <div className="sub-slider-stops">
-                    {SUBSCRIPTION_PLANS.map(plan => (
-                      <button
-                        key={plan.key}
-                        className={`sub-slider-stop ${plan.key === subscriptionPlan.key ? "active" : ""}`}
-                        onClick={() => setSubPlan(plan)}
-                      >
-                        {plan.annualUnits >= 1000000
-                          ? `${(plan.annualUnits / 1000000).toFixed(0)}M`
-                          : `${(plan.annualUnits / 1000).toFixed(0)}k`}
-                      </button>
-                    ))}
+                  <div style={{ display: "flex", justifyContent: "space-between", marginTop: "2px" }}>
+                    {SUBSCRIPTION_PLANS.map(plan => {
+                      const isActive = plan.key === subscriptionPlan.key;
+                      return (
+                        <button
+                          key={plan.key}
+                          onClick={() => setSubPlan(plan)}
+                          style={{
+                            color: isActive ? "#111111" : "#a1a1aa",
+                            cursor: "pointer",
+                            background: "none",
+                            border: "none",
+                            padding: "2px 4px",
+                            fontSize: "10px",
+                            fontWeight: isActive ? 700 : 500,
+                            transition: "color 0.15s",
+                            fontFamily: "inherit"
+                          }}
+                        >
+                          {plan.annualUnits >= 1000000
+                            ? `${(plan.annualUnits / 1000000).toFixed(0)}M`
+                            : `${(plan.annualUnits / 1000).toFixed(0)}k`}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
-                {/* 2. Plan Card */}
-                <div className="sub-plan-card">
-                  <div className="sub-plan-header">
-                    <div className="sub-plan-name">{subscriptionPlan.name}</div>
-                    <div className="sub-plan-discount">−{subDiscountPercent}%</div>
+                {/* 2. Plan Details (Borderless & Modern) */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "4px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "4px 0" }}>
+                    <div style={{ color: "#111111", fontSize: "13px", fontWeight: 700 }}>
+                      {subscriptionPlan.name}
+                    </div>
+                    <div style={{
+                      color: "#166534",
+                      background: "#dcfce7",
+                      borderRadius: "100px",
+                      padding: "2px 8px",
+                      fontSize: "11px",
+                      fontWeight: 700
+                    }}>
+                      −{subDiscountPercent}% Off
+                    </div>
                   </div>
 
-                  <div className="sub-plan-grid">
-                    <div className="sub-plan-row">
-                      <span className="sub-plan-row-label">Annual commit</span>
-                      <span className="sub-plan-row-value">{subscriptionPlan.annualUnits.toLocaleString()} bottles</span>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "1px", background: "rgba(0,0,0,0.02)", borderRadius: "8px", overflow: "hidden" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 12px", fontSize: "11px" }}>
+                      <span style={{ color: "var(--color-text-secondary)" }}>Annual volume commit</span>
+                      <span style={{ color: "#111111", fontWeight: 600 }}>{subscriptionPlan.annualUnits.toLocaleString()} bottles</span>
                     </div>
-                    <div className="sub-plan-row sub-plan-row-highlight">
-                      <span className="sub-plan-row-label">Subscription price</span>
-                      <span className="sub-plan-row-value">
+                    <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 12px", fontSize: "11px", background: "rgba(0,0,0,0.02)" }}>
+                      <span style={{ color: "var(--color-text-secondary)", fontWeight: 600 }}>Subscription price</span>
+                      <span style={{ color: "#111111", fontWeight: 700, display: "flex", alignItems: "baseline", gap: "4px" }}>
                         <strong>€{subscriptionPlan.pricePerUnit.toFixed(2)}/btl</strong>
-                        <span className="sub-plan-was">was €{subscriptionPlan.spotPrice.toFixed(2)}</span>
+                        <span style={{ color: "#a1a1aa", fontSize: "9px", textDecoration: "line-through" }}>was €{subscriptionPlan.spotPrice.toFixed(2)}</span>
                       </span>
                     </div>
-                    <div className="sub-plan-row">
-                      <span className="sub-plan-row-label">Deposit (15% refundable)</span>
-                      <span className="sub-plan-row-value">€{subDeposit.toLocaleString("en-US", { maximumFractionDigits: 0 })}</span>
+                    <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 12px", fontSize: "11px" }}>
+                      <span style={{ color: "var(--color-text-secondary)" }}>Deposit (15% refundable)</span>
+                      <span style={{ color: "#111111", fontWeight: 600 }}>€{subDeposit.toLocaleString("en-US", { maximumFractionDigits: 0 })}</span>
                     </div>
-                    <div className="sub-plan-row">
-                      <span className="sub-plan-row-label">Quarterly batch</span>
-                      <span className="sub-plan-row-value">{subQuarterlyPull.toLocaleString()} btl</span>
+                    <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 12px", fontSize: "11px" }}>
+                      <span style={{ color: "var(--color-text-secondary)" }}>Quarterly batch size</span>
+                      <span style={{ color: "#111111", fontWeight: 600 }}>{subQuarterlyPull.toLocaleString()} btl</span>
                     </div>
-                  </div>
-
-                  {/* 3. Breakeven */}
-                  <div className="sub-breakeven">
-                    <div className="sub-breakeven-header">
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                        <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
-                        <polyline points="17 6 23 6 23 12" />
-                      </svg>
-                      Breakeven
-                    </div>
-                    <div className="sub-breakeven-bar-wrap">
-                      <div className="sub-breakeven-bar">
-                        <div
-                          className="sub-breakeven-fill"
-                          style={{ width: `${Math.min(100, (subscriptionPlan.breakeven / 4) * 100)}%` }}
-                        />
-                        <div
-                          className="sub-breakeven-marker"
-                          style={{ left: `${Math.min(100, (subscriptionPlan.breakeven / 4) * 100)}%` }}
-                        />
-                      </div>
-                      <div className="sub-breakeven-axis">
-                        <span>P1</span>
-                        <span>P2</span>
-                        <span>P3</span>
-                        <span>P4</span>
-                      </div>
-                    </div>
-                    <p className="sub-breakeven-text">
-                      Payback by pull #{subBreakevenPull}. From #{subBreakevenPull + 1} you save{" "}
-                      <strong>€{subSavingsPerPull.toLocaleString("en-US", { maximumFractionDigits: 0 })}/quarter</strong>.
-                    </p>
                   </div>
                 </div>
 
-                {/* 4. Terms accordion */}
-                <div className="sub-terms-accordion">
-                  <button className="sub-terms-toggle" onClick={() => setTermsExpanded(prev => !prev)}>
-                    <span>Published terms</span>
+                {/* 3. Breakeven (Borderless) */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px", padding: "4px 0", marginTop: "6px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "9px", fontWeight: 700, textTransform: "uppercase", color: "var(--color-text-muted)", letterSpacing: "0.05em" }}>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                      <polyline points="17 6 23 6 23 12" />
+                    </svg>
+                    Breakeven Chart
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
+                    <div className="sub-breakeven-bar" style={{ background: "rgba(0,0,0,0.06)", borderRadius: "100px", height: "6px", position: "relative" }}>
+                      <div
+                        className="sub-breakeven-fill"
+                        style={{
+                          background: "linear-gradient(90deg, #111111, #22c55e)",
+                          borderRadius: "100px",
+                          height: "100%",
+                          width: `${Math.min(100, (subscriptionPlan.breakeven / 4) * 100)}%`,
+                          transition: "width .4s"
+                        }}
+                      />
+                      <div
+                        className="sub-breakeven-marker"
+                        style={{
+                          left: `${Math.min(100, (subscriptionPlan.breakeven / 4) * 100)}%`,
+                          border: "2px solid #111111",
+                          background: "#ffffff",
+                          borderRadius: "50%",
+                          width: "12px",
+                          height: "12px",
+                          position: "absolute",
+                          top: "50%",
+                          transform: "translate(-50%, -50%)",
+                          boxShadow: "0 1px 4px rgba(0,0,0,0.15)",
+                          transition: "left .4s"
+                        }}
+                      />
+                    </div>
+                    <div className="sub-breakeven-axis" style={{ display: "flex", justifyContent: "space-between", fontSize: "8px", color: "var(--color-text-muted)" }}>
+                      <span>PULL 1</span>
+                      <span>PULL 2</span>
+                      <span>PULL 3</span>
+                      <span>PULL 4</span>
+                    </div>
+                  </div>
+                  <p style={{ margin: 0, fontSize: "11px", color: "var(--color-text-secondary)", lineHeight: "1.4" }}>
+                    📈 Payback by pull #{subBreakevenPull}. From pull #{subBreakevenPull + 1} onwards, you save{" "}
+                    <strong style={{ color: "#166534" }}>€{subSavingsPerPull.toLocaleString("en-US", { maximumFractionDigits: 0 })}/quarter</strong> compared to spot.
+                  </p>
+                </div>
+
+                {/* 4. Terms accordion (Borderless & Minimalist) */}
+                <div style={{ border: "none", background: "transparent", marginTop: "4px" }}>
+                  <button
+                    onClick={() => setTermsExpanded(prev => !prev)}
+                    style={{
+                      width: "100%",
+                      background: "transparent",
+                      border: "none",
+                      color: "var(--color-text-secondary)",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      fontSize: "11px",
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      padding: "6px 0",
+                      fontFamily: "inherit"
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.color = "var(--color-text-primary)"}
+                    onMouseLeave={e => e.currentTarget.style.color = "var(--color-text-secondary)"}
+                  >
+                    <span>Published subscription terms</span>
                     <svg
-                      width="11" height="11" viewBox="0 0 24 24"
+                      width="12" height="12" viewBox="0 0 24 24"
                       fill="none" stroke="currentColor" strokeWidth="2"
                       style={{ transform: termsExpanded ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}
                     >
@@ -780,9 +907,30 @@ export function OrderContentsPage() {
                     </svg>
                   </button>
                   {termsExpanded && (
-                    <ul className="sub-terms-list">
+                    <ul style={{
+                      listStyle: "none",
+                      padding: "8px 12px",
+                      margin: 0,
+                      background: "rgba(0,0,0,0.02)",
+                      borderRadius: "8px",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "6px"
+                    }}>
                       {SUBSCRIPTION_TERMS.map((term, t) => (
-                        <li key={t}>{term}</li>
+                        <li
+                          key={t}
+                          style={{
+                            color: "var(--color-text-muted)",
+                            fontSize: "10px",
+                            lineHeight: "1.4",
+                            position: "relative",
+                            paddingLeft: "10px"
+                          }}
+                        >
+                          <span style={{ position: "absolute", left: 0, color: "rgba(0,0,0,0.2)" }}>—</span>
+                          {term}
+                        </li>
                       ))}
                     </ul>
                   )}
@@ -795,25 +943,34 @@ export function OrderContentsPage() {
               /* Spot mode pricing tiers list */
               skus.length > 0 && (
                 <div className="sku-order-footer" style={{ padding: 0, background: "transparent" }}>
-                  <div className="sku-tier-badge" style={{ background: "rgba(17, 17, 17, 0.04)", border: "1px solid rgba(0, 0, 0, 0.06)", padding: "6px 12px", borderRadius: "8px", display: "inline-flex", alignItems: "center", gap: "6px", marginBottom: "8px" }}>
-                    <span className="sku-tier-badge-label" style={{ fontSize: "11px", color: "var(--color-text-muted)" }}>You are in:</span>
-                    <span className="sku-tier-badge-name" style={{ color: "#111111", fontSize: "11px", fontWeight: 700 }}>
+                  <div style={{ background: "rgba(0,0,0,0.02)", padding: "6px 12px", borderRadius: "8px", display: "inline-flex", alignItems: "center", gap: "6px", marginBottom: "8px" }}>
+                    <span style={{ fontSize: "11px", color: "var(--color-text-muted)" }}>You are in:</span>
+                    <span style={{ color: "#111111", fontSize: "11px", fontWeight: 700 }}>
                       {activeTier.name} Tier
                     </span>
                   </div>
 
-                  <div className="price-tiers-grouped" style={{ gap: "4px" }}>
+                  <div className="price-tiers-grouped" style={{ gap: "6px", marginTop: "8px" }}>
                     {PRICE_TIERS.map(tier => {
                       const isCurrent = activeTier.name === tier.name;
                       if (!priceListExpanded && !isCurrent) return null;
                       return (
-                        <div key={tier.name} className={`tier-group ${isCurrent ? "tier-group-active" : ""}`} style={{ borderRadius: "6px", borderColor: isCurrent ? "#111111" : "rgba(0,0,0,0.08)" }}>
+                        <div
+                          key={tier.name}
+                          style={{
+                            borderRadius: "10px",
+                            background: isCurrent ? "rgba(0,0,0,0.02)" : "transparent",
+                            padding: "6px",
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "2px",
+                            transition: "all 0.2s"
+                          }}
+                        >
                           <div
-                            className="tier-group-header"
                             style={{
-                              background: isCurrent ? "#111111" : "#f4f4f5",
-                              color: isCurrent ? "#ffffff" : "#71717a",
-                              padding: "4px 10px",
+                              color: isCurrent ? "#111111" : "var(--color-text-muted)",
+                              padding: "2px 6px",
                               fontSize: "9px",
                               fontWeight: 700,
                               letterSpacing: "0.05em",
@@ -827,17 +984,22 @@ export function OrderContentsPage() {
                             return (
                               <div
                                 key={bp.units}
-                                className="price-tier"
                                 style={{
-                                  background: activeBp ? "#ffffff" : "#f9fafb",
+                                  background: activeBp ? "#ffffff" : "transparent",
+                                  borderRadius: "6px",
+                                  boxShadow: activeBp ? "0 1px 3px rgba(0,0,0,0.04)" : "none",
                                   fontWeight: activeBp ? 600 : 400,
-                                  opacity: activeBp ? 1 : 0.65,
-                                  padding: "4px 8px",
-                                  fontSize: "11px"
+                                  opacity: activeBp ? 1 : 0.5,
+                                  padding: "6px 8px",
+                                  fontSize: "11px",
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  alignItems: "center",
+                                  transition: "all 0.15s"
                                 }}
                               >
-                                <span>{bp.units.toLocaleString()} units</span>
-                                <span>€{bp.price.toFixed(2)}/unit</span>
+                                <span style={{ color: activeBp ? "#111111" : "var(--color-text-secondary)" }}>{bp.units.toLocaleString()} units</span>
+                                <span style={{ color: activeBp ? "#111111" : "var(--color-text-muted)" }}>€{bp.price.toFixed(2)}/unit</span>
                               </div>
                             );
                           })}
@@ -876,18 +1038,19 @@ export function OrderContentsPage() {
                   {unitsToNextBreakpoint > 0 && nextBreakpoint && (
                     <div
                       style={{
-                        padding: "8px",
-                        background: "rgba(17,17,17,0.04)",
-                        border: "1px solid rgba(17,17,17,0.08)",
+                        padding: "10px 12px",
+                        background: "rgba(0,0,0,0.02)",
+                        border: "none",
                         borderRadius: "8px",
                         color: "#111111",
                         fontSize: "11px",
                         fontWeight: 500,
                         textAlign: "center",
-                        marginTop: "8px"
+                        marginTop: "12px",
+                        lineHeight: "1.4"
                       }}
                     >
-                      Add <strong>{unitsToNextBreakpoint.toLocaleString()}</strong> bottles to drop price to{" "}
+                      💡 Add <strong>{unitsToNextBreakpoint.toLocaleString()}</strong> bottles to drop your unit price to{" "}
                       <strong>€{nextBreakpoint.price.toFixed(2)}</strong>!
                     </div>
                   )}
@@ -899,7 +1062,7 @@ export function OrderContentsPage() {
           </div>
 
           {/* Sticky/Fixed bottom summary & footer inside card */}
-          <div style={{ flexShrink: 0, borderTop: "1px solid rgba(0,0,0,0.06)", paddingTop: "12px", marginTop: "12px", display: "flex", flexDirection: "column", gap: "10px" }}>
+          <div style={{ flexShrink: 0, borderTop: "none", paddingTop: "12px", marginTop: "12px", display: "flex", flexDirection: "column", gap: "10px" }}>
             
             {/* Totals Summary */}
             {skus.length > 0 && (
@@ -908,10 +1071,10 @@ export function OrderContentsPage() {
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "baseline",
-                  padding: "10px 14px",
-                  background: "rgba(17,17,17,0.03)",
+                  padding: "12px 16px",
+                  background: "rgba(0,0,0,0.02)",
                   borderRadius: "10px",
-                  border: "1px solid rgba(0,0,0,0.04)"
+                  border: "none"
                 }}
               >
                 <div>
@@ -956,7 +1119,6 @@ export function OrderContentsPage() {
             </div>
 
           </div>
-
         </div>
       </aside>
 
