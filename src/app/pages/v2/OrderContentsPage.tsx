@@ -371,21 +371,21 @@ export function OrderContentsPage() {
                       style={{
                         background: `linear-gradient(to bottom, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.2)), linear-gradient(135deg, ${flavorItem.gradient[0]}, ${flavorItem.gradient[1]})`,
                         border: "none",
-                        boxShadow: active ? "0 0 0 3px #111111, 0 8px 20px rgba(0,0,0,0.15), inset 0 0 0 1px rgba(255,255,255,0.25)" : "0 2px 6px rgba(0,0,0,0.04)",
-                        transform: active ? "translateY(-2px) scale(1.01)" : "none",
-                        padding: "16px 14px",
+                        boxShadow: active ? "0 0 0 3px #111111, 0 6px 16px rgba(0,0,0,0.15), inset 0 0 0 1px rgba(255,255,255,0.25)" : "0 2px 4px rgba(0,0,0,0.03)",
+                        transform: active ? "translateY(-1.5px) scale(1.01)" : "none",
+                        padding: "10px 12px",
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "flex-start",
                         justifyContent: "space-between",
-                        minHeight: "115px",
+                        minHeight: "75px",
                         textAlign: "left",
                         transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)"
                       }}
                     >
                       {active && (
-                        <div className="fc-flavor-check" style={{ background: "#111111", border: "1.5px solid #ffffff", boxShadow: "0 2px 4px rgba(0,0,0,0.2)", top: "8px", right: "8px" }}>
-                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5">
+                        <div className="fc-flavor-check" style={{ background: "#111111", border: "1.5px solid #ffffff", boxShadow: "0 2px 4px rgba(0,0,0,0.2)", top: "6px", right: "6px" }}>
+                          <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4">
                             <polyline points="20 6 9 17 4 12" />
                           </svg>
                         </div>
@@ -395,8 +395,8 @@ export function OrderContentsPage() {
                         style={{
                           color: "#ffffff",
                           fontWeight: 700,
-                          fontSize: "18px",
-                          letterSpacing: "-0.02em",
+                          fontSize: "14px",
+                          letterSpacing: "-0.01em",
                           lineHeight: "1.2",
                           wordBreak: "break-word"
                         }}
@@ -407,7 +407,7 @@ export function OrderContentsPage() {
                         className="fc-flavor-cat"
                         style={{
                           color: "rgba(255,255,255,0.5)",
-                          fontSize: "9px",
+                          fontSize: "8px",
                           fontWeight: 600,
                           letterSpacing: "0.06em",
                           textTransform: "uppercase"
@@ -486,20 +486,83 @@ export function OrderContentsPage() {
             style={{
               position: "sticky",
               bottom: 0,
-              padding: "16px 24px",
+              padding: "12px 20px",
               background: "#ffffff",
               borderTop: "1px solid rgba(0,0,0,0.06)",
-              boxShadow: "0 -4px 12px rgba(0,0,0,0.02)",
+              boxShadow: "0 -6px 20px rgba(0,0,0,0.05)",
               display: "flex",
               flexDirection: "column",
-              gap: "6px",
+              gap: "10px",
               zIndex: 10
             }}
           >
+            {/* Inline selectors row */}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px", flexWrap: "wrap" }}>
+              {/* Strength selector */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "4px", flex: "1 1 auto" }}>
+                <span style={{ fontSize: "10px", fontWeight: 700, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                  Nicotine Strength
+                </span>
+                <div style={{ display: "flex", gap: "6px" }}>
+                  {(nicotineType === "salt" ? SALT_STRENGTHS : FREEBASE_STRENGTHS).map(s => (
+                    <button
+                      key={s}
+                      onClick={() => setStrength(s)}
+                      style={{
+                        padding: "5px 10px",
+                        fontSize: "11px",
+                        fontWeight: 600,
+                        borderRadius: "6px",
+                        border: "1.5px solid",
+                        borderColor: strength === s ? "#111111" : "rgba(0,0,0,0.08)",
+                        background: strength === s ? "#111111" : "#ffffff",
+                        color: strength === s ? "#ffffff" : "#111111",
+                        cursor: "pointer",
+                        transition: "all 0.15s"
+                      }}
+                    >
+                      {s} mg
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Quantity selector */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "4px", flex: "0 0 auto", alignItems: "flex-end" }}>
+                <span style={{ fontSize: "10px", fontWeight: 700, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                  Quantity
+                </span>
+                <div className="fc-qty-input-wrap" style={{ margin: 0, height: "30px", background: "#f3f4f6", border: "1px solid rgba(0,0,0,0.05)", borderRadius: "6px", overflow: "hidden", display: "flex", alignItems: "center" }}>
+                  <button
+                    className="fc-qty-btn"
+                    style={{ width: "30px", height: "30px", border: "none", background: "transparent", cursor: "pointer", fontSize: "14px", fontWeight: "bold" }}
+                    onClick={() => setQuantity(prev => Math.max(MOQ_MIN_SKU, prev - 50))}
+                  >
+                    −
+                  </button>
+                  <input
+                    type="number"
+                    min={MOQ_MIN_SKU}
+                    value={quantity}
+                    onChange={e => setQuantity(Math.max(MOQ_MIN_SKU, parseInt(e.target.value) || MOQ_MIN_SKU))}
+                    className="fc-qty-input"
+                    style={{ width: "45px", height: "30px", fontSize: "12px", border: "none", background: "transparent", textAlign: "center", fontWeight: 600 }}
+                  />
+                  <button
+                    className="fc-qty-btn"
+                    style={{ width: "30px", height: "30px", border: "none", background: "transparent", cursor: "pointer", fontSize: "14px", fontWeight: "bold" }}
+                    onClick={() => setQuantity(prev => prev + 50)}
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            </div>
+
             <button
               className="sku-add-btn"
               onClick={handleAddSku}
-              style={{ margin: 0, width: "100%" }}
+              style={{ margin: 0, width: "100%", height: "42px" }}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <line x1="12" y1="5" x2="12" y2="19" />

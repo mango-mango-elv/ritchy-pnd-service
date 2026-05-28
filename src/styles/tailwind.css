@@ -752,6 +752,8 @@ input[type="color"]::-moz-color-swatch {
 }
 
 .sku-add-btn {
+  --primary: #111111;
+  --primary-hover: #333333;
   justify-content:center;
   width:100%;
   padding:14px;
