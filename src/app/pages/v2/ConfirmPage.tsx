@@ -18,13 +18,32 @@ export function ConfirmPage() {
 
   const total = typeof order.estTotal === "number" ? order.estTotal : 0;
 
-  const orderRows: [string, string][] = [
-    ["Nicotine type", String(order.nicType ?? "—") === "salt" ? "Nicotine Salt" : "Free Base"],
-    ["Flavor",        String(order.flavor   ?? "—")],
-    ["Strength",      String(order.strength ?? "—")],
-    ["Bottle size",   String(order.size     ?? "—")],
-    ["Quantity",      order.qty ? Number(order.qty).toLocaleString() + " units" : "—"],
-  ];
+  const orderRows: [string, string][] = [];
+  
+  if (order.pricingMode === "subscribe" && order.subscriptionPlan) {
+    const plan = order.subscriptionPlan as any;
+    orderRows.push(["Pricing Mode", `Subscription (${plan.name})`]);
+    orderRows.push(["Annual Commit", `${Number(plan.annualUnits).toLocaleString()} bottles/year`]);
+  } else {
+    orderRows.push(["Pricing Mode", "Spot (one-time)"]);
+  }
+
+  if (order.skus && Array.isArray(order.skus) && order.skus.length > 0) {
+    order.skus.forEach((sku: any, idx: number) => {
+      const typeLabel = sku.nicotineType === "salt" ? "Salt" : "Freebase";
+      orderRows.push([
+        `SKU #${idx + 1}: ${sku.flavorName}`,
+        `${sku.strength}mg ${typeLabel} × ${Number(sku.quantity).toLocaleString()} units`
+      ]);
+    });
+    orderRows.push(["Total Quantity", `${Number(order.qty || 0).toLocaleString()} units`]);
+  } else {
+    orderRows.push(["Nicotine type", String(order.nicType ?? "—") === "salt" ? "Nicotine Salt" : "Free Base"]);
+    orderRows.push(["Flavor",        String(order.flavor   ?? "—")]);
+    orderRows.push(["Strength",      String(order.strength ?? "—")]);
+    orderRows.push(["Quantity",      order.qty ? Number(order.qty).toLocaleString() + " units" : "—"]);
+  }
+
 
   const designRows: [string, string][] = [
     ["Template",  String(design.templateId ?? "—").replace(/-/g, " ")],
