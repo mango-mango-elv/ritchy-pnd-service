@@ -837,54 +837,27 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
                   />
                 </Field>
 
-                <Field label="Type">
-                  <select
-                    className="ds-input"
-                    value={selectedSku.type}
-                    onChange={e => patchSku({ type: e.target.value as "salt" | "freebase" })}
-                    style={{ appearance: "auto" }}
-                  >
-                    <option value="salt">Nicotine Salt</option>
-                    <option value="freebase">Free Base</option>
-                  </select>
-                </Field>
-
-                <Field label="Choose flavor">
-                  <select
-                    className="ds-input"
-                    value={selectedSku.flavor}
-                    onChange={e => patchSku({ flavor: e.target.value })}
-                    style={{ appearance: "auto" }}
-                  >
-                    {FLAVOR_OPTIONS.map(f => <option key={f} value={f}>{f}</option>)}
-                  </select>
-                </Field>
-
-                <Field label="Strength">
-                  <div style={{ display: "flex", gap: "8px" }}>
-                    {(["10mg", "20mg"] as const).map(s => (
-                      <button
-                        key={s}
-                        onClick={() => {
-                          patchSku({ strength: s });
-                          setFlavorTouched(true);
-                          setFlavorExpanded(false); // auto-collapse flavor
-                        }}
-                        style={{
-                          padding: "7px 22px",
-                          border: selectedSku.strength === s ? "2px solid #111111" : "1.5px solid var(--color-border)",
-                          borderRadius: "var(--radius-full)",
-                          background: selectedSku.strength === s ? "#111111" : "transparent",
-                          color: selectedSku.strength === s ? "#ffffff" : "var(--color-text-secondary)",
-                          fontSize: "13px", fontFamily: "var(--font-sans)", fontWeight: 600,
-                          cursor: "pointer",
-                        }}
-                      >
-                        {s}
-                      </button>
-                    ))}
+                <div style={{
+                  display: "flex",
+                  gap: "10px",
+                  background: "rgba(0,0,0,0.02)",
+                  border: "1px solid var(--color-border)",
+                  borderRadius: "var(--radius-md)",
+                  padding: "10px 12px",
+                  marginTop: "6px",
+                  fontSize: "12px",
+                  color: "var(--color-text-secondary)",
+                  justifyContent: "space-between",
+                  alignItems: "center"
+                }}>
+                  <div>
+                    <span style={{ fontWeight: 600, color: "var(--color-text-primary)" }}>Formulation: </span>
+                    {selectedSku.type === "salt" ? "Nicotine Salt" : "Free Base"} • {selectedSku.strength}
                   </div>
-                </Field>
+                  <div style={{ fontSize: "11px", color: "var(--color-text-muted)", fontStyle: "italic" }}>
+                    Configured in Step 1
+                  </div>
+                </div>
 
               </div>
             </div>
