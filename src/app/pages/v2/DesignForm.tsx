@@ -80,11 +80,11 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
 
       {/* ── Brand Identity ── */}
       <Card first>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
           <h3 style={{ margin: 0, fontSize: "14px", fontWeight: 700, letterSpacing: "-0.01em", textTransform: "uppercase", color: "var(--color-text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
             {isBrandCompleted && (
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
@@ -95,32 +95,34 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
           </h3>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           {!design.logoDataUrl && (
-            <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-              <label style={{ fontSize: "11px", fontWeight: 600, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                Brand Name
-              </label>
-              <input
-                className="ds-input"
-                placeholder="EARTH VAPOR"
-                value={design.brandName}
-                onChange={e => patch({ brandName: e.target.value })}
-                onKeyDown={e => {
-                  if (e.key === "Enter") {
-                    (e.target as HTMLInputElement).blur();
-                  }
-                }}
-                style={{ fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", height: "38px" }}
-              />
-            </div>
+            <input
+              className="ds-input"
+              placeholder="Enter Brand Name (e.g. EARTH VAPOR)"
+              value={design.brandName}
+              onChange={e => patch({ brandName: e.target.value })}
+              onKeyDown={e => {
+                if (e.key === "Enter") {
+                  (e.target as HTMLInputElement).blur();
+                }
+              }}
+              style={{
+                fontWeight: 600,
+                letterSpacing: "0.04em",
+                textTransform: "uppercase",
+                height: "40px",
+                background: "rgba(0,0,0,0.02)",
+                border: "1px solid rgba(0,0,0,0.03)",
+                borderRadius: "8px",
+                padding: "10px 14px",
+                fontSize: "13px",
+              }}
+            />
           )}
           
           {!design.logoDataUrl && (
-            <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-              <label style={{ fontSize: "11px", fontWeight: 600, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                Logo Image
-              </label>
+            <div style={{ display: "flex", flexDirection: "column" }}>
               <div
                 onDrop={e => { e.preventDefault(); setDragOverLogo(false); const f = e.dataTransfer.files[0]; if (f?.type.startsWith("image/")) handleLogoFile(f); }}
                 onDragOver={e => { e.preventDefault(); setDragOverLogo(true); }}
@@ -128,14 +130,14 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
                 onDragLeave={e => { e.preventDefault(); setDragOverLogo(false); }}
                 onClick={() => fileRef.current?.click()}
                 style={{
-                  border: dragOverLogo ? "1.5px dashed #111111" : "1px dashed rgba(0,0,0,0.12)",
                   borderRadius: "8px",
-                  padding: "12px",
+                  padding: "16px",
                   textAlign: "center",
                   cursor: "pointer",
                   color: "var(--color-text-secondary)",
                   fontSize: "12px",
-                  background: dragOverLogo ? "rgba(0,0,0,0.02)" : "rgba(0,0,0,0.01)",
+                  fontWeight: 500,
+                  background: dragOverLogo ? "rgba(0,0,0,0.04)" : "rgba(0,0,0,0.02)",
                   fontFamily: "var(--font-sans)",
                   transition: "all 0.15s ease",
                 }}
@@ -150,13 +152,12 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
           {design.logoDataUrl && (
             <div style={{ display: "flex", flexDirection: "column" }}>
               <div style={{
-                border: "1px solid rgba(0,0,0,0.06)",
                 borderRadius: "8px",
-                padding: "10px",
-                background: "rgba(0,0,0,0.01)",
+                padding: "12px",
+                background: "rgba(0,0,0,0.02)",
                 display: "flex",
                 flexDirection: "column",
-                gap: "10px"
+                gap: "12px"
               }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <img src={design.logoDataUrl} alt="logo" style={{ maxHeight: "30px", maxWidth: "60%", objectFit: "contain" }} />
@@ -169,7 +170,7 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
                       border: "none",
                       background: "rgba(220, 38, 38, 0.08)",
                       color: "#dc2626",
-                      padding: "5px 10px",
+                      padding: "5px 12px",
                       borderRadius: "6px",
                       fontSize: "11px",
                       fontWeight: 600,
@@ -184,8 +185,8 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  paddingTop: "10px",
-                  borderTop: "1px solid rgba(0,0,0,0.06)",
+                  paddingTop: "12px",
+                  borderTop: "1px solid rgba(0,0,0,0.04)",
                 }}>
                   <span style={{ fontSize: "12px", color: "var(--color-text-secondary)", fontWeight: 500 }}>
                     Logo Size
@@ -235,7 +236,7 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
 
       {/* ── Packaging Color ── */}
       <Card>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
           <h3 style={{ margin: 0, fontSize: "14px", fontWeight: 700, letterSpacing: "-0.01em", textTransform: "uppercase", color: "var(--color-text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
             {isColorCompleted && colorTouched && (
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
@@ -246,10 +247,10 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
           </h3>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           {/* macOS Style Segmented Tab bar */}
           <div style={{
-            display: "flex", gap: "2px", marginBottom: "14px",
+            display: "flex", gap: "2px",
             background: "rgba(0,0,0,0.03)", borderRadius: "8px", padding: "3px",
           }}>
             {(["presets", "custom", "ai", "image"] as const).map(tab => {
@@ -279,7 +280,7 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
           </div>
 
           {selectedSku && selectedSku.colorTab === "image" && (
-            <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "14px" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
               <div
                 onDrop={e => { e.preventDefault(); setDragOverBg(false); const f = e.dataTransfer.files[0]; if (f?.type.startsWith("image/")) handleBgFile(f); }}
                 onDragOver={e => { e.preventDefault(); setDragOverBg(true); }}
@@ -287,14 +288,14 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
                 onDragLeave={e => { e.preventDefault(); setDragOverBg(false); }}
                 onClick={() => bgFileRef.current?.click()}
                 style={{
-                  border: dragOverBg ? "1.5px dashed #111111" : "1px dashed rgba(0,0,0,0.12)",
                   borderRadius: "8px",
                   padding: "16px",
                   textAlign: "center",
                   cursor: "pointer",
                   color: "var(--color-text-secondary)",
                   fontSize: "12px",
-                  background: dragOverBg ? "rgba(0,0,0,0.02)" : "rgba(0,0,0,0.01)",
+                  fontWeight: 500,
+                  background: dragOverBg ? "rgba(0,0,0,0.04)" : "rgba(0,0,0,0.02)",
                   fontFamily: "var(--font-sans)",
                   transition: "all 0.15s ease",
                 }}
@@ -346,7 +347,7 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
 
           {/* Clean Color Preset single row */}
           {selectedSku && (selectedSku.colorTab === "presets" || selectedSku.colorTab === "ai") && (
-            <div style={{ display: "flex", gap: "8px", justifyContent: "space-between", width: "100%", padding: "4px 0 16px" }}>
+            <div style={{ display: "flex", gap: "8px", justifyContent: "space-between", width: "100%", padding: "4px 0" }}>
               {COLOR_PRESETS.map(preset => {
                 const active = selectedSku.colorPresetId === preset.id;
                 return (
@@ -375,7 +376,7 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
           )}
 
           {selectedSku && selectedSku.colorTab === "custom" && (
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
               <input
                 type="color"
                 value={selectedSku.customColor}
@@ -393,18 +394,14 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
                   }
                 }}
                 placeholder="#6b21a8"
-                style={{ flex: 1, fontFamily: "monospace", fontSize: "12px", height: "32px" }}
+                style={{ flex: 1, fontFamily: "monospace", fontSize: "12px", height: "32px", border: "1px solid rgba(0,0,0,0.1)", borderRadius: "6px", padding: "0 8px" }}
               />
             </div>
           )}
 
-          {/* Graphics & Text Color Selector */}
+          {/* Graphics & Text Color Selector - macOS Style Segmented */}
           {selectedSku && (
-            <div style={{ display: "flex", flexDirection: "column", gap: "6px", borderTop: "1px solid rgba(0,0,0,0.05)", paddingTop: "12px" }}>
-              <label style={{ fontSize: "11px", fontWeight: 600, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                Graphics &amp; Text Color
-              </label>
-
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px", paddingTop: "4px" }}>
               <div style={{
                 display: "flex", gap: "2px",
                 background: "rgba(0,0,0,0.03)", borderRadius: "8px", padding: "3px",
@@ -447,7 +444,7 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
               </div>
 
               {selectedSku.graphicsColorTab === "custom" && (
-                <div style={{ display: "flex", alignItems: "center", gap: "10px", marginTop: "4px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                   <input
                     type="color"
                     value={selectedSku.graphicsCustomColor ?? "#ffffff"}
@@ -459,7 +456,7 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
                     value={selectedSku.graphicsCustomColor ?? "#ffffff"}
                     onChange={e => patchSku({ graphicsCustomColor: e.target.value })}
                     placeholder="#ffffff"
-                    style={{ flex: 1, fontFamily: "monospace", fontSize: "12px", height: "28px" }}
+                    style={{ flex: 1, fontFamily: "monospace", fontSize: "12px", height: "28px", border: "1px solid rgba(0,0,0,0.1)", borderRadius: "6px", padding: "0 8px" }}
                   />
                 </div>
               )}
@@ -471,7 +468,7 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
       {/* ── Flavor Labeling ── */}
       {selectedSku && (
         <Card>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
             <h3 style={{ margin: 0, fontSize: "14px", fontWeight: 700, letterSpacing: "-0.01em", textTransform: "uppercase", color: "var(--color-text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
               {isFlavorCompleted && flavorTouched && (
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
@@ -483,32 +480,35 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-            <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-              <label style={{ fontSize: "11px", fontWeight: 600, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                Unique name (on packaging)
-              </label>
-              <input
-                className="ds-input"
-                placeholder="JUICY GRAPE"
-                value={selectedSku.displayName}
-                onChange={e => patchSku({ displayName: e.target.value })}
-                onBlur={() => setFlavorTouched(true)}
-                onKeyDown={e => {
-                  if (e.key === "Enter") {
-                    (e.target as HTMLInputElement).blur();
-                  }
-                }}
-                style={{ fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", height: "38px" }}
-              />
-            </div>
+            <input
+              className="ds-input"
+              placeholder="Enter Flavor Name (e.g. PEPPERMINT)"
+              value={selectedSku.displayName}
+              onChange={e => patchSku({ displayName: e.target.value })}
+              onBlur={() => setFlavorTouched(true)}
+              onKeyDown={e => {
+                if (e.key === "Enter") {
+                  (e.target as HTMLInputElement).blur();
+                }
+              }}
+              style={{
+                fontWeight: 600,
+                letterSpacing: "0.04em",
+                textTransform: "uppercase",
+                height: "40px",
+                background: "rgba(0,0,0,0.02)",
+                border: "1px solid rgba(0,0,0,0.03)",
+                borderRadius: "8px",
+                padding: "10px 14px",
+                fontSize: "13px",
+              }}
+            />
 
             <div style={{
               display: "flex",
-              gap: "10px",
               background: "rgba(0,0,0,0.02)",
-              border: "1px solid rgba(0,0,0,0.04)",
               borderRadius: "8px",
-              padding: "8px 12px",
+              padding: "10px 14px",
               fontSize: "11px",
               color: "var(--color-text-secondary)",
               justifyContent: "space-between",
@@ -530,11 +530,12 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
   );
 }
 
-function Card({ children, first }: { children: React.ReactNode; first?: boolean }) {
+function Card({ children }: { children: React.ReactNode; first?: boolean }) {
   return (
     <section style={{
-      padding: "14px 0",
-      borderTop: first ? "none" : "1px solid rgba(0,0,0,0.06)",
+      padding: "12px 0",
+      display: "flex",
+      flexDirection: "column",
     }}>
       {children}
     </section>
