@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, ChevronUp, ChevronDown } from "lucide-react";
 import { COLOR_PRESETS, type DesignState, type SKU } from "./design-types";
+
 
 const FLAVOR_OPTIONS = [
   "Passion Fruit", "Mango", "Watermelon", "Blueberry", "Strawberry",
@@ -31,9 +32,6 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
   const fileRef = useRef<HTMLInputElement>(null);
   const [dragOverLogo, setDragOverLogo] = useState(false);
   const [dragOverBg, setDragOverBg] = useState(false);
-  const [colorTouched, setColorTouched] = useState(false);
-  const [flavorTouched, setFlavorTouched] = useState(false);
-
   const isBrandCompleted = !!(design.brandName.trim() || design.logoDataUrl);
   const isColorCompleted = selectedSku
     ? (selectedSku.colorTab !== "image" || !!selectedSku.bgImageDataUrl)
@@ -41,10 +39,16 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
   const isFlavorCompleted = selectedSku ? selectedSku.displayName.trim() !== "" : false;
   const isWarningCompleted = !!design.healthWarningText?.trim();
 
+  const [brandExpanded, setBrandExpanded] = useState(!isBrandCompleted);
+  const [warningExpanded, setWarningExpanded] = useState(!isWarningCompleted);
+  const [colorTouched, setColorTouched] = useState(false);
+  const [flavorTouched, setFlavorTouched] = useState(false);
+
   const handleLogoFile = (file: File) => {
     const reader = new FileReader();
     reader.onload = e => {
       patch({ logoDataUrl: e.target?.result as string });
+      setBrandExpanded(false);
     };
     reader.readAsDataURL(file);
   };
@@ -90,7 +94,17 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
 
       {/* ── Brand Identity ── */}
       <Card first>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
+        <div
+          onClick={() => setBrandExpanded(!brandExpanded)}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            cursor: "pointer",
+            userSelect: "none",
+            marginBottom: brandExpanded ? "16px" : 0,
+          }}
+        >
           <h3 style={{ margin: 0, fontSize: "14px", fontWeight: 700, letterSpacing: "-0.01em", textTransform: "uppercase", color: "var(--color-text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
             {isBrandCompleted && (
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
@@ -99,144 +113,154 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
             )}
             1 · Brand Identity
           </h3>
+          <div style={{ color: "var(--color-text-muted)", display: "flex", alignItems: "center" }}>
+            {brandExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </div>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-          {!design.logoDataUrl && (
-            <input
-              className="ds-input"
-              placeholder="Brand Name"
-              value={design.brandName}
-              onChange={e => patch({ brandName: e.target.value })}
-              onKeyDown={e => {
-                if (e.key === "Enter") {
-                  (e.target as HTMLInputElement).blur();
-                }
-              }}
-              style={{
-                fontWeight: 600,
-                letterSpacing: "0.04em",
-                textTransform: "uppercase",
-                height: "40px",
-                background: "rgba(0,0,0,0.02)",
-                border: "1px solid rgba(0,0,0,0.03)",
-                borderRadius: "8px",
-                padding: "10px 14px",
-                fontSize: "13px",
-              }}
-            />
-          )}
-          
-          {!design.logoDataUrl && (
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <div
-                onDrop={e => { e.preventDefault(); setDragOverLogo(false); const f = e.dataTransfer.files[0]; if (f?.type.startsWith("image/")) handleLogoFile(f); }}
-                onDragOver={e => { e.preventDefault(); setDragOverLogo(true); }}
-                onDragEnter={e => { e.preventDefault(); setDragOverLogo(true); }}
-                onDragLeave={e => { e.preventDefault(); setDragOverLogo(false); }}
-                onClick={() => fileRef.current?.click()}
-                style={{
-                  borderRadius: "8px",
-                  padding: "16px",
-                  textAlign: "center",
-                  cursor: "pointer",
-                  color: "var(--color-text-secondary)",
-                  fontSize: "12px",
-                  fontWeight: 500,
-                  background: dragOverLogo ? "rgba(0,0,0,0.04)" : "rgba(0,0,0,0.02)",
-                  fontFamily: "var(--font-sans)",
-                  transition: "all 0.15s ease",
+        <div className={`v2-accordion-wrapper ${brandExpanded ? "expanded" : ""}`}>
+          <div className="v2-accordion-content" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            {!design.logoDataUrl && (
+              <input
+                className="ds-input"
+                placeholder="Brand Name"
+                value={design.brandName}
+                onChange={e => patch({ brandName: e.target.value })}
+                onBlur={() => {
+                  if (design.brandName.trim()) {
+                    setBrandExpanded(false);
+                  }
                 }}
-              >
-                Upload Vector Logo (.SVG / .PNG)
-              </div>
-              <input ref={fileRef} type="file" accept="image/*" style={{ display: "none" }}
-                onChange={e => { const f = e.target.files?.[0]; if (f) handleLogoFile(f); }} />
-            </div>
-          )}
-
-          {design.logoDataUrl && (
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <div style={{
-                borderRadius: "8px",
-                padding: "12px",
-                background: "rgba(0,0,0,0.02)",
-                display: "flex",
-                flexDirection: "column",
-                gap: "12px"
-              }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <img src={design.logoDataUrl} alt="logo" style={{ maxHeight: "30px", maxWidth: "60%", objectFit: "contain" }} />
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      patch({ logoDataUrl: "", logoScale: 1.0 });
-                    }}
-                    style={{
-                      border: "none",
-                      background: "rgba(220, 38, 38, 0.08)",
-                      color: "#dc2626",
-                      padding: "5px 12px",
-                      borderRadius: "6px",
-                      fontSize: "11px",
-                      fontWeight: 600,
-                      cursor: "pointer",
-                    }}
-                  >
-                    ✕ Remove Logo
-                  </button>
+                onKeyDown={e => {
+                  if (e.key === "Enter") {
+                    (e.target as HTMLInputElement).blur();
+                  }
+                }}
+                style={{
+                  fontWeight: 600,
+                  letterSpacing: "0.04em",
+                  textTransform: "uppercase",
+                  height: "40px",
+                  background: "rgba(0,0,0,0.02)",
+                  border: "1px solid rgba(0,0,0,0.03)",
+                  borderRadius: "8px",
+                  padding: "10px 14px",
+                  fontSize: "13px",
+                }}
+              />
+            )}
+            
+            {!design.logoDataUrl && (
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <div
+                  onDrop={e => { e.preventDefault(); setDragOverLogo(false); const f = e.dataTransfer.files[0]; if (f?.type.startsWith("image/")) handleLogoFile(f); }}
+                  onDragOver={e => { e.preventDefault(); setDragOverLogo(true); }}
+                  onDragEnter={e => { e.preventDefault(); setDragOverLogo(true); }}
+                  onDragLeave={e => { e.preventDefault(); setDragOverLogo(false); }}
+                  onClick={() => fileRef.current?.click()}
+                  style={{
+                    borderRadius: "8px",
+                    padding: "16px",
+                    textAlign: "center",
+                    cursor: "pointer",
+                    color: "var(--color-text-secondary)",
+                    fontSize: "12px",
+                    fontWeight: 500,
+                    background: dragOverLogo ? "rgba(0,0,0,0.04)" : "rgba(0,0,0,0.02)",
+                    fontFamily: "var(--font-sans)",
+                    transition: "all 0.15s ease",
+                  }}
+                >
+                  Upload Vector Logo (.SVG / .PNG)
                 </div>
+                <input ref={fileRef} type="file" accept="image/*" style={{ display: "none" }}
+                  onChange={e => { const f = e.target.files?.[0]; if (f) handleLogoFile(f); }} />
+              </div>
+            )}
 
+            {design.logoDataUrl && (
+              <div style={{ display: "flex", flexDirection: "column" }}>
                 <div style={{
+                  borderRadius: "8px",
+                  padding: "12px",
+                  background: "rgba(0,0,0,0.02)",
                   display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  paddingTop: "12px",
-                  borderTop: "1px solid rgba(0,0,0,0.04)",
+                  flexDirection: "column",
+                  gap: "12px"
                 }}>
-                  <span style={{ fontSize: "12px", color: "var(--color-text-secondary)", fontWeight: 500 }}>
-                    Logo Size
-                  </span>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <img src={design.logoDataUrl} alt="logo" style={{ maxHeight: "30px", maxWidth: "60%", objectFit: "contain" }} />
                     <button
-                      onClick={() => adjustScale(-0.1)}
-                      disabled={scale <= 0.5}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        patch({ logoDataUrl: "", logoScale: 1.0 });
+                      }}
                       style={{
-                        width: "24px", height: "24px", borderRadius: "50%",
-                        border: "1px solid rgba(0,0,0,0.08)", background: "#fff",
-                        color: "#111111", display: "flex",
-                        alignItems: "center", justifyContent: "center", fontSize: "14px",
-                        fontWeight: 600, cursor: scale <= 0.5 ? "not-allowed" : "pointer",
-                        opacity: scale <= 0.5 ? 0.5 : 1, userSelect: "none"
+                        border: "none",
+                        background: "rgba(220, 38, 38, 0.08)",
+                        color: "#dc2626",
+                        padding: "5px 12px",
+                        borderRadius: "6px",
+                        fontSize: "11px",
+                        fontWeight: 600,
+                        cursor: "pointer",
                       }}
                     >
-                      −
+                      ✕ Remove Logo
                     </button>
-                    <span style={{
-                      fontSize: "12px", fontWeight: 600, color: "#111111",
-                      width: "36px", textAlign: "center", fontFamily: "monospace",
-                    }}>
-                      {Math.round(scale * 100)}%
+                  </div>
+
+                  <div style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    paddingTop: "12px",
+                    borderTop: "1px solid rgba(0,0,0,0.04)",
+                  }}>
+                    <span style={{ fontSize: "12px", color: "var(--color-text-secondary)", fontWeight: 500 }}>
+                      Logo Size
                     </span>
-                    <button
-                      onClick={() => adjustScale(0.1)}
-                      disabled={scale >= 2.0}
-                      style={{
-                        width: "24px", height: "24px", borderRadius: "50%",
-                        border: "1px solid rgba(0,0,0,0.08)", background: "#fff",
-                        color: "#111111", display: "flex",
-                        alignItems: "center", justifyContent: "center", fontSize: "14px",
-                        fontWeight: 600, cursor: scale >= 2.0 ? "not-allowed" : "pointer",
-                        opacity: scale >= 2.0 ? 0.5 : 1, userSelect: "none"
-                      }}
-                    >
-                      +
-                    </button>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <button
+                        onClick={() => adjustScale(-0.1)}
+                        disabled={scale <= 0.5}
+                        style={{
+                          width: "24px", height: "24px", borderRadius: "50%",
+                          border: "1px solid rgba(0,0,0,0.08)", background: "#fff",
+                          color: "#111111", display: "flex",
+                          alignItems: "center", justifyContent: "center", fontSize: "14px",
+                          fontWeight: 600, cursor: scale <= 0.5 ? "not-allowed" : "pointer",
+                          opacity: scale <= 0.5 ? 0.5 : 1, userSelect: "none"
+                        }}
+                      >
+                        −
+                      </button>
+                      <span style={{
+                        fontSize: "12px", fontWeight: 600, color: "#111111",
+                        width: "36px", textAlign: "center", fontFamily: "monospace",
+                      }}>
+                        {Math.round(scale * 100)}%
+                      </span>
+                      <button
+                        onClick={() => adjustScale(0.1)}
+                        disabled={scale >= 2.0}
+                        style={{
+                          width: "24px", height: "24px", borderRadius: "50%",
+                          border: "1px solid rgba(0,0,0,0.08)", background: "#fff",
+                          color: "#111111", display: "flex",
+                          alignItems: "center", justifyContent: "center", fontSize: "14px",
+                          fontWeight: 600, cursor: scale >= 2.0 ? "not-allowed" : "pointer",
+                          opacity: scale >= 2.0 ? 0.5 : 1, userSelect: "none"
+                        }}
+                      >
+                        +
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </Card>
 
@@ -534,7 +558,17 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
 
       {/* ── Section 4: Health Warning ── */}
       <Card>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
+        <div
+          onClick={() => setWarningExpanded(!warningExpanded)}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            cursor: "pointer",
+            userSelect: "none",
+            marginBottom: warningExpanded ? "16px" : 0,
+          }}
+        >
           <h3 style={{ margin: 0, fontSize: "14px", fontWeight: 700, letterSpacing: "-0.01em", textTransform: "uppercase", color: "var(--color-text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
             {isWarningCompleted && (
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
@@ -543,67 +577,81 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
             )}
             4 · Health Warning
           </h3>
+          <div style={{ color: "var(--color-text-muted)", display: "flex", alignItems: "center" }}>
+            {warningExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </div>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-            <span style={{ fontSize: "12px", color: "var(--color-text-secondary)", fontWeight: 500 }}>
-              Language Presets
-            </span>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-              {WARNING_PRESETS.map(preset => {
-                const isSelected = design.healthWarningText === preset.text;
-                return (
-                  <button
-                    key={preset.code}
-                    onClick={() => patch({ healthWarningText: preset.text })}
-                    style={{
-                      padding: "6px 12px",
-                      border: isSelected ? "1px solid #111111" : "1px solid rgba(0,0,0,0.06)",
-                      borderRadius: "6px",
-                      background: isSelected ? "#111111" : "rgba(0,0,0,0.02)",
-                      color: isSelected ? "#ffffff" : "var(--color-text-secondary)",
-                      fontSize: "12px",
-                      fontFamily: "var(--font-sans)",
-                      fontWeight: 600,
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "6px",
-                      transition: "all 0.15s ease",
-                    }}
-                  >
-                    <span style={{ fontSize: "10px", opacity: 0.8 }}>{preset.code}</span>
-                    <span>{preset.lang}</span>
-                  </button>
-                );
-              })}
+        <div className={`v2-accordion-wrapper ${warningExpanded ? "expanded" : ""}`}>
+          <div className="v2-accordion-content" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+              <span style={{ fontSize: "12px", color: "var(--color-text-secondary)", fontWeight: 500 }}>
+                Language Presets
+              </span>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                {WARNING_PRESETS.map(preset => {
+                  const isSelected = design.healthWarningText === preset.text;
+                  return (
+                    <button
+                      key={preset.code}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        patch({ healthWarningText: preset.text });
+                        setWarningExpanded(false);
+                      }}
+                      style={{
+                        padding: "6px 12px",
+                        border: isSelected ? "1px solid #111111" : "1px solid rgba(0,0,0,0.06)",
+                        borderRadius: "6px",
+                        background: isSelected ? "#111111" : "rgba(0,0,0,0.02)",
+                        color: isSelected ? "#ffffff" : "var(--color-text-secondary)",
+                        fontSize: "12px",
+                        fontFamily: "var(--font-sans)",
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        transition: "all 0.15s ease",
+                      }}
+                    >
+                      <span style={{ fontSize: "10px", opacity: 0.8 }}>{preset.code}</span>
+                      <span>{preset.lang}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-            <span style={{ fontSize: "12px", color: "var(--color-text-secondary)", fontWeight: 500 }}>
-              Custom Warning Text (Global)
-            </span>
-            <textarea
-              className="ds-input"
-              rows={3}
-              placeholder="Warning text..."
-              value={design.healthWarningText || ""}
-              onChange={e => patch({ healthWarningText: e.target.value })}
-              style={{
-                width: "100%",
-                padding: "10px 14px",
-                fontSize: "13px",
-                fontWeight: 500,
-                fontFamily: "var(--font-sans)",
-                lineHeight: "1.4",
-                background: "rgba(0,0,0,0.02)",
-                border: "1px solid rgba(0,0,0,0.03)",
-                borderRadius: "8px",
-                resize: "none",
-              }}
-            />
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+              <span style={{ fontSize: "12px", color: "var(--color-text-secondary)", fontWeight: 500 }}>
+                Custom Warning Text (Global)
+              </span>
+              <textarea
+                className="ds-input"
+                rows={3}
+                placeholder="Warning text..."
+                value={design.healthWarningText || ""}
+                onChange={e => patch({ healthWarningText: e.target.value })}
+                onBlur={() => {
+                  if (design.healthWarningText?.trim()) {
+                    setWarningExpanded(false);
+                  }
+                }}
+                style={{
+                  width: "100%",
+                  padding: "10px 14px",
+                  fontSize: "13px",
+                  fontWeight: 500,
+                  fontFamily: "var(--font-sans)",
+                  lineHeight: "1.4",
+                  background: "rgba(0,0,0,0.02)",
+                  border: "1px solid rgba(0,0,0,0.03)",
+                  borderRadius: "8px",
+                  resize: "none",
+                }}
+              />
+            </div>
           </div>
         </div>
       </Card>
