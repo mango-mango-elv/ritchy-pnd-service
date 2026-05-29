@@ -339,8 +339,8 @@ export function BoxT2Centered({ brand, flavor, strength, nicLabel, gradient, log
         </div>
       )}
 
-      {/* flavor — at 40.5%, Albert Sans ExtraBold */}
-      <div style={abs({ top: "40.5%", left: 0, right: 0, pointerEvents: "none" })}>
+      {/* flavor — at 42.5%, Albert Sans ExtraBold */}
+      <div style={abs({ top: "42.5%", left: 0, right: 0, pointerEvents: "none" })}>
         <p style={{
           margin: 0,
           fontSize: "11.5cqw",
@@ -357,16 +357,16 @@ export function BoxT2Centered({ brand, flavor, strength, nicLabel, gradient, log
         </p>
       </div>
 
-      {/* divider — at 56.47% */}
+      {/* divider — at 60.3% */}
       <div style={abs({
-        top: "56.47%", left: "6.71%", right: "6.71%", height: "1.2cqw",
+        top: "60.3%", left: "6.71%", right: "6.71%", height: "1.2cqw",
         background: textColor,
         pointerEvents: "none",
       })} />
 
-      {/* footer — strength left, nic label right, at 57.6% */}
+      {/* footer — strength left, nic label right, at 61.5% */}
       <div style={abs({
-        top: "57.6%", left: "6.71%", right: "6.71%",
+        top: "61.5%", left: "6.71%", right: "6.71%",
         display: "flex", justifyContent: "space-between", paddingTop: "1.2%",
         pointerEvents: "none",
       })}>
@@ -433,7 +433,7 @@ export function BoxT3Split({ brand, flavor, strength, nicLabel, gradient, logoDa
             margin: 0,
             fontSize: "11cqw",
             fontWeight: 900,
-            fontFamily: "'Albert Sans', var(--font-sans)",
+            fontFamily: "'Albert Sans', 'Arial Black', -apple-system, sans-serif",
             color: topTextColor,
             textTransform: "uppercase",
             textAlign: "center",
@@ -446,16 +446,17 @@ export function BoxT3Split({ brand, flavor, strength, nicLabel, gradient, logoDa
       </div>
 
       {/* Flavor — centered in bottom half */}
-      <div style={abs({ top: "41.5%", left: 0, right: 0, pointerEvents: "none", zIndex: 1 })}>
+      <div style={abs({ top: "42.5%", left: 0, right: 0, pointerEvents: "none", zIndex: 1 })}>
         <p style={{
           margin: 0,
-          fontSize: "9.76cqw",
-          fontWeight: 800,
-          fontFamily: "'Albert Sans', var(--font-sans)",
+          fontSize: "11.5cqw",
+          fontWeight: 900,
+          fontFamily: "'Albert Sans', 'Arial Black', -apple-system, sans-serif",
           color: textColor,
           textTransform: "uppercase",
           textAlign: "center",
-          lineHeight: 1.06,
+          lineHeight: 1.0,
+          letterSpacing: "-0.03em",
           wordBreak: "break-word",
         }}>
           {flavor}
@@ -464,7 +465,7 @@ export function BoxT3Split({ brand, flavor, strength, nicLabel, gradient, logoDa
 
       {/* Divider — below flavor in bottom half */}
       <div style={abs({
-        top: "56.47%", left: "6.71%", right: "6.71%", height: "1.2cqw",
+        top: "60.3%", left: "6.71%", right: "6.71%", height: "1.2cqw",
         background: textColor,
         pointerEvents: "none",
         zIndex: 1,
@@ -472,15 +473,15 @@ export function BoxT3Split({ brand, flavor, strength, nicLabel, gradient, logoDa
 
       {/* Footer — strength & nic in bottom half */}
       <div style={abs({
-        top: "57.6%", left: "6.71%", right: "6.71%",
+        top: "61.5%", left: "6.71%", right: "6.71%",
         display: "flex", justifyContent: "space-between", paddingTop: "1.2%",
         pointerEvents: "none",
         zIndex: 1,
       })}>
-        <span style={{ fontSize: "6.1cqw", fontWeight: 500, color: textColor, fontFamily: "var(--font-sans)" }}>
+        <span style={{ fontSize: "6.1cqw", fontWeight: 600, color: textColor, fontFamily: "var(--font-sans)" }}>
           {strength}
         </span>
-        <span style={{ fontSize: "6.1cqw", fontWeight: 500, color: textColor, fontFamily: "var(--font-sans)" }}>
+        <span style={{ fontSize: "6.1cqw", fontWeight: 600, color: textColor, fontFamily: "var(--font-sans)" }}>
           {nicLabel}
         </span>
       </div>
