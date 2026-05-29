@@ -409,7 +409,7 @@ export function BoxT3Split({ brand, flavor, strength, nicLabel, gradient, logoDa
       <div style={abs({
         top: 0, left: 0, right: 0, height: "34%",
         background: topBgColor,
-        borderBottom: `1.5cqw solid ${textColor}`,
+        borderBottom: `0.6cqw solid ${textColor}`,
         display: "flex", alignItems: "center", justifyContent: "center",
         padding: "0 6%",
         boxSizing: "border-box",
@@ -431,13 +431,14 @@ export function BoxT3Split({ brand, flavor, strength, nicLabel, gradient, logoDa
         ) : (
           <p style={{
             margin: 0,
-            fontSize: "11cqw",
-            fontWeight: 900,
-            fontFamily: "'Albert Sans', 'Arial Black', -apple-system, sans-serif",
+            fontSize: "14.5cqw",
+            fontWeight: 700,
+            fontFamily: "'Playfair Display', Georgia, serif",
             color: topTextColor,
             textTransform: "uppercase",
             textAlign: "center",
             lineHeight: 0.9,
+            letterSpacing: "0.08em",
             wordBreak: "break-word",
           }}>
             {brand}
@@ -445,18 +446,18 @@ export function BoxT3Split({ brand, flavor, strength, nicLabel, gradient, logoDa
         )}
       </div>
 
-      {/* Flavor — centered in bottom half */}
-      <div style={abs({ top: "42.5%", left: 0, right: 0, pointerEvents: "none", zIndex: 1 })}>
+      {/* Flavor — left-aligned in bottom half */}
+      <div style={abs({ top: "41.5%", left: "6.71%", right: "6.71%", pointerEvents: "none", zIndex: 1 })}>
         <p style={{
           margin: 0,
-          fontSize: "11.5cqw",
-          fontWeight: 900,
-          fontFamily: "'Albert Sans', 'Arial Black', -apple-system, sans-serif",
+          fontSize: "12cqw",
+          fontWeight: 700,
+          fontFamily: "'Playfair Display', Georgia, serif",
           color: textColor,
           textTransform: "uppercase",
-          textAlign: "center",
-          lineHeight: 1.0,
-          letterSpacing: "-0.03em",
+          textAlign: "left",
+          lineHeight: 1.05,
+          letterSpacing: "0.02em",
           wordBreak: "break-word",
         }}>
           {flavor}
@@ -465,7 +466,7 @@ export function BoxT3Split({ brand, flavor, strength, nicLabel, gradient, logoDa
 
       {/* Divider — below flavor in bottom half */}
       <div style={abs({
-        top: "60.3%", left: "6.71%", right: "6.71%", height: "1.2cqw",
+        top: "60.3%", left: "6.71%", right: "6.71%", height: "0.6cqw",
         background: textColor,
         pointerEvents: "none",
         zIndex: 1,
@@ -474,14 +475,14 @@ export function BoxT3Split({ brand, flavor, strength, nicLabel, gradient, logoDa
       {/* Footer — strength & nic in bottom half */}
       <div style={abs({
         top: "61.5%", left: "6.71%", right: "6.71%",
-        display: "flex", justifyContent: "space-between", paddingTop: "1.2%",
+        display: "flex", justifyContent: "flex-start", gap: "8cqw", paddingTop: "1.2%",
         pointerEvents: "none",
         zIndex: 1,
       })}>
-        <span style={{ fontSize: "6.1cqw", fontWeight: 600, color: textColor, fontFamily: "var(--font-sans)" }}>
+        <span style={{ fontSize: "6.1cqw", fontWeight: 600, color: textColor, fontFamily: "var(--font-sans)", letterSpacing: "0.02em" }}>
           {strength}
         </span>
-        <span style={{ fontSize: "6.1cqw", fontWeight: 600, color: textColor, fontFamily: "var(--font-sans)" }}>
+        <span style={{ fontSize: "6.1cqw", fontWeight: 600, color: textColor, fontFamily: "var(--font-sans)", letterSpacing: "0.02em" }}>
           {nicLabel}
         </span>
       </div>
@@ -988,7 +989,7 @@ function BottleLabelT3({ brand, flavor, strength, nicLabel, gradient, logoDataUr
       <div style={abs({
         top: 0, left: 0, right: 0, height: "34%",
         background: topBgColor,
-        borderBottom: `1.5cqw solid ${textColor}`,
+        borderBottom: `0.6cqw solid ${textColor}`,
         display: "flex", alignItems: "center", justifyContent: "center",
         padding: "0 6%",
         boxSizing: "border-box",
@@ -1010,13 +1011,14 @@ function BottleLabelT3({ brand, flavor, strength, nicLabel, gradient, logoDataUr
         ) : (
           <p style={{
             margin: 0,
-            fontSize: "11cqw",
-            fontWeight: 900,
-            fontFamily: "'Albert Sans', var(--font-sans)",
+            fontSize: "14.5cqw",
+            fontWeight: 700,
+            fontFamily: "'Playfair Display', Georgia, serif",
             color: topTextColor,
             textTransform: "uppercase",
             textAlign: "center",
             lineHeight: 0.9,
+            letterSpacing: "0.08em",
             wordBreak: "break-word",
           }}>
             {brand}
@@ -1024,17 +1026,18 @@ function BottleLabelT3({ brand, flavor, strength, nicLabel, gradient, logoDataUr
         )}
       </div>
 
-      {/* Flavor — centered in bottom half */}
-      <div style={abs({ top: "61%", left: 0, right: 0, pointerEvents: "none", zIndex: 1 })}>
+      {/* Flavor — left-aligned in bottom half */}
+      <div style={abs({ top: "61%", left: "6.71%", right: "6.71%", pointerEvents: "none", zIndex: 1 })}>
         <p style={{
           margin: 0,
-          fontSize: "9.76cqw",
-          fontWeight: 800,
-          fontFamily: "'Albert Sans', var(--font-sans)",
+          fontSize: "10.5cqw",
+          fontWeight: 700,
+          fontFamily: "'Playfair Display', Georgia, serif",
           color: textColor,
           textTransform: "uppercase",
-          textAlign: "center",
-          lineHeight: 1.06,
+          textAlign: "left",
+          lineHeight: 1.05,
+          letterSpacing: "0.02em",
           wordBreak: "break-word",
         }}>
           {flavor}
@@ -1043,7 +1046,7 @@ function BottleLabelT3({ brand, flavor, strength, nicLabel, gradient, logoDataUr
 
       {/* Divider — below flavor in bottom half */}
       <div style={abs({
-        top: "83%", left: "6.71%", right: "6.71%", height: "1.2cqw",
+        top: "83%", left: "6.71%", right: "6.71%", height: "0.6cqw",
         background: textColor,
         pointerEvents: "none",
         zIndex: 1,
@@ -1052,14 +1055,14 @@ function BottleLabelT3({ brand, flavor, strength, nicLabel, gradient, logoDataUr
       {/* Footer — strength & nic in bottom half */}
       <div style={abs({
         top: "84.7%", left: "6.71%", right: "6.71%",
-        display: "flex", justifyContent: "space-between", paddingTop: "1.2%",
+        display: "flex", justifyContent: "flex-start", gap: "8cqw", paddingTop: "1.2%",
         pointerEvents: "none",
         zIndex: 1,
       })}>
-        <span style={{ fontSize: "6.1cqw", fontWeight: 500, color: textColor, fontFamily: "var(--font-sans)" }}>
+        <span style={{ fontSize: "6.1cqw", fontWeight: 600, color: textColor, fontFamily: "var(--font-sans)", letterSpacing: "0.02em" }}>
           {strength}
         </span>
-        <span style={{ fontSize: "6.1cqw", fontWeight: 500, color: textColor, fontFamily: "var(--font-sans)" }}>
+        <span style={{ fontSize: "6.1cqw", fontWeight: 600, color: textColor, fontFamily: "var(--font-sans)", letterSpacing: "0.02em" }}>
           {nicLabel}
         </span>
       </div>
