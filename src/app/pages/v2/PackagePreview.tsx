@@ -326,11 +326,11 @@ export function BoxT2Centered({ brand, flavor, strength, nicLabel, gradient, log
             margin: 0,
             fontSize: "18.3cqw",
             fontWeight: 900,
-            fontFamily: "'Albert Sans', var(--font-sans)",
+            fontFamily: "'Albert Sans', 'Arial Black', -apple-system, sans-serif",
             color: textColor,
             textTransform: "uppercase",
             textAlign: "center",
-            lineHeight: 0.85,
+            lineHeight: 0.82,
             letterSpacing: "-0.04em",
             wordBreak: "break-word",
           }}>
@@ -343,14 +343,14 @@ export function BoxT2Centered({ brand, flavor, strength, nicLabel, gradient, log
       <div style={abs({ top: "40.5%", left: 0, right: 0, pointerEvents: "none" })}>
         <p style={{
           margin: 0,
-          fontSize: "9.76cqw",
-          fontWeight: 800,
-          fontFamily: "'Albert Sans', var(--font-sans)",
+          fontSize: "11.5cqw",
+          fontWeight: 900,
+          fontFamily: "'Albert Sans', 'Arial Black', -apple-system, sans-serif",
           color: textColor,
           textTransform: "uppercase",
           textAlign: "center",
-          lineHeight: 1.02,
-          letterSpacing: "-0.02em",
+          lineHeight: 1.0,
+          letterSpacing: "-0.03em",
           wordBreak: "break-word",
         }}>
           {flavor}
@@ -370,10 +370,10 @@ export function BoxT2Centered({ brand, flavor, strength, nicLabel, gradient, log
         display: "flex", justifyContent: "space-between", paddingTop: "1.2%",
         pointerEvents: "none",
       })}>
-        <span style={{ fontSize: "6.1cqw", fontWeight: 500, color: textColor, fontFamily: "var(--font-sans)" }}>
+        <span style={{ fontSize: "6.1cqw", fontWeight: 600, color: textColor, fontFamily: "var(--font-sans)" }}>
           {strength}
         </span>
-        <span style={{ fontSize: "6.1cqw", fontWeight: 500, color: textColor, fontFamily: "var(--font-sans)" }}>
+        <span style={{ fontSize: "6.1cqw", fontWeight: 600, color: textColor, fontFamily: "var(--font-sans)" }}>
           {nicLabel}
         </span>
       </div>
@@ -888,11 +888,11 @@ function BottleLabelT2({ brand, flavor, strength, nicLabel, gradient, logoDataUr
             margin: 0,
             fontSize: "18.3cqw",
             fontWeight: 900,
-            fontFamily: "'Albert Sans', var(--font-sans)",
+            fontFamily: "'Albert Sans', 'Arial Black', -apple-system, sans-serif",
             color: textColor,
             textTransform: "uppercase",
             textAlign: "center",
-            lineHeight: 0.85,
+            lineHeight: 0.82,
             letterSpacing: "-0.04em",
             wordBreak: "break-word",
           }}>
@@ -911,14 +911,14 @@ function BottleLabelT2({ brand, flavor, strength, nicLabel, gradient, logoDataUr
       }}>
         <p style={{
           margin: 0,
-          fontSize: "9.76cqw",
-          fontWeight: 800,
-          fontFamily: "'Albert Sans', var(--font-sans)",
+          fontSize: "11.5cqw",
+          fontWeight: 900,
+          fontFamily: "'Albert Sans', 'Arial Black', -apple-system, sans-serif",
           color: textColor,
           textTransform: "uppercase",
           textAlign: "center",
-          lineHeight: 1.02,
-          letterSpacing: "-0.02em",
+          lineHeight: 1.0,
+          letterSpacing: "-0.03em",
           wordBreak: "break-word",
         }}>
           {flavor}
@@ -947,10 +947,10 @@ function BottleLabelT2({ brand, flavor, strength, nicLabel, gradient, logoDataUr
         paddingTop: "1.2%",
         pointerEvents: "none",
       }}>
-        <span style={{ fontSize: "6.1cqw", fontWeight: 500, color: textColor, fontFamily: "var(--font-sans)" }}>
+        <span style={{ fontSize: "6.1cqw", fontWeight: 600, color: textColor, fontFamily: "var(--font-sans)" }}>
           {strength}
         </span>
-        <span style={{ fontSize: "6.1cqw", fontWeight: 500, color: textColor, fontFamily: "var(--font-sans)" }}>
+        <span style={{ fontSize: "6.1cqw", fontWeight: 600, color: textColor, fontFamily: "var(--font-sans)" }}>
           {nicLabel}
         </span>
       </div>
