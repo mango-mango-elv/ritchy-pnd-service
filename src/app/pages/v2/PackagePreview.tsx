@@ -359,7 +359,7 @@ export function BoxT2Centered({ brand, flavor, strength, nicLabel, gradient, log
 
       {/* divider — at 60.3% */}
       <div style={abs({
-        top: "60.3%", left: "6.71%", right: "6.71%", height: "1.2cqw",
+        top: "60.3%", left: "6.71%", right: "6.71%", height: "0.6cqw",
         background: textColor,
         pointerEvents: "none",
       })} />
@@ -932,7 +932,7 @@ function BottleLabelT2({ brand, flavor, strength, nicLabel, gradient, logoDataUr
         top: "80%",
         left: "6.71%",
         right: "6.71%",
-        height: "1.2cqw",
+        height: "0.6cqw",
         background: textColor,
         pointerEvents: "none",
       }} />
