@@ -128,6 +128,14 @@ function BoxRoot({ children }: { children: React.ReactNode }) {
       overflow: "hidden", borderRadius: "4px",
     }}>
       {children}
+      {/* Box Glare Overlay */}
+      <div style={abs({
+        inset: 0,
+        pointerEvents: "none",
+        zIndex: 10,
+        background: "linear-gradient(185deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 30%)",
+        boxShadow: "inset 1px 1px 0px rgba(255, 255, 255, 0.35), inset -1px 0px 0px rgba(255, 255, 255, 0.1)",
+      })} />
     </div>
   );
 }
@@ -1300,6 +1308,14 @@ function BottlePreview({ templateId, brand, flavor, strength, nicLabel, gradient
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block", pointerEvents: "none" }}
         />
         <LabelComp brand={brand} flavor={flavor} strength={strength} nicLabel={nicLabel} gradient={gradient} logoDataUrl={logoDataUrl} logoScale={logoScale} bgImageDataUrl={bgImageDataUrl} bgImagePosition={bgImagePosition} bgImageScale={bgImageScale} onBgPositionChange={onBgPositionChange} colorTab={colorTab} graphicsColor={graphicsColor} />
+        
+        {/* Bottle Label Glare Overlay (Matches label sticker inset perfectly!) */}
+        <div style={abs({
+          inset: "50.96% 27.71% 5.23% 9.04%",
+          pointerEvents: "none",
+          zIndex: 10,
+          background: "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.06) 20%, rgba(255,255,255,0.22) 28%, rgba(255,255,255,0.06) 36%, rgba(255,255,255,0) 60%)",
+        })} />
       </div>
       <span style={{ fontSize: "var(--text-xs)", color: "var(--color-text-muted)", fontFamily: "var(--font-sans)" }}>Bottle</span>
     </div>
