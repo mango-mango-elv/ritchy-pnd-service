@@ -390,6 +390,9 @@ export function BoxT3Split({ brand, flavor, strength, nicLabel, gradient, logoDa
   const topBgColor = isDarkGraphics ? "#ffffff" : "#252525";
   const topTextColor = isDarkGraphics ? "#252525" : "#ffffff";
 
+  const brandLength = brand.length || 1;
+  const brandFontSize = Math.min(32.3, 100 / (brandLength * 0.7));
+
   return (
     <BoxRoot>
       {/* Lower half (colored/image background) */}
@@ -405,11 +408,10 @@ export function BoxT3Split({ brand, flavor, strength, nicLabel, gradient, logoDa
         <div style={abs({ inset: 0, background: gradient })} />
       )}
 
-      {/* Top half (solid contrast background) */}
+      {/* Top half (solid contrast background) - NO BORDER */}
       <div style={abs({
         top: 0, left: 0, right: 0, height: "34%",
         background: topBgColor,
-        borderBottom: `0.6cqw solid ${textColor}`,
         display: "flex", alignItems: "center", justifyContent: "center",
         padding: "0 6%",
         boxSizing: "border-box",
@@ -431,7 +433,7 @@ export function BoxT3Split({ brand, flavor, strength, nicLabel, gradient, logoDa
         ) : (
           <p style={{
             margin: 0,
-            fontSize: "32.3cqw",
+            fontSize: `${brandFontSize}cqw`,
             fontWeight: 400,
             fontFamily: "'Aboreto', sans-serif",
             color: topTextColor,
@@ -439,7 +441,8 @@ export function BoxT3Split({ brand, flavor, strength, nicLabel, gradient, logoDa
             textAlign: "center",
             lineHeight: 0.87,
             letterSpacing: "0em",
-            wordBreak: "break-word",
+            whiteSpace: "nowrap",
+            wordBreak: "keep-all",
           }}>
             {brand}
           </p>
@@ -450,13 +453,13 @@ export function BoxT3Split({ brand, flavor, strength, nicLabel, gradient, logoDa
       <div style={abs({ top: "41.5%", left: "6.71%", right: "15%", pointerEvents: "none", zIndex: 1 })}>
         <p style={{
           margin: 0,
-          fontSize: "18cqw",
+          fontSize: "9cqw",
           fontWeight: 400,
           fontFamily: "'Aboreto', sans-serif",
           color: textColor,
           textTransform: "uppercase",
           textAlign: "left",
-          lineHeight: 0.95,
+          lineHeight: 1.2,
           letterSpacing: "0em",
           wordBreak: "break-word",
         }}>
@@ -966,6 +969,9 @@ function BottleLabelT3({ brand, flavor, strength, nicLabel, gradient, logoDataUr
   const topBgColor = isDarkGraphics ? "#ffffff" : "#252525";
   const topTextColor = isDarkGraphics ? "#252525" : "#ffffff";
 
+  const brandLength = brand.length || 1;
+  const brandFontSize = Math.min(32.3, 100 / (brandLength * 0.7));
+
   return (
     <div style={{
       position: "absolute",
@@ -985,11 +991,10 @@ function BottleLabelT3({ brand, flavor, strength, nicLabel, gradient, logoDataUr
         <div style={abs({ inset: 0, background: gradient })} />
       )}
 
-      {/* Top half (solid contrast background) */}
+      {/* Top half (solid contrast background) - NO BORDER */}
       <div style={abs({
         top: 0, left: 0, right: 0, height: "34%",
         background: topBgColor,
-        borderBottom: `0.6cqw solid ${textColor}`,
         display: "flex", alignItems: "center", justifyContent: "center",
         padding: "0 6%",
         boxSizing: "border-box",
@@ -1011,7 +1016,7 @@ function BottleLabelT3({ brand, flavor, strength, nicLabel, gradient, logoDataUr
         ) : (
           <p style={{
             margin: 0,
-            fontSize: "32.3cqw",
+            fontSize: `${brandFontSize}cqw`,
             fontWeight: 400,
             fontFamily: "'Aboreto', sans-serif",
             color: topTextColor,
@@ -1019,7 +1024,8 @@ function BottleLabelT3({ brand, flavor, strength, nicLabel, gradient, logoDataUr
             textAlign: "center",
             lineHeight: 0.87,
             letterSpacing: "0em",
-            wordBreak: "break-word",
+            whiteSpace: "nowrap",
+            wordBreak: "keep-all",
           }}>
             {brand}
           </p>
@@ -1030,13 +1036,13 @@ function BottleLabelT3({ brand, flavor, strength, nicLabel, gradient, logoDataUr
       <div style={abs({ top: "41.5%", left: "6.71%", right: "15%", pointerEvents: "none", zIndex: 1 })}>
         <p style={{
           margin: 0,
-          fontSize: "18cqw",
+          fontSize: "9cqw",
           fontWeight: 400,
           fontFamily: "'Aboreto', sans-serif",
           color: textColor,
           textTransform: "uppercase",
           textAlign: "left",
-          lineHeight: 0.95,
+          lineHeight: 1.2,
           letterSpacing: "0em",
           wordBreak: "break-word",
         }}>
