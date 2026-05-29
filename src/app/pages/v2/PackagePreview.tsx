@@ -104,10 +104,10 @@ function ImageBackground({
         alt="background"
         style={{
           position: "absolute",
-          top: "50%",
+          top: 0,
           left: "50%",
-          transform: `translate(-50%, -50%) translate(${bgImagePosition.x}px, ${bgImagePosition.y}px) scale(${bgImageScale})`,
-          transformOrigin: "center center",
+          transform: `translateX(-50%) translate(${bgImagePosition.x}px, ${bgImagePosition.y}px) scale(${bgImageScale})`,
+          transformOrigin: "top center",
           height: "100%",
           width: "auto",
           maxWidth: "none",
