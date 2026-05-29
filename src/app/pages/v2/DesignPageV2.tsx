@@ -23,14 +23,16 @@ export function DesignPageV2() {
 
   const [design, setDesign] = useState<DesignState>(() => {
     const order = readSession<Record<string, unknown>>("ritchy-v2-order", {});
+    const savedDesign = readSession<Record<string, any>>("ritchy-v2-design", {});
     const flavor = String(order.flavor ?? "Passion Fruit");
     const type   = order.nicType === "freebase" ? "freebase" : "salt" as const;
     const id = mkId();
     return {
-      templateId:    "t1-flavor",
-      brandName:     "",
-      logoDataUrl:   "",
-      logoScale:     1.0,
+      templateId:    savedDesign.templateId ?? "t1-flavor",
+      brandName:     savedDesign.brandName ?? "",
+      logoDataUrl:   savedDesign.logoDataUrl ?? "",
+      logoScale:     savedDesign.logoScale ?? 1.0,
+      healthWarningText: savedDesign.healthWarningText ?? "This product contains nicotine which is a highly addictive substance.",
       skus:          [{
         id,
         displayName: flavor,
@@ -127,6 +129,7 @@ export function DesignPageV2() {
       accentColor: selectedSku ? (selectedSku.colorTab === "custom" ? selectedSku.customColor : selectedPreset.color) : selectedPreset.color,
       graphicsColor: activeGraphicsColor,
       background:  { id: selectedPreset.id, label: selectedPreset.label, style: activeGradient },
+      healthWarningText: design.healthWarningText,
     }));
     navigate("/signup");
   };
@@ -273,7 +276,7 @@ export function DesignPageV2() {
                       aspectRatio: "1 / 1",
                       border: active ? "2px solid #111111" : "1.5px solid var(--color-border)",
                       borderRadius: "10px",
-                      background: "transparent",
+                      background: "#ffffff",
                       cursor: "pointer",
                       overflow: "hidden",
                       padding: 0,
@@ -281,20 +284,40 @@ export function DesignPageV2() {
                       transition: "border-color .15s",
                     }}
                   >
-                    {active ? (
+                    <div style={{
+                      width: "100%", height: "100%",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      overflow: "hidden",
+                      background: "#ffffff",
+                      pointerEvents: "none",
+                    }}>
                       <div style={{
-                        width: "100%", height: "100%",
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                        gap: "3px",
-                        padding: "8px 6px",
-                        background: "#fff",
+                        width: "300px",
+                        height: "347px",
+                        flexShrink: 0,
+                        transform: "scale(0.16)",
+                        transformOrigin: "center center",
                       }}>
-                        <MiniBottle gradient={activeGradient} />
-                        <MiniBox templateId={t.id} gradient={activeGradient} brand={design.brandName || "BRAND"} flavor={selectedSku?.displayName || "FLAVOR"} active />
+                        <PackagePreview
+                          templateId={t.id}
+                          brandName={active ? design.brandName : "BRAND"}
+                          flavorName={active ? (selectedSku?.displayName || "FLAVOR") : "FLAVOR"}
+                          strength={active ? (selectedSku?.strength || "20mg") : "20mg"}
+                          nicType={active ? (selectedSku?.type || "salt") : "salt"}
+                          gradient={active ? activeGradient : "linear-gradient(135deg, #e4e4e7 0%, #a1a1aa 100%)"}
+                          logoDataUrl={active ? design.logoDataUrl : ""}
+                          logoScale={active ? (design.logoScale ?? 1.0) : 1.0}
+                          bgImageDataUrl={active ? selectedSku?.bgImageDataUrl : ""}
+                          bgImagePositionBox={active ? selectedSku?.bgImagePositionBox : undefined}
+                          bgImageScaleBox={active ? (selectedSku?.bgImageScaleBox ?? 1.0) : 1.0}
+                          bgImagePositionBottle={active ? selectedSku?.bgImagePositionBottle : undefined}
+                          bgImageScaleBottle={active ? (selectedSku?.bgImageScaleBottle ?? 1.0) : 1.0}
+                          colorTab={active ? selectedSku?.colorTab : "presets"}
+                          graphicsColor={active ? activeGraphicsColor : "#ffffff"}
+                          healthWarningText={active ? design.healthWarningText : undefined}
+                        />
                       </div>
-                    ) : (
-                      <MiniBox templateId={t.id} gradient="rgba(0,0,0,0.12)" brand="BRAND" flavor="FLAVOR" />
-                    )}
+                    </div>
                     {active && (
                       <div style={{
                         position: "absolute", bottom: "5px", right: "5px",
@@ -352,6 +375,7 @@ export function DesignPageV2() {
                 onBgPositionBottleChange={pos => selectedSku && patchSku(selectedSku.id, { bgImagePositionBottle: pos })}
                 colorTab={selectedSku?.colorTab}
                 graphicsColor={activeGraphicsColor}
+                healthWarningText={design.healthWarningText}
               />
             </div>
           </div>
@@ -362,96 +386,4 @@ export function DesignPageV2() {
   );
 }
 
-function MiniBottle({ gradient }: { gradient: string }) {
-  return (
-    <div style={{
-      width: "30%",
-      aspectRatio: "1 / 2.6",
-      borderRadius: "2px",
-      border: "1px solid rgba(0,0,0,0.10)",
-      display: "flex", flexDirection: "column",
-      overflow: "hidden",
-      background: "rgba(255,255,255,0.55)",
-    }}>
-      <div style={{ flex: 1 }} />
-      <div style={{ height: "44%", background: gradient }} />
-    </div>
-  );
-}
 
-type MiniInnerProps = { gradient: string; brand: string; flavor: string };
-
-/* active=true → fits inside the 54%-wide sub-slot next to MiniBottle */
-/* active=false (default) → fills the whole button via position:absolute */
-function MiniBox({ templateId, gradient, brand, flavor, active = false }: MiniInnerProps & { templateId: string; active?: boolean }) {
-  const Inner = MINI_BOX_MAP[templateId] ?? null;
-
-  if (!Inner) {
-    return (
-      <div style={{
-        ...(active
-          ? { width: "54%", aspectRatio: "200 / 290" }
-          : { position: "absolute", inset: 0 }),
-        background: "rgba(0,0,0,0.06)",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        fontSize: "7px", color: "rgba(0,0,0,0.3)", fontFamily: "var(--font-sans)",
-      }}>
-        soon
-      </div>
-    );
-  }
-
-  /* Scale factor: 200px reference width → thumbnail slot width */
-  const scale = active ? 0.14 : 0.27;
-  return (
-    <div style={{
-      ...(active
-        ? { width: "54%", aspectRatio: "200 / 290" }
-        : { position: "absolute", inset: 0 }),
-      overflow: "hidden",
-      borderRadius: active ? "2px" : 0,
-      position: active ? "relative" : "absolute",
-    }}>
-      <div style={{
-        position: "absolute", top: 0, left: 0,
-        width: "200px", height: "290px",
-        transform: `scale(${scale})`,
-        transformOrigin: "top left",
-      }}>
-        <Inner gradient={gradient} brand={brand} flavor={flavor} />
-      </div>
-    </div>
-  );
-}
-
-const MINI_BOX_MAP: Record<string, React.FC<MiniInnerProps>> = {
-  "t1-flavor":   MiniBoxT1,
-  "t2-centered": MiniBoxT2,
-};
-
-function MiniBoxT1({ gradient, brand, flavor }: { gradient: string; brand: string; flavor: string }) {
-  return (
-    <div style={{ position: "relative", width: "200px", height: "290px", overflow: "hidden", borderRadius: "4px" }}>
-      <div style={{ position: "absolute", inset: 0, background: gradient }} />
-      <p style={{ position: "absolute", top: "4.1%", left: "7.3%", margin: 0, fontSize: "14px", fontWeight: 800, color: "#fff", textTransform: "uppercase", lineHeight: 1.1, fontFamily: "var(--font-sans)" }}>{flavor.slice(0, 12)}</p>
-      <p style={{ position: "absolute", top: "22.3%", left: "7.3%", margin: 0, fontSize: "8px", fontWeight: 500, color: "rgba(255,255,255,0.8)", fontFamily: "var(--font-sans)" }}>Nic salt · 20mg</p>
-      <div style={{ position: "absolute", top: "27.27%", left: 0, right: 0, height: "1px", background: "rgba(255,255,255,0.4)" }} />
-      <p style={{ position: "absolute", top: "57.58%", left: "6.71%", right: "47.56%", margin: 0, fontSize: "10px", fontWeight: 900, color: "#fff", textTransform: "uppercase", lineHeight: 1.1, fontFamily: "var(--font-sans)" }}>{brand.slice(0, 10)}</p>
-      <div style={{ position: "absolute", top: "68%", left: 0, right: 0, bottom: 0, border: "5px solid #000", background: "#fff" }} />
-    </div>
-  );
-}
-
-function MiniBoxT2({ gradient, brand, flavor }: { gradient: string; brand: string; flavor: string }) {
-  return (
-    <div style={{ position: "relative", width: "200px", height: "290px", overflow: "hidden", borderRadius: "4px" }}>
-      <div style={{ position: "absolute", inset: 0, background: gradient }} />
-      <div style={{ position: "absolute", inset: "15.43% 0 70.25% 0", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 6%" }}>
-        <p style={{ margin: 0, fontSize: "24px", fontWeight: 900, color: "#fff", textTransform: "uppercase", textAlign: "center", lineHeight: 0.9, wordBreak: "break-word", fontFamily: "var(--font-sans)" }}>{brand.slice(0, 10)}</p>
-      </div>
-      <div style={{ position: "absolute", top: "56.47%", left: "6.71%", right: "6.71%", height: "1px", background: "rgba(255,255,255,0.4)" }} />
-      <p style={{ position: "absolute", top: "58.5%", left: 0, right: 0, margin: 0, fontSize: "13px", fontWeight: 800, color: "#fff", textTransform: "uppercase", textAlign: "center", fontFamily: "var(--font-sans)" }}>{flavor.slice(0, 12)}</p>
-      <div style={{ position: "absolute", top: "68%", left: 0, right: 0, bottom: 0, border: "5px solid #000", background: "#fff" }} />
-    </div>
-  );
-}

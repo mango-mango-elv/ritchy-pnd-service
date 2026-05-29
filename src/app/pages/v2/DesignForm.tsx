@@ -9,6 +9,15 @@ const FLAVOR_OPTIONS = [
   "Vanilla Custard", "Cheesecake", "Caramel", "Coffee", "Cola",
 ];
 
+const WARNING_PRESETS = [
+  { lang: "English", code: "EN", text: "This product contains nicotine which is a highly addictive substance." },
+  { lang: "Spanish", code: "ES", text: "Este producto contiene nicotina, una sustancia muy adictiva." },
+  { lang: "Czech", code: "CS", text: "Tento výrobek obsahuje nikotin, který je vysoce návykovou látkou." },
+  { lang: "Slovak", code: "SK", text: "Tento výrobok obsahuje nikotín, ktorý je vysoko návykovou látkou." },
+  { lang: "Italian", code: "IT", text: "Questo prodotto contiene nicotina, una sostanza che crea un'elevata dipendenza." },
+  { lang: "Romanian", code: "RO", text: "Acest produs conține nicotină, o substanță cu grad ridicat de dependență." },
+];
+
 interface Props {
   design: DesignState;
   patch: (p: Partial<DesignState>) => void;
@@ -30,6 +39,7 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
     return brandCompleted;
   });
   const [flavorExpanded, setFlavorExpanded] = useState(false);
+  const [warningExpanded, setWarningExpanded] = useState(false);
   const [colorTouched, setColorTouched] = useState(false);
   const [flavorTouched, setFlavorTouched] = useState(false);
 
@@ -38,6 +48,7 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
     ? (selectedSku.colorTab !== "image" || !!selectedSku.bgImageDataUrl)
     : false;
   const isFlavorCompleted = selectedSku ? selectedSku.displayName.trim() !== "" : false;
+  const isWarningCompleted = !!design.healthWarningText?.trim();
 
   const handleLogoFile = (file: File) => {
     const reader = new FileReader();
@@ -891,6 +902,114 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
           </div>
         </Card>
       )}
+
+      {/* ── Section 4: Health Warning ── */}
+      <Card>
+        <div
+          onClick={() => setWarningExpanded(!warningExpanded)}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            cursor: "pointer",
+            userSelect: "none",
+            padding: "4px 0",
+            marginBottom: warningExpanded ? "8px" : 0,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
+            <h3 style={{ margin: 0, fontSize: "var(--text-lg)", fontWeight: 700, color: "var(--color-text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
+              {isWarningCompleted && (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              )}
+              Health Warning
+            </h3>
+            {!warningExpanded && design.healthWarningText && (
+              <span style={{
+                fontSize: "11px",
+                color: "var(--color-text-muted)",
+                background: "rgba(0,0,0,0.04)",
+                padding: "2px 8px",
+                borderRadius: "100px",
+                fontWeight: 500,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                maxWidth: "200px",
+              }}>
+                {design.healthWarningText}
+              </span>
+            )}
+          </div>
+          <div style={{ color: "var(--color-text-muted)", display: "flex", alignItems: "center" }}>
+            {warningExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+          </div>
+        </div>
+
+        <div className={`v2-accordion-wrapper ${warningExpanded ? "expanded" : ""}`}>
+          <div className="v2-accordion-content" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            <p style={{ margin: 0, fontSize: "var(--text-sm)", color: "var(--color-text-muted)" }}>
+              Applied globally to all packaging. Select a TPD language preset or write a custom warning text below:
+            </p>
+
+            <Field label="Language presets">
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                {WARNING_PRESETS.map(preset => {
+                  const isSelected = design.healthWarningText === preset.text;
+                  return (
+                    <button
+                      key={preset.code}
+                      onClick={() => patch({ healthWarningText: preset.text })}
+                      style={{
+                        padding: "6px 12px",
+                        border: isSelected ? "1.5px solid #111111" : "1.5px solid var(--color-border)",
+                        borderRadius: "var(--radius-full)",
+                        background: isSelected ? "#111111" : "transparent",
+                        color: isSelected ? "#ffffff" : "var(--color-text-secondary)",
+                        fontSize: "12px",
+                        fontFamily: "var(--font-sans)",
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+                      }}
+                    >
+                      <span style={{ fontSize: "10px", opacity: 0.8 }}>{preset.code}</span>
+                      <span>{preset.lang}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </Field>
+
+            <Field label="Warning text">
+              <textarea
+                className="ds-input"
+                rows={3}
+                placeholder="Enter warning text..."
+                value={design.healthWarningText || ""}
+                onChange={e => patch({ healthWarningText: e.target.value })}
+                style={{
+                  width: "100%",
+                  padding: "10px",
+                  fontSize: "13px",
+                  fontWeight: 500,
+                  fontFamily: "var(--font-sans)",
+                  lineHeight: "1.4",
+                  resize: "none",
+                }}
+              />
+            </Field>
+          </div>
+        </div>
+      </Card>
 
     </div>
   );

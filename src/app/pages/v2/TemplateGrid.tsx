@@ -10,9 +10,9 @@ export interface Template {
 export const TEMPLATES: Template[] = [
   { id: "t1-flavor",   label: "Flavor",   aspectRatio: 164 / 363 },
   { id: "t2-centered", label: "Centered", aspectRatio: 164 / 363 },
-  { id: "t3-split",    label: "Split",    aspectRatio: 164 / 363, comingSoon: true },
-  { id: "t4-badge",    label: "Badge",    aspectRatio: 164 / 363, comingSoon: true },
-  { id: "t5-vertical", label: "Vertical", aspectRatio: 164 / 363, comingSoon: true },
+  { id: "t3-split",    label: "Split",    aspectRatio: 164 / 363 },
+  { id: "t4-badge",    label: "Badge",    aspectRatio: 164 / 363 },
+  { id: "t5-vertical", label: "Vertical", aspectRatio: 164 / 363 },
 ];
 
 interface Props {
