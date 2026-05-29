@@ -330,7 +330,8 @@ export function BoxT2Centered({ brand, flavor, strength, nicLabel, gradient, log
             color: textColor,
             textTransform: "uppercase",
             textAlign: "center",
-            lineHeight: 0.874,
+            lineHeight: 0.85,
+            letterSpacing: "-0.04em",
             wordBreak: "break-word",
           }}>
             {brand}
@@ -348,7 +349,8 @@ export function BoxT2Centered({ brand, flavor, strength, nicLabel, gradient, log
           color: textColor,
           textTransform: "uppercase",
           textAlign: "center",
-          lineHeight: 1.06,
+          lineHeight: 1.02,
+          letterSpacing: "-0.02em",
           wordBreak: "break-word",
         }}>
           {flavor}
@@ -890,7 +892,8 @@ function BottleLabelT2({ brand, flavor, strength, nicLabel, gradient, logoDataUr
             color: textColor,
             textTransform: "uppercase",
             textAlign: "center",
-            lineHeight: 0.874,
+            lineHeight: 0.85,
+            letterSpacing: "-0.04em",
             wordBreak: "break-word",
           }}>
             {brand}
@@ -914,7 +917,8 @@ function BottleLabelT2({ brand, flavor, strength, nicLabel, gradient, logoDataUr
           color: textColor,
           textTransform: "uppercase",
           textAlign: "center",
-          lineHeight: 1.06,
+          lineHeight: 1.02,
+          letterSpacing: "-0.02em",
           wordBreak: "break-word",
         }}>
           {flavor}
