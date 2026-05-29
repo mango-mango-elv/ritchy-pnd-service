@@ -1,6 +1,6 @@
 import React from "react";
 import bottleBg from "../../../assets/bottle-bg.png";
-import boxGlare from "../../../assets/box-glare.png";
+import boxGlare from "../../../assets/Blicks_box.png";
 
 interface Props {
   templateId:  string;
@@ -155,17 +155,17 @@ function WarningZone({ text }: { text?: string }) {
       border: "10px solid #000",
       background: "#fff",
       display: "flex", alignItems: "center", justifyContent: "center",
-      padding: "3px 8px",
+      padding: "8px 12px", // premium protective padding
       overflow: "hidden",
       pointerEvents: "none",
     })}>
       <p style={{
         margin: 0,
-        fontSize: "13.4cqw",
+        fontSize: "8.2cqw", // perfectly sized and highly prominent
         fontWeight: 800,
         color: "#111",
         textAlign: "center",
-        lineHeight: 1.1,
+        lineHeight: 1.15,
         fontFamily: "var(--font-sans)",
       }}>
         {text || WARNING_TEXT}
