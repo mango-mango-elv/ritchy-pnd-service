@@ -138,7 +138,7 @@ function WarningZone({ text }: { text?: string }) {
     <div style={abs({
       top: "68%", left: 0, right: 0, bottom: 0,
       boxSizing: "border-box",
-      border: "5px solid #000",
+      border: "10px solid #000",
       background: "#fff",
       display: "flex", alignItems: "center", justifyContent: "center",
       padding: "3px 8px",
@@ -147,11 +147,11 @@ function WarningZone({ text }: { text?: string }) {
     })}>
       <p style={{
         margin: 0,
-        fontSize: "6.7cqw",
-        fontWeight: 700,
+        fontSize: "13.4cqw",
+        fontWeight: 800,
         color: "#111",
         textAlign: "center",
-        lineHeight: 1.2,
+        lineHeight: 1.1,
         fontFamily: "var(--font-sans)",
       }}>
         {text || WARNING_TEXT}
