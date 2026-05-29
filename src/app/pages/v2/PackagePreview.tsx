@@ -745,7 +745,7 @@ function BottleLabelT1({ brand, flavor, strength, nicLabel, gradient, logoDataUr
       {/* flavor — top-left */}
       <div style={{
         position: "absolute",
-        top: "7%",
+        top: "10.3%",
         left: "7.5%",
         right: "7.5%",
         pointerEvents: "none",
@@ -767,7 +767,7 @@ function BottleLabelT1({ brand, flavor, strength, nicLabel, gradient, logoDataUr
       {/* nic and strength */}
       <div style={{
         position: "absolute",
-        top: "26.5%",
+        top: "39%",
         left: "7.5%",
         right: "7.5%",
         pointerEvents: "none",
@@ -789,7 +789,7 @@ function BottleLabelT1({ brand, flavor, strength, nicLabel, gradient, logoDataUr
       {/* separator line */}
       <div style={{
         position: "absolute",
-        top: "33%",
+        top: "48.5%",
         left: 0,
         right: 0,
         height: "1.2cqw",
@@ -861,10 +861,10 @@ function BottleLabelT2({ brand, flavor, strength, nicLabel, gradient, logoDataUr
       {/* brand/logo — centered in the upper zone */}
       <div style={{
         position: "absolute",
-        top: "15.43%",
+        top: "22.7%",
         left: 0,
         right: 0,
-        bottom: "70.25%",
+        bottom: "56.25%",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -904,7 +904,7 @@ function BottleLabelT2({ brand, flavor, strength, nicLabel, gradient, logoDataUr
       {/* flavor — centered in the lower zone */}
       <div style={{
         position: "absolute",
-        top: "40.5%",
+        top: "55.5%",
         left: 0,
         right: 0,
         pointerEvents: "none",
@@ -928,7 +928,7 @@ function BottleLabelT2({ brand, flavor, strength, nicLabel, gradient, logoDataUr
       {/* separator line — below flavor */}
       <div style={{
         position: "absolute",
-        top: "56.47%",
+        top: "80%",
         left: "6.71%",
         right: "6.71%",
         height: "1.2cqw",
@@ -939,7 +939,7 @@ function BottleLabelT2({ brand, flavor, strength, nicLabel, gradient, logoDataUr
       {/* footer — strength left, nic salt right */}
       <div style={{
         position: "absolute",
-        top: "57.6%",
+        top: "81.2%",
         left: "6.71%",
         right: "6.71%",
         display: "flex",
@@ -1024,7 +1024,7 @@ function BottleLabelT3({ brand, flavor, strength, nicLabel, gradient, logoDataUr
       </div>
 
       {/* Flavor — centered in bottom half */}
-      <div style={abs({ top: "41.5%", left: 0, right: 0, pointerEvents: "none", zIndex: 1 })}>
+      <div style={abs({ top: "61%", left: 0, right: 0, pointerEvents: "none", zIndex: 1 })}>
         <p style={{
           margin: 0,
           fontSize: "9.76cqw",
@@ -1042,7 +1042,7 @@ function BottleLabelT3({ brand, flavor, strength, nicLabel, gradient, logoDataUr
 
       {/* Divider — below flavor in bottom half */}
       <div style={abs({
-        top: "56.47%", left: "6.71%", right: "6.71%", height: "1.2cqw",
+        top: "83%", left: "6.71%", right: "6.71%", height: "1.2cqw",
         background: textColor,
         pointerEvents: "none",
         zIndex: 1,
@@ -1050,7 +1050,7 @@ function BottleLabelT3({ brand, flavor, strength, nicLabel, gradient, logoDataUr
 
       {/* Footer — strength & nic in bottom half */}
       <div style={abs({
-        top: "57.6%", left: "6.71%", right: "6.71%",
+        top: "84.7%", left: "6.71%", right: "6.71%",
         display: "flex", justifyContent: "space-between", paddingTop: "1.2%",
         pointerEvents: "none",
         zIndex: 1,
