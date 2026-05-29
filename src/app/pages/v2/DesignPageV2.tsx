@@ -22,18 +22,31 @@ export function DesignPageV2() {
   const [aiRunning, setAiRunning] = useState(false);
 
   const [design, setDesign] = useState<DesignState>(() => {
-    const order = readSession<Record<string, unknown>>("ritchy-v2-order", {});
+    const order = readSession<Record<string, any>>("ritchy-v2-order", {});
     const savedDesign = readSession<Record<string, any>>("ritchy-v2-design", {});
-    const flavor = String(order.flavor ?? "Passion Fruit");
-    const type   = order.nicType === "freebase" ? "freebase" : "salt" as const;
-    const id = mkId();
-    return {
-      templateId:    savedDesign.templateId ?? "t1-flavor",
-      brandName:     savedDesign.brandName ?? "",
-      logoDataUrl:   savedDesign.logoDataUrl ?? "",
-      logoScale:     savedDesign.logoScale ?? 1.0,
-      healthWarningText: savedDesign.healthWarningText ?? "This product contains nicotine which is a highly addictive substance.",
-      skus:          [{
+    
+    let initialSkus: SKU[] = [];
+    if (order.skus && Array.isArray(order.skus) && order.skus.length > 0) {
+      initialSkus = order.skus.map((item: any, idx: number) => {
+        const preset = COLOR_PRESETS[idx % COLOR_PRESETS.length] || COLOR_PRESETS[0];
+        const flavorColor = item.flavorGradient?.[0] || preset.color;
+        
+        return {
+          id: item.id || `sku-${idx}`,
+          displayName: item.flavorName || item.flavor,
+          type: item.nicotineType === "freebase" ? "freebase" : "salt" as const,
+          flavor: item.flavor,
+          strength: `${item.strength}mg`,
+          colorTab: item.flavorGradient ? ("custom" as const) : ("presets" as const),
+          colorPresetId: item.flavorGradient ? "custom" : preset.id,
+          customColor: flavorColor,
+        };
+      });
+    } else {
+      const flavor = String(order.flavor ?? "Passion Fruit");
+      const type   = order.nicType === "freebase" ? "freebase" : "salt" as const;
+      const id = mkId();
+      initialSkus = [{
         id,
         displayName: flavor,
         type,
@@ -42,8 +55,17 @@ export function DesignPageV2() {
         colorTab: "presets",
         colorPresetId: "sunset",
         customColor: "#ea580c",
-      }],
-      selectedSkuId: id,
+      }];
+    }
+
+    return {
+      templateId:    savedDesign.templateId ?? "t1-flavor",
+      brandName:     savedDesign.brandName ?? "",
+      logoDataUrl:   savedDesign.logoDataUrl ?? "",
+      logoScale:     savedDesign.logoScale ?? 1.0,
+      healthWarningText: savedDesign.healthWarningText ?? "This product contains nicotine which is a highly addictive substance.",
+      skus:          initialSkus,
+      selectedSkuId: initialSkus[0]?.id || "",
     };
   });
 
