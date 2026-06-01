@@ -92,7 +92,7 @@ export function CompliancePage() {
     <div className="v2-design-page">
       {/* ── Center: form ── */}
       <main className="v2-design-center" style={{ display: "flex", flexDirection: "column" }}>
-        <div className="v2-design-center-scroll" style={{ flex: 1, display: "flex", flexDirection: "column", gap: "20px", paddingBottom: "24px" }}>
+        <div className="v2-design-center-scroll" style={{ flex: 1, display: "flex", flexDirection: "column", gap: "16px", paddingBottom: "24px" }}>
           
           {/* Header */}
           <div>

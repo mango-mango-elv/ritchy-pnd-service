@@ -135,7 +135,7 @@ export function ConfirmPage() {
 
   return (
     <div className="v2-page-container">
-      <div style={{ maxWidth: "640px", margin: "0 auto", display: "grid", gap: "var(--space-4)" }}>
+      <div style={{ maxWidth: "720px", margin: "0 auto", display: "grid", gap: "var(--space-4)" }}>
 
         <div>
           <h1 className="v2-step-title">Confirm &amp; Submit</h1>

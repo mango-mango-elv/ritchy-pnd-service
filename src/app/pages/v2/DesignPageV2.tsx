@@ -222,7 +222,7 @@ export function DesignPageV2() {
       {/* ── Center: form ── */}
       <main className="v2-design-center">
         <div className="v2-design-center-scroll">
-          <div style={{ marginBottom: "12px", paddingTop: "2px" }}>
+          <div style={{ marginBottom: "16px", paddingTop: "2px" }}>
             <h1 className="v2-step-title">Brand &amp; Design</h1>
             <p className="v2-step-subtitle">Choose a template, then set your brand, color, and label.</p>
           </div>
@@ -236,13 +236,10 @@ export function DesignPageV2() {
             setAiRunning={setAiRunning}
           />
 
-
-        </div>
-
-        <div className="v2-design-center-footer">
-          <div style={{ display: "flex", justifyContent: "space-between", width: "100%", gap: "12px" }}>
-            <button onClick={() => navigate("/order")} className="v2-footer-btn v2-footer-btn-secondary">← Back</button>
-            <button onClick={handleContinue} disabled={!canProceed} className="v2-footer-btn v2-footer-btn-primary">Continue →</button>
+          {/* Footer buttons row */}
+          <div className="v2-nav-footer" style={{ marginTop: "4px" }}>
+            <button onClick={() => navigate("/order")} className="v2-footer-btn v2-footer-btn-secondary fc-nav-btn">← Back</button>
+            <button onClick={handleContinue} disabled={!canProceed} className="v2-footer-btn v2-footer-btn-primary fc-nav-btn">Continue →</button>
           </div>
         </div>
       </main>
