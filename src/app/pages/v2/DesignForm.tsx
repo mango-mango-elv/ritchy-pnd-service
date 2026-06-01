@@ -279,10 +279,7 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
 
         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           {/* macOS Style Segmented Tab bar */}
-          <div style={{
-            display: "flex", gap: "2px",
-            background: "rgba(0,0,0,0.03)", borderRadius: "8px", padding: "3px",
-          }}>
+          <div className="v2-segmented-wrap">
             {(["presets", "custom", "ai", "image"] as const).map(tab => {
               const isActive = selectedSku ? (selectedSku.colorTab === tab && !(tab === "ai" && !aiRunning)) : false;
               const label = tab === "presets" ? "Presets" : tab === "custom" ? "Custom" : tab === "image" ? "Image" : "AI Gen";
@@ -290,18 +287,7 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
                 <button
                   key={tab}
                   onClick={() => tab === "ai" ? handleAIGenerate() : patchSku({ colorTab: tab })}
-                  style={{
-                    flex: 1, padding: "5px 4px",
-                    border: "none",
-                    borderRadius: "6px",
-                    background: isActive ? "#ffffff" : "transparent",
-                    boxShadow: isActive ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
-                    color: isActive ? "#111111" : "var(--color-text-secondary)",
-                    fontSize: "11px",
-                    fontWeight: isActive ? 600 : 500,
-                    cursor: "pointer",
-                    transition: "all 0.15s ease",
-                  }}
+                  className={`v2-segmented-btn ${isActive ? "active" : ""}`}
                 >
                   {tab === "ai" && aiRunning ? <Loader2 size={10} className="animate-spin" style={{ display: "inline-block" }} /> : label}
                 </button>
@@ -432,10 +418,7 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
           {/* Graphics & Text Color Selector - macOS Style Segmented */}
           {selectedSku && (
             <div style={{ display: "flex", flexDirection: "column", gap: "8px", paddingTop: "4px" }}>
-              <div style={{
-                display: "flex", gap: "2px",
-                background: "rgba(0,0,0,0.03)", borderRadius: "8px", padding: "3px",
-              }}>
+              <div className="v2-segmented-wrap">
                 {(["white", "black", "custom"] as const).map(gTab => {
                   const getGraphicsDefaultColor = (sku: SKU) => {
                     if (sku.colorPresetId === "alabaster" || sku.colorPresetId === "gold") return "black";
@@ -454,18 +437,7 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
                           patchSku({ graphicsCustomColor: "#ffffff" });
                         }
                       }}
-                      style={{
-                        flex: 1, padding: "5px 4px",
-                        border: "none",
-                        borderRadius: "6px",
-                        background: isActive ? "#ffffff" : "transparent",
-                        boxShadow: isActive ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
-                        color: isActive ? "#111111" : "var(--color-text-secondary)",
-                        fontSize: "11px",
-                        fontWeight: isActive ? 600 : 500,
-                        cursor: "pointer",
-                        transition: "all 0.15s ease",
-                      }}
+                      className={`v2-segmented-btn ${isActive ? "active" : ""}`}
                     >
                       {label}
                     </button>
@@ -599,23 +571,9 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
                         patch({ healthWarningText: preset.text });
                         setWarningExpanded(false);
                       }}
-                      style={{
-                        padding: "6px 12px",
-                        border: isSelected ? "1px solid #111111" : "1px solid rgba(0,0,0,0.06)",
-                        borderRadius: "6px",
-                        background: isSelected ? "#111111" : "rgba(0,0,0,0.02)",
-                        color: isSelected ? "#ffffff" : "var(--color-text-secondary)",
-                        fontSize: "12px",
-                        fontFamily: "var(--font-sans)",
-                        fontWeight: 600,
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "6px",
-                        transition: "all 0.15s ease",
-                      }}
+                      className={`v2-warning-preset-btn ${isSelected ? "active" : ""}`}
                     >
-                      <span style={{ fontSize: "10px", opacity: 0.8 }}>{preset.code}</span>
+                      <span className="v2-warning-preset-code">{preset.code}</span>
                       <span>{preset.lang}</span>
                     </button>
                   );

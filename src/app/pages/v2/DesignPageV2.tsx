@@ -189,17 +189,7 @@ export function DesignPageV2() {
               <button
                 key={sku.id}
                 onClick={() => patch({ selectedSkuId: sku.id })}
-                className="v2-sku-pill"
-                style={{
-                  display: "flex", alignItems: "center", gap: "10px",
-                  padding: "10px 12px",
-                  background: active ? "#111111" : "rgba(0,0,0,0.03)",
-                  border: "none",
-                  borderRadius: "10px",
-                  cursor: "pointer",
-                  textAlign: "left",
-                  fontFamily: "var(--font-sans)",
-                }}
+                className={`v2-sku-pill ${active ? "active" : ""}`}
               >
                 <div style={{
                   width: "26px", height: "26px",
@@ -208,9 +198,7 @@ export function DesignPageV2() {
                   background: skuGradient,
                 }} />
                 <span style={{
-                  fontSize: "var(--text-md)",
                   fontWeight: active ? 600 : 400,
-                  color: active ? "#ffffff" : "var(--color-text-primary)",
                   overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
                 }}>
                   {sku.displayName}
@@ -223,17 +211,6 @@ export function DesignPageV2() {
             <button
               onClick={addSku}
               className="v2-sku-pill v2-sku-add"
-              style={{
-                display: "flex", alignItems: "center", justifyContent: "center", gap: "6px",
-                padding: "10px 12px",
-                background: "transparent",
-                border: "1px dashed var(--color-border)",
-                borderRadius: "10px",
-                cursor: "pointer",
-                fontFamily: "var(--font-sans)",
-                fontSize: "var(--text-md)",
-                color: "var(--color-text-muted)",
-              }}
             >
               <Plus size={14} /> Add more
             </button>

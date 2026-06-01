@@ -209,7 +209,7 @@ body {
   order: 2; /* Stage container second on mobile */
 }
 .v2-design-center {
-  flex: 1;
+  flex: 0 0 auto;
   display: flex;
   flex-direction: column;
   overflow: visible; /* Flows naturally on mobile */
@@ -921,25 +921,25 @@ input[type="color"]::-moz-color-swatch {
 
 .sku-row {
   border-bottom: none;
-  background: #fff;
+  background: rgba(0, 0, 0, 0.02);
   align-items: center;
-  gap: 8px;
-  padding: 8px;
+  gap: 12px;
+  padding: 14px 12px;
   transition: all 0.15s ease;
   display: flex;
-  border-radius: 8px;
+  border-radius: 10px;
 }
 
 .sku-row:hover {
-  background: rgba(0, 0, 0, 0.02);
+  background: rgba(0, 0, 0, 0.04);
 }
 
 .sku-row-orb {
   border-radius: 50%;
   flex-shrink: 0;
-  width: 22px;
-  height: 22px;
-  box-shadow: 0 1px 4px #00000026;
+  width: 28px;
+  height: 28px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
 }
 
 .sku-row-info {
@@ -954,14 +954,15 @@ input[type="color"]::-moz-color-swatch {
   color: #111111;
   white-space: nowrap;
   text-overflow: ellipsis;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   overflow: hidden;
 }
 
 .sku-row-meta {
   color: var(--text-light);
-  font-size: 10px;
+  font-size: 12px;
+  margin-top: 1px;
 }
 
 .sku-row-right {
@@ -976,40 +977,100 @@ input[type="color"]::-moz-color-swatch {
 .sku-row-qty {
   color: #111111;
   white-space: nowrap;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .sku-row-price {
   color: var(--text-light);
   white-space: nowrap;
   text-align: right;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
 }
 
 .sku-row-remove {
   color: #a1a1aa;
   cursor: pointer;
-  background: 0 0;
+  background: transparent;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   flex-shrink: 0;
   justify-content: center;
   align-items: center;
-  padding: 4px;
+  padding: 6px;
   transition: all 0.15s ease;
   display: flex;
-  opacity: 0;
-}
-
-.sku-row:hover .sku-row-remove {
   opacity: 1;
 }
 
 .sku-row-remove:hover {
   color: #dc2626;
   background: rgba(220, 38, 38, 0.08);
+}
+
+/* Responsive Totals Summary Box */
+.v2-totals-summary-box {
+  padding: 20px 20px !important;
+  border-radius: 12px !important;
+}
+.v2-totals-summary-label {
+  font-size: 11px !important;
+}
+.v2-totals-summary-sub {
+  font-size: 12px !important;
+}
+.v2-totals-summary-price {
+  font-size: 24px !important;
+}
+
+@media (min-width: 1024px) {
+  .sku-row {
+    padding: 8px;
+    gap: 8px;
+    border-radius: 8px;
+    background: #fff;
+  }
+  .sku-row:hover {
+    background: rgba(0, 0, 0, 0.02);
+  }
+  .sku-row-orb {
+    width: 22px;
+    height: 22px;
+  }
+  .sku-row-name {
+    font-size: 12px;
+  }
+  .sku-row-meta {
+    font-size: 10px;
+  }
+  .sku-row-qty {
+    font-size: 11px;
+  }
+  .sku-row-price {
+    font-size: 10px;
+  }
+  .sku-row-remove {
+    padding: 4px;
+    border-radius: 4px;
+    opacity: 0;
+  }
+  .sku-row:hover .sku-row-remove {
+    opacity: 1;
+  }
+  .v2-totals-summary-box {
+    padding: 12px 16px !important;
+    border-radius: 10px !important;
+  }
+  .v2-totals-summary-label {
+    font-size: 10px !important;
+  }
+  .v2-totals-summary-sub {
+    font-size: 10px !important;
+  }
+  .v2-totals-summary-price {
+    font-size: 18px !important;
+  }
 }
 
 .sku-order-footer {
@@ -1833,79 +1894,189 @@ input[type="color"]::-moz-color-swatch {
 
 /* ── Step 1 Visual Footprint Optimization (Mobile-first) ── */
 .fc-step1-scroll-container {
-  padding: 12px 12px 76px !important;
+  padding: 18px 18px 250px !important;
 }
 
 .fc-step1-header {
-  margin-bottom: 12px !important;
-  padding-top: 2px !important;
+  margin-bottom: 24px !important;
+  padding-top: 4px !important;
 }
 
 .fc-step1-title {
-  font-size: 18px !important;
-  line-height: 24px !important;
+  font-size: 22px !important;
+  line-height: 28px !important;
 }
 
 .fc-step1-subtitle {
-  margin: 4px 0 0 !important;
-  font-size: 12px !important;
-  line-height: 16px !important;
+  margin: 6px 0 0 !important;
+  font-size: 13px !important;
+  line-height: 18px !important;
 }
 
 .fc-step1-builder-container {
-  gap: 14px !important;
+  gap: 24px !important;
 }
 
 .fc-step1-form-section {
-  gap: 6px !important;
+  gap: 12px !important;
 }
 
 .fc-nic-type-btn {
-  padding: 6px 8px !important;
+  padding: 14px 16px !important;
 }
 
 .fc-nic-type-btn-title {
-  font-size: 11px !important;
-  line-height: 1.3 !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
 }
 
 .fc-nic-type-btn-desc {
-  font-size: 9px !important;
-  margin-top: 1px !important;
+  font-size: 11px !important;
+  margin-top: 3px !important;
 }
 
 .fc-category-tab-btn {
-  padding: 4px 10px !important;
-  font-size: 11px !important;
+  padding: 10px 20px !important;
+  font-size: 14px !important;
 }
 
 .fc-flavor-card {
   border: none !important;
-  min-height: 56px !important;
-  padding: 8px 10px !important;
+  min-height: 72px !important;
+  padding: 12px 14px !important;
 }
 
 .fc-flavor-name {
-  font-size: 12px !important;
+  font-size: 14px !important;
 }
 
 .fc-step1-sticky-footer {
-  padding: 10px 14px !important;
-  gap: 8px !important;
+  padding: 24px 20px 28px !important;
+  gap: 18px !important;
 }
 
 .fc-step1-footer-selectors-row {
-  gap: 8px !important;
+  gap: 14px !important;
 }
 
 .fc-step1-footer-strength-btn {
-  padding: 3px 6px !important;
-  font-size: 10px !important;
+  padding: 10px 16px !important;
+  font-size: 13px !important;
 }
 
 .fc-step1-add-btn {
-  height: 36px !important;
-  font-size: 13px !important;
+  height: 52px !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  border-radius: 14px !important;
+}
+
+/* Responsive Quantity Selector Controls */
+.fc-qty-input-wrap {
+  height: 44px !important;
+  border-radius: 10px !important;
+}
+.fc-qty-btn {
+  width: 44px !important;
+  height: 44px !important;
+  font-size: 18px !important;
+}
+.fc-qty-input {
+  width: 64px !important;
+  height: 44px !important;
+  font-size: 14px !important;
+}
+
+/* Responsive Wizard Navigation Button sizing */
+.fc-nav-btn {
+  height: 52px !important;
+  font-size: 15px !important;
+  border-radius: 14px !important;
+}
+
+/* Responsive Segmented Button bar styling */
+.v2-segmented-wrap {
+  display: flex;
+  gap: 2px;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 8px;
+  padding: 3px;
+}
+.v2-segmented-btn {
+  flex: 1;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: var(--font-sans);
+  background: transparent;
+  color: var(--color-text-secondary);
+  
+  /* Mobile-first: larger touch targets */
+  padding: 10px 6px !important;
+  font-size: 14px !important;
+  font-weight: 500;
+}
+.v2-segmented-btn.active {
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  color: #111111;
+  font-weight: 600;
+}
+
+/* Responsive Warning Preset button styling */
+.v2-warning-preset-btn {
+  padding: 10px 18px !important;
+  border-radius: 6px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+  font-size: 14px !important;
+  border: 1px solid rgba(0,0,0,0.06);
+  background: rgba(0,0,0,0.02);
+  color: var(--color-text-secondary);
+}
+.v2-warning-preset-btn.active {
+  border-color: #111111;
+  background: #111111;
+  color: #ffffff;
+}
+.v2-warning-preset-code {
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+/* Responsive SKU pill styling */
+.v2-sku-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-sans);
+  background: rgba(0,0,0,0.03);
+  transition: all 0.15s ease;
+  
+  /* Mobile-first: larger touch targets */
+  padding: 12px 14px !important;
+  font-size: 14px !important;
+}
+.v2-sku-pill.active {
+  background: #111111;
+  color: #ffffff;
+}
+.v2-sku-pill.v2-sku-add {
+  background: transparent;
+  border: 1px dashed var(--color-border);
+  justify-content: center;
+  gap: 6px;
+  color: var(--color-text-muted);
 }
 
 /* Desktop segment scale recovery */
@@ -1966,5 +2137,101 @@ input[type="color"]::-moz-color-swatch {
   .fc-step1-add-btn {
     height: 42px !important;
     font-size: 14px !important;
+  }
+  .fc-qty-input-wrap {
+    height: 28px !important;
+    border-radius: 6px !important;
+  }
+  .fc-qty-btn {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 12px !important;
+  }
+  .fc-qty-input {
+    width: 48px !important;
+    height: 28px !important;
+    font-size: 11px !important;
+  }
+  .v2-segmented-btn {
+    padding: 5px 4px !important;
+    font-size: 11px !important;
+  }
+  .v2-warning-preset-btn {
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .fc-nav-btn {
+    height: 40px !important;
+    font-size: 13px !important;
+    border-radius: 10px !important;
+  }
+  .v2-sku-pill {
+    padding: 10px 12px !important;
+    font-size: var(--text-md) !important;
+  }
+  .v2-configurator-right {
+    flex: 0 0 460px !important;
+    max-width: 460px !important;
+  }
+  .fc-summary-content-scroll {
+    flex: 1 !important;
+    overflow-y: auto !important;
+  }
+}
+
+/* Mobile-first properties for the configurator right column and summary list */
+.v2-configurator-right {
+  width: 100% !important;
+  max-width: 460px !important;
+  margin: 0 auto !important;
+}
+
+.fc-summary-content-scroll {
+  overflow-y: visible !important;
+}
+
+/* Step 3 (SignUpPage) Premium Form Styling */
+.v2-signup-input-field {
+  width: 100%;
+  padding: 10px 14px !important;
+  height: 42px !important;
+  border-radius: 10px !important;
+  font-size: 13px !important;
+  border: 1px solid rgba(0,0,0,0.12) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: #111111 !important;
+  font-family: var(--font-sans) !important;
+  outline: none !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.v2-signup-input-field:focus {
+  border-color: #111111 !important;
+  box-shadow: 0 0 0 3px rgba(17,17,17,0.06) !important;
+  background: #ffffff !important;
+}
+.v2-signup-input-field::placeholder {
+  color: #999999 !important;
+}
+
+@media (max-width: 1023px) {
+  .v2-signup-input-field {
+    height: 50px !important;
+    font-size: 14.5px !important;
+    padding: 12px 16px !important;
+    border-radius: 12px !important;
+  }
+}
+
+textarea.v2-signup-input-field {
+  height: auto !important;
+  min-height: 96px !important;
+}
+@media (max-width: 1023px) {
+  textarea.v2-signup-input-field {
+    height: auto !important;
+    min-height: 120px !important;
   }
 }
