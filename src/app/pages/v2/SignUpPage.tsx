@@ -29,7 +29,14 @@ function readSession<T>(key: string, fallback: T): T {
 
 export function SignUpPage() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: "", companyName: "", country: "" });
+  const [form, setForm] = useState(() => {
+    const saved = readSession<{ email?: string; companyName?: string; country?: string }>("ritchy-v2-user", {});
+    return {
+      email: saved.email ?? "",
+      companyName: saved.companyName ?? "",
+      country: saved.country ?? "",
+    };
+  });
   const [showModal, setShowModal] = useState(false);
   const [modalEmail, setModalEmail] = useState("");
 
@@ -131,15 +138,8 @@ export function SignUpPage() {
     <div className="v2-design-page">
       {/* ── Center: form ── */}
       <main className="v2-design-center" style={{ display: "flex", flexDirection: "column" }}>
-        <div className="v2-design-center-scroll" style={{ flex: 1, display: "flex", flexDirection: "column", gap: "20px", paddingBottom: "24px" }}>
+        <div className="v2-design-center-scroll" style={{ flex: 1, display: "flex", flexDirection: "column", gap: "16px", paddingBottom: "24px" }}>
           
-          {/* Header Steps */}
-          <div style={{ textAlign: "center", marginBottom: "4px" }}>
-            <div style={{ fontSize: "11px", letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--color-text-muted)", fontWeight: 600 }}>
-              Step 3 of 5
-            </div>
-          </div>
-
           {/* Main Card with Premium Design System Glassmorphism */}
           <form onSubmit={handleSave} style={{
             background: "var(--color-surface)",

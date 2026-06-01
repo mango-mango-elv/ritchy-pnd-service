@@ -41,6 +41,11 @@
   --space-10: 40px;
   --space-12: 48px;
 
+  /* V2 wizard frame — shared by every step's outer container */
+  --v2-frame-max: 1440px; /* max content width of the workspace frame */
+  --v2-gutter:    12px;   /* outer horizontal gutter at the viewport edge */
+  --v2-header-h:  51px;   /* sticky shell header: 50px + 1px border */
+
   /* Border radius */
   --radius-sm:  6px;
   --radius-md:  10px;
@@ -268,29 +273,6 @@ body {
   justify-content: center;
   margin-top: 24px;
 }
-.v2-design-center-footer {
-  display: flex;
-  flex-direction: column;
-  padding: 16px;
-  background: #ffffff;
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.04);
-  z-index: 1000;
-  flex-shrink: 0;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
-@media (min-width: 1024px) {
-  .v2-design-center-footer {
-    position: sticky;
-    padding: 20px 24px;
-    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.04);
-    border-top: 1px solid rgba(0, 0, 0, 0.06);
-  }
-}
-
 /* Hide scrollbars on all v2 design panels while keeping scroll */
 .v2-design-left,
 .v2-design-center-scroll,
@@ -326,12 +308,12 @@ body {
   }
   .v2-design-page {
     flex-direction: row;
-    height: calc(100vh - 51px);
+    height: calc(100vh - var(--v2-header-h));
     overflow: hidden;
-    padding: 12px;
+    padding: var(--v2-gutter);
     gap: 10px;
     align-items: stretch;
-    max-width: 1440px;
+    max-width: var(--v2-frame-max);
     margin: 0 auto;
     width: 100%;
   }
@@ -363,7 +345,7 @@ body {
     order: unset;
   }
   .v2-design-center-scroll {
-    padding: 20px 24px 0;
+    padding: 20px 24px 24px;
   }
   .v2-design-right {
     flex: 1 1 auto;
@@ -473,6 +455,22 @@ body {
   box-shadow: 0 6px 20px rgba(17, 17, 17, 0.15);
   transform: translateY(-1px);
 }
+/* Disabled state: a clean, intentional light-grey rather than a see-through
+   black. Reads as "not yet available" instead of a styling glitch. */
+.v2-footer-btn:disabled,
+.v2-footer-btn-primary:disabled {
+  background: #e4e4e7;
+  color: #a1a1aa;
+  border-color: #e4e4e7;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+.v2-footer-btn-primary:disabled:hover {
+  background: #e4e4e7;
+  border-color: #e4e4e7;
+  box-shadow: none;
+  transform: none;
+}
 .v2-footer-btn-secondary {
   background: #ffffff;
   color: #18181b;
@@ -521,10 +519,30 @@ input[type="color"]::-moz-color-swatch {
   border-radius: 50%;
 }
 
+/* Shared step header typography — one consistent title/subtitle across all
+   wizard steps (matches the Order step's proven sizing). */
+.v2-step-title {
+  margin: 0;
+  font-size: 22px;
+  line-height: 28px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--color-text-primary);
+}
+.v2-step-subtitle {
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--color-text-secondary);
+}
+
 /* Shared page container wrapper for steps 1, 3, 4, 5 */
 .v2-page-container {
   overflow-y: auto;
-  padding: var(--space-6) var(--space-5) var(--space-8);
+  max-width: var(--v2-frame-max);
+  margin: 0 auto;
+  width: 100%;
+  padding: var(--space-6) var(--v2-gutter) var(--space-8);
   box-sizing: border-box;
 }
 
@@ -1623,13 +1641,14 @@ input[type="color"]::-moz-color-swatch {
 .fc-flavor-orb {
   border-radius:50%;
   flex-shrink:0;
-  width:44px;
-  height:44px;
-  box-shadow:0 2px 8px #0003;
+  width:36px;
+  height:36px;
+  box-shadow:0 1px 4px rgba(0, 0, 0, 0.15);
 }
 
 .fc-flavor-check {
   background:var(--primary);
+  border:1.5px solid #ffffff;
   border-radius:50%;
   justify-content:center;
   align-items:center;
@@ -1639,6 +1658,7 @@ input[type="color"]::-moz-color-swatch {
   position:absolute;
   top:8px;
   right:8px;
+  box-shadow:0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .fc-flavor-name {
@@ -1974,9 +1994,8 @@ input[type="color"]::-moz-color-swatch {
 }
 
 .fc-flavor-card {
-  border: none !important;
-  min-height: 72px !important;
-  padding: 12px 14px !important;
+  min-height: 84px !important;
+  padding: 14px 12px !important;
 }
 
 .fc-flavor-name {
@@ -2192,8 +2211,10 @@ input[type="color"]::-moz-color-swatch {
   margin: 0 auto !important;
 }
 
-.fc-summary-content-scroll {
-  overflow-y: visible !important;
+@media (max-width: 1023px) {
+  .fc-summary-content-scroll {
+    overflow-y: visible !important;
+  }
 }
 
 /* Step 3 (SignUpPage) Premium Form Styling */

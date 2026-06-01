@@ -7,6 +7,23 @@ function readSession<T>(key: string): T | null {
   catch { return null; }
 }
 
+// Spot unit price by total volume — mirrors the tiers in OrderContentsPage so the
+// Confirm total stays correct even when qty/estTotal weren't persisted (deep-link,
+// partial save, legacy data).
+function getSpotUnitPrice(qty: number): number {
+  if (qty >= 1000000) return 0.48;
+  if (qty >= 500000) return 0.52;
+  if (qty >= 250000) return 0.58;
+  if (qty >= 100000) return 0.68;
+  if (qty >= 50000) return 0.80;
+  if (qty >= 25000) return 0.95;
+  if (qty >= 10000) return 1.15;
+  if (qty >= 5000) return 1.30;
+  if (qty >= 2500) return 1.45;
+  if (qty >= 1000) return 1.80;
+  return 2.45;
+}
+
 export function ConfirmPage() {
   const navigate = useNavigate();
   const [submitted, setSubmitted] = useState(false);
@@ -16,7 +33,21 @@ export function ConfirmPage() {
   const user       = readSession<Record<string, string>>("ritchy-v2-user") ?? {};
   const compliance = readSession<Record<string, string>>("ritchy-v2-compliance") ?? {};
 
-  const total = typeof order.estTotal === "number" ? order.estTotal : 0;
+  // Derive totals from the SKU list so the figures are correct even when the
+  // persisted qty/estTotal scalars are missing or stale.
+  const skuList = Array.isArray(order.skus) ? (order.skus as any[]) : [];
+  const derivedQty = skuList.reduce((sum, s) => sum + (Number(s.quantity) || 0), 0);
+  const qty = typeof order.qty === "number" && order.qty > 0 ? order.qty : derivedQty;
+
+  let total: number;
+  if (typeof order.estTotal === "number" && order.estTotal > 0) {
+    total = order.estTotal;
+  } else if (order.pricingMode === "subscribe" && order.subscriptionPlan) {
+    const plan = order.subscriptionPlan as any;
+    total = qty * (Number(plan.pricePerUnit) || 0);
+  } else {
+    total = qty * getSpotUnitPrice(qty);
+  }
 
   const orderRows: [string, string][] = [];
   
@@ -36,7 +67,7 @@ export function ConfirmPage() {
         `${sku.strength}mg ${typeLabel} × ${Number(sku.quantity).toLocaleString()} units`
       ]);
     });
-    orderRows.push(["Total Quantity", `${Number(order.qty || 0).toLocaleString()} units`]);
+    orderRows.push(["Total Quantity", `${qty.toLocaleString()} units`]);
   } else {
     orderRows.push(["Nicotine type", String(order.nicType ?? "—") === "salt" ? "Nicotine Salt" : "Free Base"]);
     orderRows.push(["Flavor",        String(order.flavor   ?? "—")]);
@@ -45,8 +76,12 @@ export function ConfirmPage() {
   }
 
 
+  const templateLabel = String(design.templateId ?? "—")
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, c => c.toUpperCase());
+
   const designRows: [string, string][] = [
-    ["Template",  String(design.templateId ?? "—").replace(/-/g, " ")],
+    ["Template",  templateLabel],
     ["Brand",     String(design.brandName ?? "—") || "—"],
     ["Flavor label", String(design.flavorName ?? "—") || "—"],
   ];
@@ -104,14 +139,11 @@ export function ConfirmPage() {
 
   return (
     <div className="v2-page-container">
-      <div style={{ maxWidth: "640px", margin: "0 auto", display: "grid", gap: "var(--space-4)" }}>
+      <div style={{ maxWidth: "720px", margin: "0 auto", display: "grid", gap: "var(--space-4)" }}>
 
         <div>
-          <div style={{ fontSize: "11px", letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--color-text-muted)" }}>
-            Step 5 of 5
-          </div>
-          <h1 style={{ margin: "6px 0 0", fontSize: "26px", color: "var(--color-text-primary)" }}>Confirm &amp; Submit</h1>
-          <p style={{ margin: "6px 0 0", color: "var(--color-text-secondary)", fontSize: "14px" }}>
+          <h1 className="v2-step-title">Confirm &amp; Submit</h1>
+          <p className="v2-step-subtitle">
             Review your order. After submission, we'll email a pro-forma invoice and wire instructions.
           </p>
         </div>
@@ -131,7 +163,7 @@ export function ConfirmPage() {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
             <span style={{ fontSize: "13px", color: "var(--color-text-secondary)" }}>Estimated total</span>
             <span style={{ fontSize: "22px", fontWeight: 700, color: "var(--color-text-primary)" }}>
-              €{total.toLocaleString()}
+              €{total.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>
           </div>
           <p style={{
@@ -179,7 +211,7 @@ function SummaryCard({ title, rows }: { title: string; rows: [string, string][] 
             fontSize: "13px",
           }}>
             <span style={{ color: "var(--color-text-muted)" }}>{label}</span>
-            <span style={{ color: "var(--color-text-primary)", fontWeight: 500, textTransform: "capitalize", textAlign: "right" }}>
+            <span style={{ color: "var(--color-text-primary)", fontWeight: 500, textAlign: "right" }}>
               {value}
             </span>
           </div>
