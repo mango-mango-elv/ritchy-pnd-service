@@ -39,7 +39,6 @@ export interface DesignState {
   brandName:     string;
   logoDataUrl:   string;
   logoScale?:    number;
-  healthWarningText?: string;
   skus:          SKU[];
   selectedSkuId: string;
 }
