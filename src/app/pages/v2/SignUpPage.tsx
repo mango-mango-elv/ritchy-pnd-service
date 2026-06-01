@@ -29,7 +29,14 @@ function readSession<T>(key: string, fallback: T): T {
 
 export function SignUpPage() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: "", companyName: "", country: "" });
+  const [form, setForm] = useState(() => {
+    const saved = readSession<{ email?: string; companyName?: string; country?: string }>("ritchy-v2-user", {});
+    return {
+      email: saved.email ?? "",
+      companyName: saved.companyName ?? "",
+      country: saved.country ?? "",
+    };
+  });
   const [showModal, setShowModal] = useState(false);
   const [modalEmail, setModalEmail] = useState("");
 

@@ -76,8 +76,12 @@ export function ConfirmPage() {
   }
 
 
+  const templateLabel = String(design.templateId ?? "—")
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, c => c.toUpperCase());
+
   const designRows: [string, string][] = [
-    ["Template",  String(design.templateId ?? "—").replace(/-/g, " ")],
+    ["Template",  templateLabel],
     ["Brand",     String(design.brandName ?? "—") || "—"],
     ["Flavor label", String(design.flavorName ?? "—") || "—"],
   ];
@@ -207,7 +211,7 @@ function SummaryCard({ title, rows }: { title: string; rows: [string, string][] 
             fontSize: "13px",
           }}>
             <span style={{ color: "var(--color-text-muted)" }}>{label}</span>
-            <span style={{ color: "var(--color-text-primary)", fontWeight: 500, textTransform: "capitalize", textAlign: "right" }}>
+            <span style={{ color: "var(--color-text-primary)", fontWeight: 500, textAlign: "right" }}>
               {value}
             </span>
           </div>
