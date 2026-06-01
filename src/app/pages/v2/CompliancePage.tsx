@@ -29,7 +29,6 @@ export function CompliancePage() {
     brandName: "",
     logoDataUrl: "",
     logoScale: 1.0,
-    healthWarningText: "This product contains nicotine which is a highly addictive substance.",
     skus: [],
     selectedSkuId: "",
   });
@@ -259,18 +258,8 @@ export function CompliancePage() {
           <div style={{ height: "1px", background: "rgba(0,0,0,0.06)", margin: "0 0 16px 0", flexShrink: 0 }} />
 
           {/* Physical Packaging Preview with Dynamic Warning Text */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flex: 1, minHeight: 0 }}>
-            <div style={{
-              width: "100%",
-              height: "100%",
-              maxHeight: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              minHeight: 0,
-              padding: "12px 32px",
-              boxSizing: "border-box"
-            }}>
+          <div className="v2-preview-region">
+            <div className="v2-preview-sizer">
               <PackagePreview
                 templateId={design.templateId}
                 brandName={design.brandName}

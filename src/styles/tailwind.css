@@ -244,6 +244,24 @@ body {
   width: 100%;
   box-sizing: border-box;
   flex: 1;
+  min-height: 0; /* allow the card to shrink within the bounded column instead of overflowing */
+}
+
+/* Preview area — scales to fit the available space (contain), never clipped */
+.v2-preview-region {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+}
+.v2-preview-sizer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
 }
 .v2-design-preview-mobile {
   display: flex;
@@ -351,9 +369,24 @@ body {
     flex: 1 1 auto;
     min-width: 320px;
     max-width: 540px;
+    min-height: 0;
     overflow-y: auto;
     padding: 0;
     order: unset;
+  }
+
+  /* Size the preview to the largest box that fits BOTH the available
+     width and height of the region — pure CSS "contain". */
+  .v2-preview-region {
+    container-type: size;
+    padding: 8px 24px;
+    box-sizing: border-box;
+  }
+  .v2-preview-sizer {
+    width: min(100cqw, calc(100cqh * 19 / 22));
+    max-width: 100%;
+    max-height: 100%;
+    aspect-ratio: 19 / 22;
   }
 
 
@@ -2024,32 +2057,6 @@ input[type="color"]::-moz-color-swatch {
   font-weight: 600;
 }
 
-/* Responsive Warning Preset button styling */
-.v2-warning-preset-btn {
-  padding: 10px 18px !important;
-  border-radius: 6px;
-  font-family: var(--font-sans);
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.15s ease;
-  font-size: 14px !important;
-  border: 1px solid rgba(0,0,0,0.06);
-  background: rgba(0,0,0,0.02);
-  color: var(--color-text-secondary);
-}
-.v2-warning-preset-btn.active {
-  border-color: #111111;
-  background: #111111;
-  color: #ffffff;
-}
-.v2-warning-preset-code {
-  font-size: 11px;
-  opacity: 0.8;
-}
-
 /* Responsive SKU pill styling */
 .v2-sku-pill {
   display: flex;
@@ -2155,10 +2162,6 @@ input[type="color"]::-moz-color-swatch {
   .v2-segmented-btn {
     padding: 5px 4px !important;
     font-size: 11px !important;
-  }
-  .v2-warning-preset-btn {
-    padding: 6px 12px !important;
-    font-size: 12px !important;
   }
 }
 
