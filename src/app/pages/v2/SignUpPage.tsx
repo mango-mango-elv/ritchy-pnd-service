@@ -134,13 +134,6 @@ export function SignUpPage() {
       <main className="v2-design-center" style={{ display: "flex", flexDirection: "column" }}>
         <div className="v2-design-center-scroll" style={{ flex: 1, display: "flex", flexDirection: "column", gap: "20px", paddingBottom: "24px" }}>
           
-          {/* Header Steps */}
-          <div style={{ textAlign: "center", marginBottom: "4px" }}>
-            <div style={{ fontSize: "11px", letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--color-text-muted)", fontWeight: 600 }}>
-              Step 3 of 5
-            </div>
-          </div>
-
           {/* Main Card with Premium Design System Glassmorphism */}
           <form onSubmit={handleSave} style={{
             background: "var(--color-surface)",

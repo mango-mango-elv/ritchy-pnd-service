@@ -223,12 +223,8 @@ export function DesignPageV2() {
       <main className="v2-design-center">
         <div className="v2-design-center-scroll">
           <div style={{ marginBottom: "12px", paddingTop: "2px" }}>
-            <div style={{ fontSize: "var(--text-xs)", letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--color-text-muted)" }}>
-              Step 2 of 5
-            </div>
-            <h1 style={{ margin: "4px 0 0", fontSize: "var(--text-xl)", fontWeight: 700, color: "var(--color-text-primary)" }}>
-              Brand &amp; Design
-            </h1>
+            <h1 className="v2-step-title">Brand &amp; Design</h1>
+            <p className="v2-step-subtitle">Choose a template, then set your brand, color, and label.</p>
           </div>
 
           <DesignForm
@@ -246,7 +242,7 @@ export function DesignPageV2() {
         <div className="v2-design-center-footer">
           <div style={{ display: "flex", justifyContent: "space-between", width: "100%", gap: "12px" }}>
             <button onClick={() => navigate("/order")} className="v2-footer-btn v2-footer-btn-secondary">← Back</button>
-            <button onClick={handleContinue} disabled={!canProceed} className="v2-footer-btn v2-footer-btn-primary" style={{ opacity: canProceed ? 1 : 0.5, cursor: canProceed ? 'pointer' : 'not-allowed' }}>Continue →</button>
+            <button onClick={handleContinue} disabled={!canProceed} className="v2-footer-btn v2-footer-btn-primary">Continue →</button>
           </div>
         </div>
       </main>

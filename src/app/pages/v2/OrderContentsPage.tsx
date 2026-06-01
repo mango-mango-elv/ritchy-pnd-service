@@ -394,38 +394,19 @@ export function OrderContentsPage() {
                         e.stopPropagation();
                         setSelectedFlavorId(selectedFlavorId === flavorItem.id ? "" : flavorItem.id);
                       }}
-                      style={{
-                        background: `linear-gradient(to bottom, rgba(255, 255, 255, 0.12), rgba(0, 0, 0, 0.12)), linear-gradient(135deg, ${flavorItem.gradient[0]}, ${flavorItem.gradient[1]})`,
-                        border: "none",
-                        boxShadow: active ? "0 0 0 2px #ffffff, 0 0 0 4px #111111, 0 8px 20px rgba(0,0,0,0.18)" : "0 2px 6px rgba(0,0,0,0.03)",
-                        transform: active ? "translateY(-1.5px) scale(1.01)" : "none",
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        textAlign: "center",
-                        transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)"
-                      }}
                     >
                       {active && (
-                        <div className="fc-flavor-check" style={{ background: "#111111", border: "1.5px solid #ffffff", boxShadow: "0 2px 4px rgba(0,0,0,0.2)", top: "6px", right: "6px" }}>
+                        <div className="fc-flavor-check">
                           <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4">
                             <polyline points="20 6 9 17 4 12" />
                           </svg>
                         </div>
                       )}
                       <span
-                        className="fc-flavor-name"
-                        style={{
-                          color: "#ffffff",
-                          fontWeight: 700,
-                          letterSpacing: "-0.01em",
-                          lineHeight: "1.2",
-                          wordBreak: "break-word"
-                        }}
-                      >
-                        {flavorItem.name}
-                      </span>
+                        className="fc-flavor-orb"
+                        style={{ background: `linear-gradient(135deg, ${flavorItem.gradient[0]}, ${flavorItem.gradient[1]})` }}
+                      />
+                      <span className="fc-flavor-name">{flavorItem.name}</span>
                     </button>
                   );
                 })}
@@ -1105,10 +1086,6 @@ export function OrderContentsPage() {
                 onClick={handleContinue}
                 disabled={totalQuantity < MOQ_MIN_TOTAL}
                 className="v2-footer-btn v2-footer-btn-primary fc-nav-btn"
-                style={{
-                  opacity: totalQuantity >= MOQ_MIN_TOTAL ? 1 : 0.5,
-                  cursor: totalQuantity >= MOQ_MIN_TOTAL ? "pointer" : "not-allowed"
-                }}
               >
                 Continue to Design →
               </button>
