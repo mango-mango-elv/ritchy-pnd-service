@@ -17,12 +17,15 @@ the v2 flow, `localStorage` for v1 drafts), and submission is client-side only.
 ## Commands
 
 ```bash
-pnpm dev       # Vite dev server (port 5173)
-pnpm build     # production build → dist/
-pnpm preview   # preview the build
+pnpm dev        # Vite dev server (port 5173)
+pnpm build      # production build → dist/
+pnpm preview    # preview the build
+pnpm typecheck  # tsc --noEmit (type-check only; Vite/esbuild does the transpiling)
 ```
 
-There are **no test or lint scripts** configured.
+Run `typecheck` before committing — it's the only automated gate. The
+`tsconfig.json` is intentionally soft (`strict: false`); tighten it as the
+code is cleaned up. There are **no unit-test or lint scripts** configured.
 
 ## Versions: v2 is active, v1 is legacy
 
