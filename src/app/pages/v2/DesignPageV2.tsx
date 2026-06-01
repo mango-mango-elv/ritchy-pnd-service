@@ -36,7 +36,7 @@ export function DesignPageV2() {
           displayName: item.flavorName || item.flavor,
           type: item.nicotineType === "freebase" ? "freebase" : "salt" as const,
           flavor: item.flavor,
-          strength: `${item.strength}mg`,
+          strength: `${item.strength}mg` as SKU["strength"],
           colorTab: item.flavorGradient ? ("custom" as const) : ("presets" as const),
           colorPresetId: item.flavorGradient ? "custom" : preset.id,
           customColor: flavorColor,

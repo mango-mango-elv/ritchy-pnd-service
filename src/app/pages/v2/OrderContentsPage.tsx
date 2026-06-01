@@ -67,7 +67,7 @@ const PRICE_TIERS = [
   { name: "GROWTH", color: "#dbeafe", textColor: "#1e40af", range: [5000, 49999], breakpoints: [{ units: 5000, price: 1.30 }, { units: 10000, price: 1.15 }, { units: 25000, price: 0.95 }] },
   { name: "SCALE", color: "#dcfce7", textColor: "#166534", range: [50000, 499999], breakpoints: [{ units: 50000, price: 0.80 }, { units: 100000, price: 0.68 }, { units: 250000, price: 0.58 }] },
   { name: "ENTERPRISE", color: "#fee2e2", textColor: "#991b1b", range: [500000, Infinity], breakpoints: [{ units: 500000, price: 0.52 }, { units: 1000000, price: 0.48 }] }
-] as const;
+];
 
 function getSpotUnitPrice(qty: number): number {
   if (qty >= 1000000) return 0.48;
