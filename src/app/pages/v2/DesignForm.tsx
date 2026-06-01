@@ -10,6 +10,15 @@ const FLAVOR_OPTIONS = [
   "Vanilla Custard", "Cheesecake", "Caramel", "Coffee", "Cola",
 ];
 
+const WARNING_PRESETS = [
+  { lang: "English", code: "EN", text: "This product contains nicotine which is a highly addictive substance." },
+  { lang: "Spanish", code: "ES", text: "Este producto contiene nicotina, una sustancia muy adictiva." },
+  { lang: "Czech", code: "CS", text: "Tento výrobek obsahuje nikotin, který je vysoce návykovou látkou." },
+  { lang: "Slovak", code: "SK", text: "Tento výrobok obsahuje nikotín, ktorý je vysoko návykovou látkou." },
+  { lang: "Italian", code: "IT", text: "Questo prodotto contiene nicotina, una sostanza che crea un'elevata dipendenza." },
+  { lang: "Romanian", code: "RO", text: "Acest produs conține nicotină, o substanță cu grad ridicat de dependență." },
+];
+
 interface Props {
   design: DesignState;
   patch: (p: Partial<DesignState>) => void;
@@ -28,8 +37,10 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
     ? (selectedSku.colorTab !== "image" || !!selectedSku.bgImageDataUrl)
     : false;
   const isFlavorCompleted = selectedSku ? selectedSku.displayName.trim() !== "" : false;
+  const isWarningCompleted = !!design.healthWarningText?.trim();
 
   const [brandExpanded, setBrandExpanded] = useState(!isBrandCompleted);
+  const [warningExpanded, setWarningExpanded] = useState(!isWarningCompleted);
   const [colorTouched, setColorTouched] = useState(false);
   const [flavorTouched, setFlavorTouched] = useState(false);
 
@@ -516,6 +527,92 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
           </div>
         </Card>
       )}
+
+      {/* ── Section 4: Health Warning ── */}
+      <Card>
+        <div
+          onClick={() => setWarningExpanded(!warningExpanded)}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            cursor: "pointer",
+            userSelect: "none",
+            marginBottom: warningExpanded ? "16px" : 0,
+          }}
+        >
+          <h3 style={{ margin: 0, fontSize: "14px", fontWeight: 700, letterSpacing: "-0.01em", textTransform: "uppercase", color: "var(--color-text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
+            {isWarningCompleted && (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            )}
+            4 · Health Warning
+          </h3>
+          <div style={{ color: "var(--color-text-muted)", display: "flex", alignItems: "center" }}>
+            {warningExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </div>
+        </div>
+
+        <div className={`v2-accordion-wrapper ${warningExpanded ? "expanded" : ""}`}>
+          <div className="v2-accordion-content" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+              <span style={{ fontSize: "12px", color: "var(--color-text-secondary)", fontWeight: 500 }}>
+                Language Presets
+              </span>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                {WARNING_PRESETS.map(preset => {
+                  const isSelected = design.healthWarningText === preset.text;
+                  return (
+                    <button
+                      key={preset.code}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        patch({ healthWarningText: preset.text });
+                        setWarningExpanded(false);
+                      }}
+                      className={`v2-warning-preset-btn ${isSelected ? "active" : ""}`}
+                    >
+                      <span className="v2-warning-preset-code">{preset.code}</span>
+                      <span>{preset.lang}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+              <span style={{ fontSize: "12px", color: "var(--color-text-secondary)", fontWeight: 500 }}>
+                Custom Warning Text (Global)
+              </span>
+              <textarea
+                className="ds-input"
+                rows={3}
+                placeholder="Warning text..."
+                value={design.healthWarningText || ""}
+                onChange={e => patch({ healthWarningText: e.target.value })}
+                onBlur={() => {
+                  if (design.healthWarningText?.trim()) {
+                    setWarningExpanded(false);
+                  }
+                }}
+                style={{
+                  width: "100%",
+                  padding: "10px 14px",
+                  fontSize: "13px",
+                  fontWeight: 500,
+                  fontFamily: "var(--font-sans)",
+                  lineHeight: "1.4",
+                  background: "rgba(0,0,0,0.02)",
+                  border: "1px solid rgba(0,0,0,0.03)",
+                  borderRadius: "8px",
+                  resize: "none",
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </Card>
 
     </div>
   );
