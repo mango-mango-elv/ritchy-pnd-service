@@ -29,7 +29,6 @@ export function CompliancePage() {
     brandName: "",
     logoDataUrl: "",
     logoScale: 1.0,
-    healthWarningText: "This product contains nicotine which is a highly addictive substance.",
     skus: [],
     selectedSkuId: "",
   });
@@ -92,15 +91,12 @@ export function CompliancePage() {
     <div className="v2-design-page">
       {/* ── Center: form ── */}
       <main className="v2-design-center" style={{ display: "flex", flexDirection: "column" }}>
-        <div className="v2-design-center-scroll" style={{ flex: 1, display: "flex", flexDirection: "column", gap: "20px", paddingBottom: "24px" }}>
+        <div className="v2-design-center-scroll" style={{ flex: 1, display: "flex", flexDirection: "column", gap: "16px", paddingBottom: "24px" }}>
           
-          {/* Header Steps */}
+          {/* Header */}
           <div>
-            <div style={{ fontSize: "11px", letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--color-text-muted)", fontWeight: 600 }}>
-              Step 4 of 5
-            </div>
-            <h1 style={{ margin: "6px 0 0", fontSize: "26px", fontWeight: 700, color: "var(--color-text-primary)" }}>Compliance Preview</h1>
-            <p style={{ margin: "6px 0 0", color: "var(--color-text-secondary)", fontSize: "14px", lineHeight: "1.5" }}>
+            <h1 className="v2-step-title">Compliance Preview</h1>
+            <p className="v2-step-subtitle">
               We handle regulatory notifications. Review your target market and label warning text.
             </p>
           </div>
@@ -216,7 +212,7 @@ export function CompliancePage() {
                 }}
               />
               <span style={{ fontSize: "13px", color: "var(--color-text-secondary)", lineHeight: 1.5 }}>
-                I confirm that the label and warning text have been reviewed and authorize Ritchy P&amp;D to submit regulatory notifications on my behalf.
+                I confirm that the label and warning text have been reviewed and authorize Ritchy Brand Factory to submit regulatory notifications on my behalf.
               </span>
             </label>
           </section>
@@ -230,10 +226,6 @@ export function CompliancePage() {
               onClick={handleContinue}
               className="v2-footer-btn v2-footer-btn-primary fc-nav-btn"
               disabled={!confirmed}
-              style={{
-                opacity: confirmed ? 1 : 0.4,
-                cursor: confirmed ? "pointer" : "default"
-              }}
             >
               Continue to Review →
             </button>
@@ -259,18 +251,8 @@ export function CompliancePage() {
           <div style={{ height: "1px", background: "rgba(0,0,0,0.06)", margin: "0 0 16px 0", flexShrink: 0 }} />
 
           {/* Physical Packaging Preview with Dynamic Warning Text */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flex: 1, minHeight: 0 }}>
-            <div style={{
-              width: "100%",
-              height: "100%",
-              maxHeight: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              minHeight: 0,
-              padding: "12px 32px",
-              boxSizing: "border-box"
-            }}>
+          <div className="v2-preview-region">
+            <div className="v2-preview-sizer">
               <PackagePreview
                 templateId={design.templateId}
                 brandName={design.brandName}

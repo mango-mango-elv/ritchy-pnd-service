@@ -148,6 +148,16 @@ function BoxRoot({ children }: { children: React.ReactNode }) {
 
 /* ─── Shared warning zone — exactly 32% of box height ────────── */
 function WarningZone({ text }: { text?: string }) {
+  const warning = text || WARNING_TEXT;
+  // The zone is a fixed 32% of the box, but market-specific warnings vary in
+  // length. Scale the font down for longer text so it never clips the box —
+  // the short default keeps its pixel-perfect Figma size.
+  const len = warning.length;
+  const fontSize =
+    len <= 80  ? "8.2cqw" :
+    len <= 110 ? "6.6cqw" :
+    len <= 150 ? "5.6cqw" :
+                 "4.8cqw";
   return (
     <div style={abs({
       top: "68%", left: 0, right: 0, bottom: 0,
@@ -161,14 +171,14 @@ function WarningZone({ text }: { text?: string }) {
     })}>
       <p style={{
         margin: 0,
-        fontSize: "8.2cqw", // perfectly sized and highly prominent
+        fontSize, // scales with warning length to stay inside the zone
         fontWeight: 800,
         color: "#111",
         textAlign: "center",
         lineHeight: 1.15,
         fontFamily: "var(--font-sans)",
       }}>
-        {text || WARNING_TEXT}
+        {warning}
       </p>
     </div>
   );

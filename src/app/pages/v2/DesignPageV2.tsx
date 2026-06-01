@@ -63,7 +63,6 @@ export function DesignPageV2() {
       brandName:     savedDesign.brandName ?? "",
       logoDataUrl:   savedDesign.logoDataUrl ?? "",
       logoScale:     savedDesign.logoScale ?? 1.0,
-      healthWarningText: savedDesign.healthWarningText ?? "This product contains nicotine which is a highly addictive substance.",
       skus:          initialSkus,
       selectedSkuId: initialSkus[0]?.id || "",
     };
@@ -151,7 +150,6 @@ export function DesignPageV2() {
       accentColor: selectedSku ? (selectedSku.colorTab === "custom" ? selectedSku.customColor : selectedPreset.color) : selectedPreset.color,
       graphicsColor: activeGraphicsColor,
       background:  { id: selectedPreset.id, label: selectedPreset.label, style: activeGradient },
-      healthWarningText: design.healthWarningText,
     }));
     navigate("/signup");
   };
@@ -222,13 +220,9 @@ export function DesignPageV2() {
       {/* ── Center: form ── */}
       <main className="v2-design-center">
         <div className="v2-design-center-scroll">
-          <div style={{ marginBottom: "12px", paddingTop: "2px" }}>
-            <div style={{ fontSize: "var(--text-xs)", letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--color-text-muted)" }}>
-              Step 2 of 5
-            </div>
-            <h1 style={{ margin: "4px 0 0", fontSize: "var(--text-xl)", fontWeight: 700, color: "var(--color-text-primary)" }}>
-              Brand &amp; Design
-            </h1>
+          <div style={{ marginBottom: "16px", paddingTop: "2px" }}>
+            <h1 className="v2-step-title">Brand &amp; Design</h1>
+            <p className="v2-step-subtitle">Choose a template, then set your brand, color, and label.</p>
           </div>
 
           <DesignForm
@@ -240,13 +234,10 @@ export function DesignPageV2() {
             setAiRunning={setAiRunning}
           />
 
-
-        </div>
-
-        <div className="v2-design-center-footer">
-          <div style={{ display: "flex", justifyContent: "space-between", width: "100%", gap: "12px" }}>
-            <button onClick={() => navigate("/order")} className="v2-footer-btn v2-footer-btn-secondary">← Back</button>
-            <button onClick={handleContinue} disabled={!canProceed} className="v2-footer-btn v2-footer-btn-primary" style={{ opacity: canProceed ? 1 : 0.5, cursor: canProceed ? 'pointer' : 'not-allowed' }}>Continue →</button>
+          {/* Footer buttons row */}
+          <div className="v2-nav-footer" style={{ marginTop: "4px" }}>
+            <button onClick={() => navigate("/order")} className="v2-footer-btn v2-footer-btn-secondary fc-nav-btn">← Back</button>
+            <button onClick={handleContinue} disabled={!canProceed} className="v2-footer-btn v2-footer-btn-primary fc-nav-btn">Continue →</button>
           </div>
         </div>
       </main>
@@ -313,7 +304,6 @@ export function DesignPageV2() {
                           bgImageScaleBottle={active ? (selectedSku?.bgImageScaleBottle ?? 1.0) : 1.0}
                           colorTab={active ? selectedSku?.colorTab : "presets"}
                           graphicsColor={active ? activeGraphicsColor : "#ffffff"}
-                          healthWarningText={active ? design.healthWarningText : undefined}
                         />
                       </div>
                     </div>
@@ -340,21 +330,9 @@ export function DesignPageV2() {
           <div style={{ height: "1px", background: "rgba(0,0,0,0.06)", margin: "16px 0", flexShrink: 0 }} />
 
           {/* Preview — dynamically sized to fit height and width perfectly */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flex: 1, minHeight: 0 }}>
-            <div 
-              className={aiRunning ? "v2-ai-shimmer v2-ai-shimmer-pulse" : ""}
-              style={{
-                width: "100%",
-                height: "100%",
-                maxHeight: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                minHeight: 0,
-                padding: "12px 32px",
-                boxSizing: "border-box",
-                transition: "all 0.3s ease",
-              }}
+          <div className="v2-preview-region">
+            <div
+              className={`v2-preview-sizer ${aiRunning ? "v2-ai-shimmer v2-ai-shimmer-pulse" : ""}`}
             >
               <PackagePreview
                 templateId={design.templateId}
@@ -374,7 +352,6 @@ export function DesignPageV2() {
                 onBgPositionBottleChange={pos => selectedSku && patchSku(selectedSku.id, { bgImagePositionBottle: pos })}
                 colorTab={selectedSku?.colorTab}
                 graphicsColor={activeGraphicsColor}
-                healthWarningText={design.healthWarningText}
               />
             </div>
           </div>

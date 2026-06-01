@@ -29,7 +29,14 @@ function readSession<T>(key: string, fallback: T): T {
 
 export function SignUpPage() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: "", companyName: "", country: "" });
+  const [form, setForm] = useState(() => {
+    const saved = readSession<{ email?: string; companyName?: string; country?: string }>("ritchy-v2-user", {});
+    return {
+      email: saved.email ?? "",
+      companyName: saved.companyName ?? "",
+      country: saved.country ?? "",
+    };
+  });
   const [showModal, setShowModal] = useState(false);
   const [modalEmail, setModalEmail] = useState("");
 
@@ -39,7 +46,6 @@ export function SignUpPage() {
     brandName: "",
     logoDataUrl: "",
     logoScale: 1.0,
-    healthWarningText: "This product contains nicotine which is a highly addictive substance.",
     skus: [],
     selectedSkuId: "",
   });
@@ -132,15 +138,8 @@ export function SignUpPage() {
     <div className="v2-design-page">
       {/* ── Center: form ── */}
       <main className="v2-design-center" style={{ display: "flex", flexDirection: "column" }}>
-        <div className="v2-design-center-scroll" style={{ flex: 1, display: "flex", flexDirection: "column", gap: "20px", paddingBottom: "24px" }}>
+        <div className="v2-design-center-scroll" style={{ flex: 1, display: "flex", flexDirection: "column", gap: "16px", paddingBottom: "24px" }}>
           
-          {/* Header Steps */}
-          <div style={{ textAlign: "center", marginBottom: "4px" }}>
-            <div style={{ fontSize: "11px", letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--color-text-muted)", fontWeight: 600 }}>
-              Step 3 of 5
-            </div>
-          </div>
-
           {/* Main Card with Premium Design System Glassmorphism */}
           <form onSubmit={handleSave} style={{
             background: "var(--color-surface)",
@@ -284,18 +283,8 @@ export function SignUpPage() {
           <div style={{ height: "1px", background: "rgba(0,0,0,0.06)", margin: "0 0 16px 0", flexShrink: 0 }} />
 
           {/* Physical Packaging Preview */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flex: 1, minHeight: 0 }}>
-            <div style={{
-              width: "100%",
-              height: "100%",
-              maxHeight: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              minHeight: 0,
-              padding: "12px 32px",
-              boxSizing: "border-box"
-            }}>
+          <div className="v2-preview-region">
+            <div className="v2-preview-sizer">
               <PackagePreview
                 templateId={design.templateId}
                 brandName={design.brandName}
@@ -312,7 +301,6 @@ export function SignUpPage() {
                 bgImageScaleBottle={selectedSku?.bgImageScaleBottle ?? 1.0}
                 colorTab={selectedSku?.colorTab}
                 graphicsColor={activeGraphicsColor}
-                healthWarningText={design.healthWarningText}
               />
             </div>
           </div>

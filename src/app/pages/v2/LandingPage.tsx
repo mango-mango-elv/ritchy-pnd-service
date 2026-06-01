@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router";
-import { Zap, ShieldCheck, Sparkles, Package, Mail, FileCheck, ArrowRight } from "lucide-react";
+import { ShieldCheck, Sparkles, Package, Mail, FileCheck, ArrowRight } from "lucide-react";
 
 export function LandingPage() {
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ export function LandingPage() {
             <span style={{ color: "#fff", fontSize: "13px", fontWeight: 700 }}>R</span>
           </div>
           <span style={{ fontWeight: 700, fontSize: "15px", color: "#111111" }}>
-            Ritchy <span style={{ color: "#999", fontWeight: 400 }}>P&amp;D</span>
+            Ritchy <span style={{ color: "#999", fontWeight: 400 }}>Brand Factory</span>
           </span>
         </div>
         <button
@@ -95,25 +95,6 @@ export function LandingPage() {
           >
             Talk to an Expert
           </button>
-        </div>
-
-        {/* Trust row */}
-        <div style={{
-          display: "flex", gap: "var(--space-6)", marginTop: "var(--space-6)",
-          flexWrap: "wrap", justifyContent: "center",
-        }}>
-          {[
-            { icon: <Zap size={14} />,         text: "7-day turnaround"     },
-            { icon: <ShieldCheck size={14} />, text: "TPD Article 20"        },
-            { icon: <Package size={14} />,     text: "No minimum order"      },
-          ].map(({ icon, text }) => (
-            <div key={text} style={{
-              display: "flex", alignItems: "center", gap: "6px",
-              fontSize: "13px", color: "var(--color-text-secondary)",
-            }}>
-              {icon} {text}
-            </div>
-          ))}
         </div>
       </section>
 
