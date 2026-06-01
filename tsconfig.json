@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    /* Type-checking only — Vite/esbuild handles transpilation. */
+    "noEmit": true,
+    "skipLibCheck": true,
+
+    /* Modules / environment */
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "useDefineForClassFields": true,
+
+    /* React */
+    "jsx": "react-jsx",
+
+    /* Path alias mirrors vite.config.ts */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+
+    /* Soft start: base safety without strict null/any enforcement.
+       Tighten incrementally (e.g. enable "strict") as the code is cleaned up. */
+    "strict": false,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src"],
+  "exclude": ["src/**/*_backup.tsx"]
+}

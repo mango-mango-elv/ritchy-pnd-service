@@ -67,7 +67,7 @@ const PRICE_TIERS = [
   { name: "GROWTH", color: "#dbeafe", textColor: "#1e40af", range: [5000, 49999], breakpoints: [{ units: 5000, price: 1.30 }, { units: 10000, price: 1.15 }, { units: 25000, price: 0.95 }] },
   { name: "SCALE", color: "#dcfce7", textColor: "#166534", range: [50000, 499999], breakpoints: [{ units: 50000, price: 0.80 }, { units: 100000, price: 0.68 }, { units: 250000, price: 0.58 }] },
   { name: "ENTERPRISE", color: "#fee2e2", textColor: "#991b1b", range: [500000, Infinity], breakpoints: [{ units: 500000, price: 0.52 }, { units: 1000000, price: 0.48 }] }
-] as const;
+];
 
 function getSpotUnitPrice(qty: number): number {
   if (qty >= 1000000) return 0.48;
@@ -269,7 +269,7 @@ export function OrderContentsPage() {
     <div className="v2-design-page" style={{ gap: "10px" }}>
       
       {/* LEFT COLUMN: Product Selection / SKU Form */}
-      <main className="v2-design-center v2-configurator-center" style={{ flex: "1 1 auto", maxWidth: "none", background: "#ffffff", borderRadius: "14px", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+      <main className="v2-design-center v2-configurator-center">
         <div
           className="v2-design-center-scroll hide-scrollbar fc-step1-scroll-container"
           onClick={(e) => {
@@ -451,17 +451,18 @@ export function OrderContentsPage() {
               zIndex: 10
             }}
           >
-            {/* Inline selectors row */}
-            <div className="fc-step1-footer-selectors-row" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap" }}>
-              {/* Strength selector */}
-              <div style={{ display: "flex", flexDirection: "column", gap: "2px", flex: "1 1 auto" }}>
-                <span style={{ fontSize: "9px", fontWeight: 700, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "2px" }}>
+            {/* Clean stacked layout for strength and quantity */}
+            <div className="fc-step1-footer-selectors-row" style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+              
+              {/* Strength selector (Full Width) */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "6px", width: "100%" }}>
+                <span style={{ fontSize: "10px", fontWeight: 700, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
                   Nicotine Strength
                 </span>
                 <div style={{
-                  display: "flex", gap: "2px",
-                  background: "rgba(0,0,0,0.03)", borderRadius: "6px", padding: "2px",
-                  alignSelf: "flex-start"
+                  display: "flex", gap: "3px", width: "100%",
+                  background: "rgba(0,0,0,0.03)", borderRadius: "8px", padding: "3px",
+                  boxSizing: "border-box"
                 }}>
                   {(nicotineType === "salt" ? SALT_STRENGTHS : FREEBASE_STRENGTHS).map(s => {
                     const isActive = strength === s;
@@ -471,14 +472,16 @@ export function OrderContentsPage() {
                         onClick={() => setStrength(s)}
                         className="fc-step1-footer-strength-btn"
                         style={{
+                          flex: 1,
                           fontWeight: isActive ? 600 : 500,
-                          borderRadius: "4px",
+                          borderRadius: "6px",
                           border: "none",
                           background: isActive ? "#ffffff" : "transparent",
-                          boxShadow: isActive ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
+                          boxShadow: isActive ? "0 1.5px 4px rgba(0,0,0,0.1)" : "none",
                           color: isActive ? "#111111" : "var(--color-text-secondary)",
                           cursor: "pointer",
-                          transition: "all 0.15s"
+                          transition: "all 0.15s",
+                          textAlign: "center"
                         }}
                       >
                         {s} mg
@@ -488,15 +491,15 @@ export function OrderContentsPage() {
                 </div>
               </div>
 
-              {/* Quantity selector */}
-              <div style={{ display: "flex", flexDirection: "column", gap: "2px", flex: "0 0 auto", alignItems: "flex-end" }}>
-                <span style={{ fontSize: "9px", fontWeight: 700, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "2px" }}>
+              {/* Quantity selector (Align Label Left, Input Control Right) */}
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+                <span style={{ fontSize: "13px", fontWeight: 600, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
                   Quantity
                 </span>
-                <div className="fc-qty-input-wrap" style={{ margin: 0, height: "28px", background: "rgba(0,0,0,0.03)", border: "none", borderRadius: "6px", overflow: "hidden", display: "flex", alignItems: "center" }}>
+                <div className="fc-qty-input-wrap" style={{ margin: 0, background: "rgba(0,0,0,0.03)", border: "none", overflow: "hidden", display: "flex", alignItems: "center" }}>
                   <button
                     className="fc-qty-btn"
-                    style={{ width: "28px", height: "28px", border: "none", background: "transparent", cursor: "pointer", fontSize: "12px", fontWeight: 600, color: "var(--color-text-secondary)" }}
+                    style={{ border: "none", background: "transparent", cursor: "pointer", fontWeight: 600, color: "var(--color-text-secondary)" }}
                     onClick={() => setQuantity(prev => Math.max(MOQ_MIN_SKU, prev - 50))}
                     onMouseEnter={e => e.currentTarget.style.background = "rgba(0,0,0,0.04)"}
                     onMouseLeave={e => e.currentTarget.style.background = "transparent"}
@@ -509,11 +512,11 @@ export function OrderContentsPage() {
                     value={quantity}
                     onChange={e => setQuantity(Math.max(MOQ_MIN_SKU, parseInt(e.target.value) || MOQ_MIN_SKU))}
                     className="fc-qty-input"
-                    style={{ width: "48px", height: "28px", padding: 0, fontSize: "11px", border: "none", background: "transparent", textAlign: "center", fontWeight: 700, color: "var(--color-text-primary)", outline: "none" }}
+                    style={{ padding: 0, border: "none", background: "transparent", textAlign: "center", fontWeight: 700, color: "var(--color-text-primary)", outline: "none" }}
                   />
                   <button
                     className="fc-qty-btn"
-                    style={{ width: "28px", height: "28px", border: "none", background: "transparent", cursor: "pointer", fontSize: "12px", fontWeight: 600, color: "var(--color-text-secondary)" }}
+                    style={{ border: "none", background: "transparent", cursor: "pointer", fontWeight: 600, color: "var(--color-text-secondary)" }}
                     onClick={() => setQuantity(prev => prev + 50)}
                     onMouseEnter={e => e.currentTarget.style.background = "rgba(0,0,0,0.04)"}
                     onMouseLeave={e => e.currentTarget.style.background = "transparent"}
@@ -540,7 +543,7 @@ export function OrderContentsPage() {
       </main>
 
       {/* RIGHT COLUMN: Order Calculations & Added SKUs */}
-      <aside className="v2-design-right v2-configurator-right" style={{ flex: "0 0 460px", maxWidth: "460px", background: "#ffffff", borderRadius: "14px", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+      <aside className="v2-design-right v2-configurator-right" style={{ background: "#ffffff", borderRadius: "14px", overflow: "hidden", display: "flex", flexDirection: "column" }}>
         <div className="v2-design-right-card" style={{ display: "flex", flexDirection: "column", height: "100%", padding: "20px", boxSizing: "border-box", minHeight: 0 }}>
           
           {/* FIXED HEADER: Pricing Mode Toggle (Always Pinned at Top) */}
@@ -601,7 +604,7 @@ export function OrderContentsPage() {
           </div>
 
           {/* Scrollable Catalog & Configuration settings */}
-          <div className="hide-scrollbar" style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "16px", paddingRight: "4px" }}>
+          <div className="hide-scrollbar fc-summary-content-scroll" style={{ display: "flex", flexDirection: "column", gap: "16px", paddingRight: "4px" }}>
 
             {/* Combined Header & MOQ Indicator */}
             <div style={{
@@ -943,9 +946,9 @@ export function OrderContentsPage() {
               /* Spot mode pricing tiers list */
               skus.length > 0 && (
                 <div className="sku-order-footer" style={{ padding: 0, background: "transparent" }}>
-                  <div style={{ background: "rgba(0,0,0,0.02)", padding: "6px 12px", borderRadius: "8px", display: "inline-flex", alignItems: "center", gap: "6px", marginBottom: "8px" }}>
-                    <span style={{ fontSize: "11px", color: "var(--color-text-muted)" }}>You are in:</span>
-                    <span style={{ color: "#111111", fontSize: "11px", fontWeight: 700 }}>
+                  <div style={{ background: "rgba(17, 17, 17, 0.05)", padding: "8px 14px", borderRadius: "100px", display: "inline-flex", alignItems: "center", gap: "6px", marginBottom: "12px" }}>
+                    <span style={{ fontSize: "12px", color: "var(--color-text-muted)" }}>You are in:</span>
+                    <span style={{ color: "#111111", fontSize: "12px", fontWeight: 700 }}>
                       {activeTier.name} Tier
                     </span>
                   </div>
@@ -1067,28 +1070,25 @@ export function OrderContentsPage() {
             {/* Totals Summary */}
             {skus.length > 0 && (
               <div
+                className="v2-totals-summary-box"
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  alignItems: "baseline",
-                  padding: "12px 16px",
-                  background: "rgba(0,0,0,0.02)",
-                  borderRadius: "10px",
+                  alignItems: "center",
+                  background: "rgba(0,0,0,0.03)",
                   border: "none"
                 }}
               >
-                <div>
-                  <div style={{ fontSize: "10px", color: "var(--color-text-muted)", letterSpacing: "0.06em", textTransform: "uppercase" }}>
-                    {pricingMode === "subscribe" ? "Quarterly Pull Total" : "Estimated total"}
+                <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                  <div className="v2-totals-summary-label" style={{ color: "var(--color-text-muted)", letterSpacing: "0.07em", textTransform: "uppercase" }}>
+                    {pricingMode === "subscribe" ? "Quarterly Pull" : "Estimated total"}
                   </div>
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-                  <div style={{ fontSize: "18px", fontWeight: 700, color: "var(--color-text-primary)" }}>
-                    €{estTotal.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                  </div>
-                  <div style={{ fontSize: "9px", color: "var(--color-text-muted)" }}>
+                  <div className="v2-totals-summary-sub" style={{ color: "var(--color-text-muted)", fontWeight: 500 }}>
                     {totalQuantity.toLocaleString()} units × €{unitPrice.toFixed(2)}
                   </div>
+                </div>
+                <div className="v2-totals-summary-price" style={{ fontWeight: 800, color: "var(--color-text-primary)" }}>
+                  €{estTotal.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </div>
               </div>
             )}
@@ -1097,19 +1097,15 @@ export function OrderContentsPage() {
             <div className="v2-nav-footer" style={{ margin: 0, padding: 0, position: "static", boxShadow: "none", zIndex: "auto", background: "transparent" }}>
               <button
                 onClick={() => navigate("/")}
-                className="v2-footer-btn v2-footer-btn-secondary"
-                style={{ height: "40px", fontSize: "13px", borderRadius: "10px" }}
+                className="v2-footer-btn v2-footer-btn-secondary fc-nav-btn"
               >
                 ← Back
               </button>
               <button
                 onClick={handleContinue}
                 disabled={totalQuantity < MOQ_MIN_TOTAL}
-                className="v2-footer-btn v2-footer-btn-primary"
+                className="v2-footer-btn v2-footer-btn-primary fc-nav-btn"
                 style={{
-                  height: "40px",
-                  fontSize: "13px",
-                  borderRadius: "10px",
                   opacity: totalQuantity >= MOQ_MIN_TOTAL ? 1 : 0.5,
                   cursor: totalQuantity >= MOQ_MIN_TOTAL ? "pointer" : "not-allowed"
                 }}

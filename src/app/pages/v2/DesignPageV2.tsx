@@ -36,7 +36,7 @@ export function DesignPageV2() {
           displayName: item.flavorName || item.flavor,
           type: item.nicotineType === "freebase" ? "freebase" : "salt" as const,
           flavor: item.flavor,
-          strength: `${item.strength}mg`,
+          strength: `${item.strength}mg` as SKU["strength"],
           colorTab: item.flavorGradient ? ("custom" as const) : ("presets" as const),
           colorPresetId: item.flavorGradient ? "custom" : preset.id,
           customColor: flavorColor,
@@ -63,7 +63,6 @@ export function DesignPageV2() {
       brandName:     savedDesign.brandName ?? "",
       logoDataUrl:   savedDesign.logoDataUrl ?? "",
       logoScale:     savedDesign.logoScale ?? 1.0,
-      healthWarningText: savedDesign.healthWarningText ?? "This product contains nicotine which is a highly addictive substance.",
       skus:          initialSkus,
       selectedSkuId: initialSkus[0]?.id || "",
     };
@@ -151,7 +150,6 @@ export function DesignPageV2() {
       accentColor: selectedSku ? (selectedSku.colorTab === "custom" ? selectedSku.customColor : selectedPreset.color) : selectedPreset.color,
       graphicsColor: activeGraphicsColor,
       background:  { id: selectedPreset.id, label: selectedPreset.label, style: activeGradient },
-      healthWarningText: design.healthWarningText,
     }));
     navigate("/signup");
   };
@@ -189,17 +187,7 @@ export function DesignPageV2() {
               <button
                 key={sku.id}
                 onClick={() => patch({ selectedSkuId: sku.id })}
-                className="v2-sku-pill"
-                style={{
-                  display: "flex", alignItems: "center", gap: "10px",
-                  padding: "10px 12px",
-                  background: active ? "#111111" : "rgba(0,0,0,0.03)",
-                  border: "none",
-                  borderRadius: "10px",
-                  cursor: "pointer",
-                  textAlign: "left",
-                  fontFamily: "var(--font-sans)",
-                }}
+                className={`v2-sku-pill ${active ? "active" : ""}`}
               >
                 <div style={{
                   width: "26px", height: "26px",
@@ -208,9 +196,7 @@ export function DesignPageV2() {
                   background: skuGradient,
                 }} />
                 <span style={{
-                  fontSize: "var(--text-md)",
                   fontWeight: active ? 600 : 400,
-                  color: active ? "#ffffff" : "var(--color-text-primary)",
                   overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
                 }}>
                   {sku.displayName}
@@ -223,17 +209,6 @@ export function DesignPageV2() {
             <button
               onClick={addSku}
               className="v2-sku-pill v2-sku-add"
-              style={{
-                display: "flex", alignItems: "center", justifyContent: "center", gap: "6px",
-                padding: "10px 12px",
-                background: "transparent",
-                border: "1px dashed var(--color-border)",
-                borderRadius: "10px",
-                cursor: "pointer",
-                fontFamily: "var(--font-sans)",
-                fontSize: "var(--text-md)",
-                color: "var(--color-text-muted)",
-              }}
             >
               <Plus size={14} /> Add more
             </button>
@@ -336,7 +311,6 @@ export function DesignPageV2() {
                           bgImageScaleBottle={active ? (selectedSku?.bgImageScaleBottle ?? 1.0) : 1.0}
                           colorTab={active ? selectedSku?.colorTab : "presets"}
                           graphicsColor={active ? activeGraphicsColor : "#ffffff"}
-                          healthWarningText={active ? design.healthWarningText : undefined}
                         />
                       </div>
                     </div>
@@ -363,21 +337,9 @@ export function DesignPageV2() {
           <div style={{ height: "1px", background: "rgba(0,0,0,0.06)", margin: "16px 0", flexShrink: 0 }} />
 
           {/* Preview — dynamically sized to fit height and width perfectly */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flex: 1, minHeight: 0 }}>
-            <div 
-              className={aiRunning ? "v2-ai-shimmer v2-ai-shimmer-pulse" : ""}
-              style={{
-                width: "100%",
-                height: "100%",
-                maxHeight: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                minHeight: 0,
-                padding: "12px 32px",
-                boxSizing: "border-box",
-                transition: "all 0.3s ease",
-              }}
+          <div className="v2-preview-region">
+            <div
+              className={`v2-preview-sizer ${aiRunning ? "v2-ai-shimmer v2-ai-shimmer-pulse" : ""}`}
             >
               <PackagePreview
                 templateId={design.templateId}
@@ -397,7 +359,6 @@ export function DesignPageV2() {
                 onBgPositionBottleChange={pos => selectedSku && patchSku(selectedSku.id, { bgImagePositionBottle: pos })}
                 colorTab={selectedSku?.colorTab}
                 graphicsColor={activeGraphicsColor}
-                healthWarningText={design.healthWarningText}
               />
             </div>
           </div>
