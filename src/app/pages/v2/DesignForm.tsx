@@ -30,8 +30,6 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
   const isFlavorCompleted = selectedSku ? selectedSku.displayName.trim() !== "" : false;
 
   const [brandExpanded, setBrandExpanded] = useState(!isBrandCompleted);
-  const [colorTouched, setColorTouched] = useState(false);
-  const [flavorTouched, setFlavorTouched] = useState(false);
 
   const handleLogoFile = (file: File) => {
     const reader = new FileReader();
@@ -54,7 +52,6 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
           bgImagePositionBottle: { x: 0, y: 0 },
           bgImageScaleBottle: 1.0,
         });
-        setColorTouched(true);
       }
     };
     reader.readAsDataURL(file);
@@ -66,15 +63,22 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
     patch({ logoScale: next });
   };
 
-  const handleAIGenerate = () => {
+  // Background image zoom — box and bottle scale together (0.5×–3×)
+  const bgScale = selectedSku?.bgImageScaleBox ?? 1.0;
+  const adjustBgScale = (amount: number) => {
     if (!selectedSku) return;
+    const next = Math.min(3.0, Math.max(0.5, parseFloat((bgScale + amount).toFixed(2))));
+    patchSku({ bgImageScaleBox: next, bgImageScaleBottle: next });
+  };
+
+  const handleAIGenerate = () => {
+    if (!selectedSku || aiRunning) return;
     setAiRunning(true);
     patchSku({ colorTab: "ai" });
     setTimeout(() => {
       const pick = COLOR_PRESETS[Math.floor(Math.random() * COLOR_PRESETS.length)];
       patchSku({ colorPresetId: pick.id, colorTab: "presets", customColor: pick.color });
       setAiRunning(false);
-      setColorTouched(true);
     }, 1500);
   };
 
@@ -156,6 +160,7 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
                     fontSize: "12px",
                     fontWeight: 500,
                     background: dragOverLogo ? "rgba(0,0,0,0.04)" : "rgba(0,0,0,0.02)",
+                    border: dragOverLogo ? "1.5px dashed rgba(0,0,0,0.28)" : "1.5px dashed rgba(0,0,0,0.12)",
                     fontFamily: "var(--font-sans)",
                     transition: "all 0.15s ease",
                   }}
@@ -257,7 +262,7 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
       <Card>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
           <h3 style={{ margin: 0, fontSize: "14px", fontWeight: 700, letterSpacing: "-0.01em", textTransform: "uppercase", color: "var(--color-text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
-            {isColorCompleted && colorTouched && (
+            {isColorCompleted && (
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
                 <polyline points="20 6 9 17 4 12" />
               </svg>
@@ -278,7 +283,12 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
                   onClick={() => tab === "ai" ? handleAIGenerate() : patchSku({ colorTab: tab })}
                   className={`v2-segmented-btn ${isActive ? "active" : ""}`}
                 >
-                  {tab === "ai" && aiRunning ? <Loader2 size={10} className="animate-spin" style={{ display: "inline-block" }} /> : label}
+                  {tab === "ai" && aiRunning ? (
+                    <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "4px" }}>
+                      <Loader2 size={11} className="animate-spin" style={{ flexShrink: 0 }} />
+                      {label}
+                    </span>
+                  ) : label}
                 </button>
               );
             })}
@@ -301,6 +311,9 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
                   fontSize: "12px",
                   fontWeight: 500,
                   background: dragOverBg ? "rgba(0,0,0,0.04)" : "rgba(0,0,0,0.02)",
+                  border: selectedSku.bgImageDataUrl
+                    ? "1.5px solid transparent"
+                    : dragOverBg ? "1.5px dashed rgba(0,0,0,0.28)" : "1.5px dashed rgba(0,0,0,0.12)",
                   fontFamily: "var(--font-sans)",
                   transition: "all 0.15s ease",
                 }}
@@ -310,6 +323,7 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
                     <img src={selectedSku.bgImageDataUrl} alt="bg" style={{ maxHeight: "50px", maxWidth: "100%", objectFit: "contain", borderRadius: "4px" }} />
                     <div style={{ display: "flex", gap: "10px", width: "100%" }}>
                       <button
+                        title="Reset the image position on both the box and the bottle"
                         onClick={(e) => {
                           e.stopPropagation();
                           patchSku({ bgImagePositionBox: { x: 0, y: 0 }, bgImagePositionBottle: { x: 0, y: 0 } });
@@ -340,6 +354,60 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
                         Remove Image
                       </button>
                     </div>
+
+                    {/* Image zoom — mirrors the Logo Size control */}
+                    <div
+                      onClick={e => e.stopPropagation()}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        width: "100%",
+                        paddingTop: "10px",
+                        borderTop: "1px solid rgba(0,0,0,0.04)",
+                        cursor: "default",
+                      }}
+                    >
+                      <span style={{ fontSize: "12px", color: "var(--color-text-secondary)", fontWeight: 500 }}>
+                        Image Size
+                      </span>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); adjustBgScale(-0.1); }}
+                          disabled={bgScale <= 0.5}
+                          style={{
+                            width: "24px", height: "24px", borderRadius: "50%",
+                            border: "1px solid rgba(0,0,0,0.08)", background: "#fff",
+                            color: "#111111", display: "flex",
+                            alignItems: "center", justifyContent: "center", fontSize: "14px",
+                            fontWeight: 600, cursor: bgScale <= 0.5 ? "not-allowed" : "pointer",
+                            opacity: bgScale <= 0.5 ? 0.5 : 1, userSelect: "none"
+                          }}
+                        >
+                          −
+                        </button>
+                        <span style={{
+                          fontSize: "12px", fontWeight: 600, color: "#111111",
+                          width: "36px", textAlign: "center", fontFamily: "monospace",
+                        }}>
+                          {Math.round(bgScale * 100)}%
+                        </span>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); adjustBgScale(0.1); }}
+                          disabled={bgScale >= 3.0}
+                          style={{
+                            width: "24px", height: "24px", borderRadius: "50%",
+                            border: "1px solid rgba(0,0,0,0.08)", background: "#fff",
+                            color: "#111111", display: "flex",
+                            alignItems: "center", justifyContent: "center", fontSize: "14px",
+                            fontWeight: 600, cursor: bgScale >= 3.0 ? "not-allowed" : "pointer",
+                            opacity: bgScale >= 3.0 ? 0.5 : 1, userSelect: "none"
+                          }}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 ) : (
                   <>Upload background image (.JPG / .PNG)</>
@@ -347,12 +415,18 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
               </div>
               <input ref={bgFileRef} type="file" accept="image/*" style={{ display: "none" }}
                 onChange={e => { const f = e.target.files?.[0]; if (f) handleBgFile(f); }} />
+              {!selectedSku.bgImageDataUrl && (
+                <div style={{ fontSize: "11px", fontWeight: 500, color: "#b45309", fontFamily: "var(--font-sans)" }}>
+                  An image is required to continue
+                </div>
+              )}
             </div>
           )}
 
           {/* Clean Color Preset single row */}
           {selectedSku && (selectedSku.colorTab === "presets" || selectedSku.colorTab === "ai") && (
-            <div style={{ display: "flex", gap: "8px", justifyContent: "space-between", width: "100%", padding: "4px 0" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "6px", padding: "4px 0" }}>
+            <div style={{ display: "flex", gap: "8px", justifyContent: "space-between", width: "100%" }}>
               {COLOR_PRESETS.map(preset => {
                 const active = selectedSku.colorPresetId === preset.id;
                 return (
@@ -360,23 +434,27 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
                     key={preset.id}
                     onClick={() => {
                       patchSku({ colorPresetId: preset.id, colorTab: "presets", customColor: preset.color });
-                      setColorTouched(true);
                     }}
                     title={preset.label}
                     style={{
-                      width: "28px",
-                      height: "28px",
+                      flex: "0 1 28px",
+                      minWidth: "20px",
+                      aspectRatio: "1 / 1",
+                      height: "auto",
                       borderRadius: "50%",
                       background: preset.gradient,
                       border: active ? "2.5px solid #111111" : "1px solid rgba(0,0,0,0.08)",
                       boxShadow: active ? "0 0 0 3px rgba(17,17,17,0.12)" : "none",
                       cursor: "pointer",
                       transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
-                      flexShrink: 0
                     }}
                   />
                 );
               })}
+            </div>
+            <div style={{ fontSize: "11px", color: "var(--color-text-muted)", fontFamily: "var(--font-sans)", textAlign: "center" }}>
+              {(COLOR_PRESETS.find(p => p.id === selectedSku.colorPresetId) ?? COLOR_PRESETS[0]).label}
+            </div>
             </div>
           )}
 
@@ -391,8 +469,7 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
               <input
                 className="ds-input"
                 value={selectedSku.customColor}
-                onChange={e => patchSku({ customColor: e.target.value })}
-                onBlur={() => setColorTouched(true)}
+                onChange={e => patchSku({ customColor: "#" + e.target.value.replace(/[^0-9a-fA-F]/g, "").slice(0, 6) })}
                 onKeyDown={e => {
                   if (e.key === "Enter") {
                     (e.target as HTMLInputElement).blur();
@@ -445,7 +522,7 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
                   <input
                     className="ds-input"
                     value={selectedSku.graphicsCustomColor ?? "#ffffff"}
-                    onChange={e => patchSku({ graphicsCustomColor: e.target.value })}
+                    onChange={e => patchSku({ graphicsCustomColor: "#" + e.target.value.replace(/[^0-9a-fA-F]/g, "").slice(0, 6) })}
                     placeholder="#ffffff"
                     style={{ flex: 1, fontFamily: "monospace", fontSize: "12px", height: "28px", border: "1px solid rgba(0,0,0,0.1)", borderRadius: "6px", padding: "0 8px" }}
                   />
@@ -461,7 +538,7 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
         <Card>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
             <h3 style={{ margin: 0, fontSize: "14px", fontWeight: 700, letterSpacing: "-0.01em", textTransform: "uppercase", color: "var(--color-text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
-              {isFlavorCompleted && flavorTouched && (
+              {isFlavorCompleted && (
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
@@ -476,7 +553,6 @@ export function DesignForm({ design, patch, selectedSku, patchSku, aiRunning, se
               placeholder="Flavor Name"
               value={selectedSku.displayName}
               onChange={e => patchSku({ displayName: e.target.value })}
-              onBlur={() => setFlavorTouched(true)}
               onKeyDown={e => {
                 if (e.key === "Enter") {
                   (e.target as HTMLInputElement).blur();

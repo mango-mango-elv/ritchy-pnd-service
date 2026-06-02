@@ -62,6 +62,9 @@ function ImageBackground({
   onBgPositionChange?: (pos: { x: number; y: number; }) => void;
   draggable?: boolean;
 }) {
+  const [hovered, setHovered] = React.useState(false);
+  const [dragging, setDragging] = React.useState(false);
+
   const handlePointerDown = (e: React.PointerEvent) => {
     if (!draggable || !onBgPositionChange) return;
     const startX = e.clientX;
@@ -71,6 +74,7 @@ function ImageBackground({
 
     const target = e.currentTarget as HTMLElement;
     target.setPointerCapture(e.pointerId);
+    setDragging(true);
 
     const handlePointerMove = (moveEvent: PointerEvent) => {
       const dx = moveEvent.clientX - startX;
@@ -82,6 +86,7 @@ function ImageBackground({
       target.releasePointerCapture(e.pointerId);
       target.removeEventListener("pointermove", handlePointerMove);
       target.removeEventListener("pointerup", handlePointerUp);
+      setDragging(false);
     };
 
     target.addEventListener("pointermove", handlePointerMove);
@@ -91,12 +96,16 @@ function ImageBackground({
   return (
     <div
       onPointerDown={handlePointerDown}
+      onPointerEnter={() => draggable && setHovered(true)}
+      onPointerLeave={() => setHovered(false)}
       style={{
         position: "absolute",
         inset: 0,
         overflow: "hidden",
-        cursor: draggable ? "move" : "default",
+        cursor: draggable ? (dragging ? "grabbing" : "move") : "default",
         touchAction: draggable ? "none" : "auto",
+        outline: draggable && dragging ? "2px dashed rgba(255,255,255,0.85)" : "none",
+        outlineOffset: "-3px",
       }}
     >
       <img
@@ -117,6 +126,27 @@ function ImageBackground({
           userSelect: "none",
         }}
       />
+      {draggable && hovered && !dragging && (
+        <div style={{
+          position: "absolute",
+          left: "50%",
+          top: "50%",
+          transform: "translate(-50%, -50%)",
+          background: "rgba(17,17,17,0.65)",
+          color: "#ffffff",
+          borderRadius: "999px",
+          padding: "3px 9px",
+          fontSize: "9px",
+          fontWeight: 600,
+          letterSpacing: "0.03em",
+          whiteSpace: "nowrap",
+          pointerEvents: "none",
+          fontFamily: "var(--font-sans)",
+          zIndex: 11,
+        }}>
+          ✥ Drag to adjust
+        </div>
+      )}
     </div>
   );
 }
@@ -349,8 +379,8 @@ export function BoxT2Centered({ brand, flavor, strength, nicLabel, gradient, log
         </div>
       )}
 
-      {/* flavor — at 42.5%, Albert Sans ExtraBold */}
-      <div style={abs({ top: "42.5%", left: 0, right: 0, pointerEvents: "none" })}>
+      {/* flavor — at 42.5%, Albert Sans ExtraBold; side insets match the divider so long names wrap */}
+      <div style={abs({ top: "42.5%", left: "6.71%", right: "6.71%", pointerEvents: "none" })}>
         <p style={{
           margin: 0,
           fontSize: "11.5cqw",
@@ -916,12 +946,12 @@ function BottleLabelT2({ brand, flavor, strength, nicLabel, gradient, logoDataUr
         )}
       </div>
 
-      {/* flavor — centered in the lower zone */}
+      {/* flavor — centered in the lower zone; side insets match the divider so long names wrap */}
       <div style={{
         position: "absolute",
         top: "55.5%",
-        left: 0,
-        right: 0,
+        left: "6.71%",
+        right: "6.71%",
         pointerEvents: "none",
       }}>
         <p style={{

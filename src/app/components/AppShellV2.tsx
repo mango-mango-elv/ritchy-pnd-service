@@ -1,5 +1,18 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { Outlet, Link, useNavigate, useLocation } from "react-router";
+import ritchyLogo from "../../assets/ritchy_logo.svg";
+
+interface SessionUser {
+  email?: string;
+  companyName?: string;
+  country?: string;
+  authProvider?: string;
+}
+
+function readUser(): SessionUser | null {
+  try { return JSON.parse(sessionStorage.getItem("ritchy-v2-user") ?? "null"); }
+  catch { return null; }
+}
 
 const V2_STAGES = [
   { path: "/order",      label: "Order"      },
@@ -21,6 +34,20 @@ export function AppShellV2() {
   const navigate = useNavigate();
   const isLanding = location.pathname === "/" || location.pathname === "";
   const currentIdx = V2_STAGES.findIndex(s => s.path === location.pathname);
+  // Re-read on every render — the shell re-renders on each route change,
+  // which is exactly when the signed-in state can have changed.
+  const user = readUser();
+
+  const handleSignOut = () => {
+    sessionStorage.removeItem("ritchy-v2-user");
+    sessionStorage.removeItem("ritchy-v2-submitted");
+    navigate("/");
+  };
+
+  // Start each step at the top — the page-enter fade hides the jump.
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+  }, [location.pathname]);
 
   const navCtx: V2NavCtx = {
     goNext: () => { const n = V2_STAGES[currentIdx + 1]; if (n) navigate(n.path); },
@@ -51,27 +78,111 @@ export function AppShellV2() {
             flexShrink: 0,
           }}>
             <Link to="/" style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", textDecoration: "none" }}>
-              <div style={{
-                width: "26px", height: "26px", borderRadius: "var(--radius-full)",
-                background: "#111111",
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}>
-                <span style={{ color: "#fff", fontSize: "12px", fontWeight: 700 }}>R</span>
-              </div>
-              <span style={{ fontWeight: 700, fontSize: "14px", color: "#111111" }}>
-                Ritchy <span style={{ color: "#999999", fontWeight: 400 }}>Brand Factory</span>
+              <img src={ritchyLogo} alt="Ritchy" style={{ height: "28px", width: "auto", display: "block" }} />
+              <span style={{ fontWeight: 400, fontSize: "14px", color: "#999999" }}>
+                Brand Factory
               </span>
             </Link>
 
-            <V2StepBar currentIdx={currentIdx} />
+            <div style={{ display: "flex", alignItems: "center", gap: "14px", minWidth: 0 }}>
+              {/* Hide the wizard step bar on non-wizard routes (e.g. /dashboard) */}
+              {currentIdx >= 0 && <V2StepBar currentIdx={currentIdx} />}
+              {user?.email && <AccountMenu user={user} onSignOut={handleSignOut} />}
+            </div>
           </header>
         )}
 
-        <div style={{ flex: 1 }}>
+        {/* key={pathname} remounts the wrapper on navigation → entrance animation */}
+        <div key={location.pathname} className="v2-page-enter" style={{ flex: 1 }}>
           <Outlet />
         </div>
       </div>
     </V2NavContext.Provider>
+  );
+}
+
+function AccountMenu({ user, onSignOut }: { user: SessionUser; onSignOut: () => void }) {
+  const [open, setOpen] = useState(false);
+  const initial = (user.email?.[0] ?? "?").toUpperCase();
+
+  return (
+    <div style={{ position: "relative", flexShrink: 0 }}>
+      <button
+        onClick={() => setOpen(o => !o)}
+        title={user.email}
+        aria-label="Account menu"
+        style={{
+          width: "30px", height: "30px", borderRadius: "var(--radius-full)",
+          background: "#111111", color: "#ffffff",
+          border: "none", cursor: "pointer",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: "13px", fontWeight: 700, fontFamily: "var(--font-sans)",
+          boxShadow: open ? "0 0 0 3px rgba(17,17,17,0.12)" : "none",
+          transition: "box-shadow 0.15s ease",
+        }}
+      >
+        {initial}
+      </button>
+
+      {open && (
+        <>
+          {/* Invisible backdrop — click anywhere outside closes the menu */}
+          <div onClick={() => setOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 105 }} />
+          <div className="v2-pop-enter" style={{
+            position: "absolute", top: "38px", right: 0, zIndex: 110,
+            width: "260px", maxWidth: "calc(100vw - 24px)",
+            background: "rgba(255,255,255,0.97)",
+            backdropFilter: "blur(24px) saturate(200%)",
+            WebkitBackdropFilter: "blur(24px) saturate(200%)",
+            border: "1px solid rgba(0,0,0,0.08)",
+            borderRadius: "14px",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.95)",
+            padding: "14px 16px",
+            display: "flex", flexDirection: "column", gap: "10px",
+          }}>
+            <div style={{ minWidth: 0 }}>
+              <div style={{ fontSize: "13px", fontWeight: 600, color: "var(--color-text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                {user.email}
+              </div>
+              <div style={{ fontSize: "12px", color: "var(--color-text-muted)", marginTop: "2px" }}>
+                {[user.companyName, user.country].filter(Boolean).join(" · ") || "—"}
+              </div>
+            </div>
+
+            {user.authProvider === "google" && (
+              <span style={{
+                alignSelf: "flex-start",
+                fontSize: "10.5px", fontWeight: 600,
+                padding: "3px 8px", borderRadius: "999px",
+                background: "rgba(66,133,244,0.08)",
+                border: "1px solid rgba(66,133,244,0.20)",
+                color: "#1a5dc8",
+              }}>
+                Signed in with Google
+              </span>
+            )}
+
+            <div style={{ height: "1px", background: "rgba(0,0,0,0.06)" }} />
+
+            <button
+              onClick={() => { setOpen(false); onSignOut(); }}
+              style={{
+                alignSelf: "flex-start",
+                border: "none",
+                background: "rgba(220, 38, 38, 0.08)",
+                color: "#dc2626",
+                padding: "6px 12px", borderRadius: "8px",
+                fontSize: "12px", fontWeight: 600,
+                fontFamily: "var(--font-sans)",
+                cursor: "pointer",
+              }}
+            >
+              Sign out
+            </button>
+          </div>
+        </>
+      )}
+    </div>
   );
 }
 

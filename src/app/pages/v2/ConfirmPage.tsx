@@ -130,8 +130,8 @@ export function ConfirmPage() {
             </div>
           ))}
         </div>
-        <button onClick={() => navigate("/")} className="ds-btn ds-btn-secondary">
-          ← Back to start
+        <button onClick={() => navigate("/dashboard")} className="ds-btn ds-btn-primary">
+          Go to dashboard →
         </button>
       </div>
     );
@@ -176,7 +176,11 @@ export function ConfirmPage() {
         <div className="v2-nav-footer">
           <button onClick={() => navigate("/compliance")} className="v2-footer-btn v2-footer-btn-secondary">← Back</button>
           <button
-            onClick={() => setSubmitted(true)}
+            onClick={() => {
+              const orderId = "RB-" + String(1000 + Math.floor(Math.random() * 9000));
+              sessionStorage.setItem("ritchy-v2-submitted", JSON.stringify({ orderId, submittedAt: Date.now() }));
+              setSubmitted(true);
+            }}
             className="v2-footer-btn v2-footer-btn-primary"
             style={{ minWidth: "180px" }}
           >

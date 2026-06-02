@@ -14,6 +14,7 @@ import { DesignPageV2 }      from "./pages/v2/DesignPageV2";
 import { SignUpPage }        from "./pages/v2/SignUpPage";
 import { CompliancePage }    from "./pages/v2/CompliancePage";
 import { ConfirmPage }       from "./pages/v2/ConfirmPage";
+import { DashboardPageV2 }   from "./pages/v2/DashboardPageV2";
 
 export const STAGES = [
   { path: "info",     label: "Info"     },
@@ -30,7 +31,6 @@ export const router = createBrowserRouter([
     Component: AppShell,
     children: [
       { path: "/login",     Component: LoginPage    },
-      { path: "/dashboard", Component: DashboardPage },
     ],
   },
   {
@@ -38,6 +38,7 @@ export const router = createBrowserRouter([
     Component: AppShell,
     children: [
       { path: "/v1",          loader: () => redirect("/v1/info") },
+      { path: "/v1/dashboard", Component: DashboardPage },
       { path: "/v1/info",     Component: InfoPage     },
       { path: "/v1/design",   Component: DesignPage   },
       { path: "/v1/legal",    Component: LegalPage    },
@@ -56,6 +57,7 @@ export const router = createBrowserRouter([
       { path: "/signup",       Component: SignUpPage        },
       { path: "/compliance",   Component: CompliancePage    },
       { path: "/confirm",      Component: ConfirmPage       },
+      { path: "/dashboard",    Component: DashboardPageV2   },
       { path: "*",             loader: () => redirect("/")  },
     ],
   },

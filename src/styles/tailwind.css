@@ -313,6 +313,9 @@ body {
     padding: var(--v2-gutter);
     gap: 10px;
     align-items: stretch;
+    /* Pages without the left sidebar (Sign Up, Compliance) don't fill the
+       frame — center the columns so the side margins stay symmetric. */
+    justify-content: center;
     max-width: var(--v2-frame-max);
     margin: 0 auto;
     width: 100%;
@@ -335,7 +338,9 @@ body {
   }
   .v2-design-center {
     flex: 0 1 600px;
-    min-width: 0;
+    /* Never collapse below a usable form width — without this the column
+       squeezes to ~190px at 1024–1200px and the segmented tabs wrap. */
+    min-width: 300px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -346,6 +351,9 @@ body {
   }
   .v2-design-center-scroll {
     padding: 20px 24px 24px;
+    /* The column itself is overflow:hidden — without this the form below the
+       fold is unreachable by mouse wheel on desktop. */
+    overflow-y: auto;
   }
   .v2-design-right {
     flex: 1 1 auto;
@@ -361,13 +369,15 @@ body {
      width and height of the region — pure CSS "contain". */
   .v2-preview-region {
     container-type: size;
-    padding: 8px 24px;
+    padding: 16px 24px 12px;
     box-sizing: border-box;
   }
   .v2-preview-sizer {
-    width: min(100cqw, calc(100cqh * 19 / 22));
+    /* 86cqw leaves side air inside the card; the -36px reserves room for the
+       Bottle/Box captions, which sit below the 19/22 aspect box and would
+       otherwise overflow the region. */
+    width: min(86cqw, calc((100cqh - 36px) * 19 / 22));
     max-width: 100%;
-    max-height: 100%;
     aspect-ratio: 19 / 22;
   }
 
@@ -411,6 +421,9 @@ body {
   flex-shrink: 0;
   width: 68px;
 }
+.v2-template-selector-btn:hover {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+}
 
 @media (min-width: 1024px) {
   .v2-template-selector-list {
@@ -418,6 +431,7 @@ body {
     grid-template-columns: repeat(5, 1fr);
     overflow-x: visible;
     padding: 0;
+    max-width: 70%;
   }
   .v2-template-selector-btn {
     width: 100%;
@@ -2044,6 +2058,84 @@ input[type="color"]::-moz-color-swatch {
   height: 52px !important;
   font-size: 15px !important;
   border-radius: 14px !important;
+}
+
+/* V2 dashboard */
+.v2-dash-grid {
+  display: grid;
+  /* minmax(0, …) — let the card shrink below its content min-width on mobile */
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+}
+@media (min-width: 900px) {
+  .v2-dash-grid {
+    grid-template-columns: minmax(0, 5fr) minmax(240px, 3fr);
+  }
+}
+@keyframes v2DashPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(212, 160, 26, 0.30); }
+  50%      { box-shadow: 0 0 0 6px rgba(212, 160, 26, 0); }
+}
+.v2-dash-pulse {
+  animation: v2DashPulse 1.8s ease-in-out infinite;
+}
+
+/* ── Page transitions & smooth scroll ───────────────────────── */
+html {
+  scroll-behavior: smooth;
+}
+/* Inner scroll panels get smooth programmatic scrolling too */
+.v2-design-center-scroll,
+.v2-design-left,
+.v2-design-right,
+.v2-design-left-list,
+.v2-template-selector-list {
+  scroll-behavior: smooth;
+}
+
+@keyframes v2PageFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes v2PageRise {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+/* Mobile: fade only — a transform on this wrapper would re-anchor the
+   position:fixed wizard footer (transform creates a containing block). */
+.v2-page-enter {
+  animation: v2PageFade 0.26s ease both;
+}
+@media (min-width: 1024px) {
+  .v2-page-enter {
+    animation: v2PageRise 0.34s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+}
+
+/* Dropdown / popover entrance (transform on the popover itself is safe) */
+@keyframes v2PopIn {
+  from { opacity: 0; transform: translateY(-4px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+.v2-pop-enter {
+  animation: v2PopIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transform-origin: top right;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html,
+  .v2-design-center-scroll,
+  .v2-design-left,
+  .v2-design-right,
+  .v2-design-left-list,
+  .v2-template-selector-list {
+    scroll-behavior: auto;
+  }
+  .v2-page-enter,
+  .v2-pop-enter {
+    animation: none;
+  }
 }
 
 /* Responsive Segmented Button bar styling */

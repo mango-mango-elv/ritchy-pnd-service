@@ -31,9 +31,9 @@ code is cleaned up. There are **no unit-test or lint scripts** configured.
 
 The codebase contains two parallel UIs. **Work only in v2 unless explicitly asked otherwise.**
 
-- **v2 (ACTIVE)** — routes at `/`, `/order`, `/design`, `/signup`, `/compliance`, `/confirm`;
-  shell `src/app/components/AppShellV2.tsx`; pages in `src/app/pages/v2/`.
-- **v1 (LEGACY — do not modify unless asked)** — routes under `/v1/*` plus `/login`, `/dashboard`;
+- **v2 (ACTIVE)** — routes at `/`, `/order`, `/design`, `/signup`, `/compliance`, `/confirm`,
+  `/dashboard`; shell `src/app/components/AppShellV2.tsx`; pages in `src/app/pages/v2/`.
+- **v1 (LEGACY — do not modify unless asked)** — routes under `/v1/*` plus `/login`;
   shell `src/app/components/AppShell.tsx`. Its rendering engine (`BoxFace.tsx`, `PackagingEditor.tsx`,
   `View3D.tsx`, `LayoutView.tsx`, `RangeView.tsx`, `FrontView.tsx`, `packageTypes.ts`) is **separate**
   from v2 and is not used by the active flow. Routing lives in `src/app/routes.tsx`.
@@ -54,6 +54,7 @@ Landing (/) → Order (/order) → Design (/design) → SignUp (/signup) → Com
 | 3. Sign up | `/signup` | `src/app/pages/v2/SignUpPage.tsx` |
 | 4. Compliance | `/compliance` | `src/app/pages/v2/CompliancePage.tsx` |
 | 5. Confirm | `/confirm` | `src/app/pages/v2/ConfirmPage.tsx` |
+| Dashboard (post-submit) | `/dashboard` | `src/app/pages/v2/DashboardPageV2.tsx` |
 
 Supporting v2 files:
 - `src/app/pages/v2/design-types.ts` — core types: `SKU`, `DesignState`, `ColorPreset` + `COLOR_PRESETS`.
@@ -70,6 +71,8 @@ No Redux/Zustand/Context store. State is local `useState` per page, persisted ac
 - `ritchy-v2-design` — `DesignState` (templateId, brand, logo, SKUs, health warning)
 - `ritchy-v2-user` — email, company, country
 - `ritchy-v2-compliance` — selected market and warning text
+- `ritchy-v2-design-draft` — full working design state (all SKUs); survives wizard navigation
+- `ritchy-v2-submitted` — `{ orderId, submittedAt }`, written on order submission
 
 ## Templates & styling
 

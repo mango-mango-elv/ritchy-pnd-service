@@ -1,6 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+
+// Per-SKU design fields owned by the Design step (everything except the
+// order-owned identity: id / flavor / type / strength).
+function mergeDraftSku(base: SKU, draft: Partial<SKU> | undefined): SKU {
+  if (!draft) return base;
+  return {
+    ...base,
+    ...draft,
+    id: base.id,
+    flavor: base.flavor,
+    type: base.type,
+    strength: base.strength,
+  };
+}
 import { useNavigate } from "react-router";
-import { Plus } from "lucide-react";
 import { Toaster, toast } from "sonner";
 import { DesignForm } from "./DesignForm";
 import { PackagePreview } from "./PackagePreview";
@@ -21,10 +34,35 @@ export function DesignPageV2() {
   const navigate = useNavigate();
   const [aiRunning, setAiRunning] = useState(false);
 
+  // Scale the mini package previews to fill the template buttons at any width.
+  // The preview inside each button is rendered at a fixed 300×347 and shrunk
+  // with transform: scale(var(--tpl-scale)) — keep it in sync with the real
+  // button size via a ResizeObserver on the selector list.
+  const templateListRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const list = templateListRef.current;
+    if (!list) return;
+    const update = () => {
+      const btn = list.querySelector<HTMLElement>(".v2-template-selector-btn");
+      if (btn && btn.clientWidth > 0) {
+        // 0.84 leaves ~8% breathing room on each side of the mini preview.
+        list.style.setProperty("--tpl-scale", String((btn.clientWidth * 0.84) / 300));
+      }
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(list);
+    return () => ro.disconnect();
+  }, []);
+
   const [design, setDesign] = useState<DesignState>(() => {
     const order = readSession<Record<string, any>>("ritchy-v2-order", {});
     const savedDesign = readSession<Record<string, any>>("ritchy-v2-design", {});
-    
+    // Working draft of the whole design state (all SKUs) — survives wizard
+    // back-and-forth navigation, unlike ritchy-v2-design which is a final
+    // single-SKU summary written on Continue.
+    const draft = readSession<any>("ritchy-v2-design-draft", null);
+
     let initialSkus: SKU[] = [];
     if (order.skus && Array.isArray(order.skus) && order.skus.length > 0) {
       initialSkus = order.skus.map((item: any, idx: number) => {
@@ -58,15 +96,35 @@ export function DesignPageV2() {
       }];
     }
 
+    // Reconcile with the draft: the order is the source of truth for the SKU
+    // list (ids, flavors, strengths); the draft contributes per-SKU design
+    // tweaks (colors, backgrounds, labels) for SKUs that still exist.
+    if (draft && Array.isArray(draft.skus)) {
+      const draftById = new Map<string, Partial<SKU>>(draft.skus.map((s: SKU) => [s.id, s]));
+      initialSkus = initialSkus.map(sku => mergeDraftSku(sku, draftById.get(sku.id)));
+    }
+
+    const selectedFromDraft = draft?.selectedSkuId && initialSkus.some(s => s.id === draft.selectedSkuId)
+      ? draft.selectedSkuId
+      : initialSkus[0]?.id || "";
+
     return {
-      templateId:    savedDesign.templateId ?? "t1-flavor",
-      brandName:     savedDesign.brandName ?? "",
-      logoDataUrl:   savedDesign.logoDataUrl ?? "",
-      logoScale:     savedDesign.logoScale ?? 1.0,
+      templateId:    draft?.templateId ?? savedDesign.templateId ?? "t1-flavor",
+      brandName:     draft?.brandName ?? savedDesign.brandName ?? "",
+      logoDataUrl:   draft?.logoDataUrl ?? savedDesign.logoDataUrl ?? "",
+      logoScale:     draft?.logoScale ?? savedDesign.logoScale ?? 1.0,
       skus:          initialSkus,
-      selectedSkuId: initialSkus[0]?.id || "",
+      selectedSkuId: selectedFromDraft,
     };
   });
+
+  // Persist the working draft on every change so navigating away and back
+  // doesn't lose the design. try/catch: huge bgImage data-URLs can exceed
+  // the sessionStorage quota — in that case we just skip the save.
+  useEffect(() => {
+    try { sessionStorage.setItem("ritchy-v2-design-draft", JSON.stringify(design)); }
+    catch { /* quota exceeded — draft persistence is best-effort */ }
+  }, [design]);
 
   const patch = (p: Partial<DesignState>) => setDesign(prev => ({ ...prev, ...p }));
 
@@ -75,27 +133,6 @@ export function DesignPageV2() {
       ...prev,
       skus: prev.skus.map(s => s.id === skuId ? { ...s, ...p } : s),
     }));
-
-  const addSku = () => {
-    if (design.skus.length >= 10) return;
-    const id = mkId();
-    // Cycle default preset color so each flavor gets its own color on creation
-    const nextPreset = COLOR_PRESETS[design.skus.length % COLOR_PRESETS.length];
-    setDesign(prev => ({
-      ...prev,
-      skus: [...prev.skus, {
-        id,
-        displayName: "New Flavor",
-        type: "salt",
-        flavor: "Passion Fruit",
-        strength: "20mg",
-        colorTab: "presets",
-        colorPresetId: nextPreset.id,
-        customColor: nextPreset.color,
-      }],
-      selectedSkuId: id,
-    }));
-  };
 
   const selectedSku    = design.skus.find(s => s.id === design.selectedSkuId) ?? design.skus[0];
   const selectedPreset = selectedSku
@@ -172,7 +209,7 @@ export function DesignPageV2() {
             Choose Flavor
           </span>
           <span style={{ fontSize: "var(--text-sm)", color: "var(--color-text-muted)" }}>
-            {design.skus.length}/10
+            {design.skus.length}
           </span>
         </div>
 
@@ -180,9 +217,12 @@ export function DesignPageV2() {
           {design.skus.map(sku => {
             const active = design.selectedSkuId === sku.id;
             const skuPreset = COLOR_PRESETS.find(p => p.id === sku.colorPresetId) ?? COLOR_PRESETS[0];
-            const skuGradient = sku.colorTab === "custom"
-              ? `linear-gradient(135deg, ${sku.customColor} 0%, ${sku.customColor} 100%)`
-              : skuPreset.gradient;
+            // Swatch mirrors the SKU's packaging: uploaded image > custom color > preset
+            const skuSwatch = sku.colorTab === "image" && sku.bgImageDataUrl
+              ? `url(${sku.bgImageDataUrl}) center / cover no-repeat`
+              : sku.colorTab === "custom"
+                ? `linear-gradient(135deg, ${sku.customColor} 0%, ${sku.customColor} 100%)`
+                : skuPreset.gradient;
             return (
               <button
                 key={sku.id}
@@ -193,7 +233,7 @@ export function DesignPageV2() {
                   width: "26px", height: "26px",
                   borderRadius: "5px",
                   flexShrink: 0,
-                  background: skuGradient,
+                  background: skuSwatch,
                 }} />
                 <span style={{
                   fontWeight: active ? 600 : 400,
@@ -205,14 +245,6 @@ export function DesignPageV2() {
             );
           })}
 
-          {design.skus.length < 10 && (
-            <button
-              onClick={addSku}
-              className="v2-sku-pill v2-sku-add"
-            >
-              <Plus size={14} /> Add more
-            </button>
-          )}
         </div>
       </aside>
 
@@ -235,9 +267,29 @@ export function DesignPageV2() {
           />
 
           {/* Footer buttons row */}
+          {!canProceed && (
+            <div style={{
+              fontSize: "12px",
+              color: "var(--color-text-muted)",
+              fontFamily: "var(--font-sans)",
+              textAlign: "center",
+              marginTop: "4px",
+            }}>
+              {!isBrandCompleted
+                ? "Add a brand name or logo to continue"
+                : !isColorCompleted
+                  ? "Upload a background image to continue"
+                  : "Enter a flavor name to continue"}
+            </div>
+          )}
           <div className="v2-nav-footer" style={{ marginTop: "4px" }}>
             <button onClick={() => navigate("/order")} className="v2-footer-btn v2-footer-btn-secondary fc-nav-btn">← Back</button>
-            <button onClick={handleContinue} disabled={!canProceed} className="v2-footer-btn v2-footer-btn-primary fc-nav-btn">Continue →</button>
+            <button
+              onClick={handleContinue}
+              disabled={!canProceed}
+              title={canProceed ? undefined : "Complete the highlighted sections first"}
+              className="v2-footer-btn v2-footer-btn-primary fc-nav-btn"
+            >Continue →</button>
           </div>
         </div>
       </main>
@@ -253,7 +305,7 @@ export function DesignPageV2() {
                 Will be applied for all flavors in this line
               </div>
             </div>
-            <div className="v2-template-selector-list">
+            <div className="v2-template-selector-list" ref={templateListRef}>
               {TEMPLATES.map(t => {
                 const active = design.templateId === t.id;
                 return (
@@ -263,7 +315,7 @@ export function DesignPageV2() {
                     title={t.label}
                     className="v2-template-selector-btn"
                     style={{
-                      aspectRatio: "1 / 1",
+                      aspectRatio: "300 / 347",
                       border: active ? "2px solid #111111" : "1.5px solid var(--color-border)",
                       borderRadius: "10px",
                       background: "#ffffff",
@@ -271,7 +323,7 @@ export function DesignPageV2() {
                       overflow: "hidden",
                       padding: 0,
                       position: "relative",
-                      transition: "border-color .15s",
+                      transition: "border-color .15s, box-shadow .15s",
                     }}
                   >
                     <div style={{
@@ -285,7 +337,7 @@ export function DesignPageV2() {
                         width: "300px",
                         height: "347px",
                         flexShrink: 0,
-                        transform: "scale(0.16)",
+                        transform: "scale(var(--tpl-scale, 0.16))",
                         transformOrigin: "center center",
                       }}>
                         <PackagePreview
